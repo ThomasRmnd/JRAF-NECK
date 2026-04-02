@@ -1,5 +1,5 @@
-#ifndef JRAFNECK_READER_NAVIGATOR_HPP_
-#define JRAFNECK_READER_NAVIGATOR_HPP_
+#ifndef JRAFNECK_READER_NAVIGATOR_NAVIGATOR_HPP_
+#define JRAFNECK_READER_NAVIGATOR_NAVIGATOR_HPP_
 
 #include "reader/chain/chain_reader.hpp"
 #include "reader/chain/chain_reader_manager.hpp"
@@ -35,4 +35,4 @@ protected:
 
 } // namespace jraf
 
-#endif // JRAFNECK_READER_NAVIGATOR_HPP_
+#endif // JRAFNECK_READER_NAVIGATOR_NAVIGATOR_HPP_

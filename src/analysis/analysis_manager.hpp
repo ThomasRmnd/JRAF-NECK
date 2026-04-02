@@ -14,13 +14,13 @@ public:
     {}
 
     bool run() {
-        if (m_reg.m_registry.empty()) {
+        if (m_reg.empty()) {
             std::cout << "WARNING: Analysis registry is empty. Exiting run\n";
             return true;
         }
         
-        std::cout << "\n--- Starting Analysis Loop Over " << m_reg.m_registry.size() << " Data Groups ---\n";
-        for (auto const& [nav, analyses] : m_reg.m_registry) {
+        std::cout << "\n--- Starting Analysis Loop Over " << m_reg.size() << " Data Groups ---\n";
+        for (auto const& [nav, analyses] : m_reg) {
             if (!nav->is_valid()) {
                 std::cerr << "\nWARNING: Navigator for this group is invalid. Skipping group\n";
                 continue;
@@ -50,12 +50,12 @@ public:
     }
 
     bool save() {
-        if (m_reg.m_registry.empty()) {
+        if (m_reg.empty()) {
             std::cout << "WARNING: Analysis registry is empty. Exiting result\n";
             return true;
         }
 
-        for (auto const& [nav, analyses] : m_reg.m_registry) {
+        for (auto const& [nav, analyses] : m_reg) {
             for (const auto& analysis : analyses) {
                 analysis->save();
             }

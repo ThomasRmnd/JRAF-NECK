@@ -18,6 +18,10 @@ public:
         jraf::timestamp ts;
         double factor;
 
+        friend bool operator<(const point& lhs, const point& rhs) {
+            return lhs.ts < rhs.ts;
+        }
+
     };
 
     typedef std::vector<point>                              container_type;
@@ -81,14 +85,6 @@ private:
     std::vector<point> m_data;
 
 };
-
-} // namespace jraf
-
-inline bool operator<(const jraf::scale_factor_corrector::point& lhs, const jraf::scale_factor_corrector::point& rhs) {
-    return lhs.ts < rhs.ts;
-}
-
-namespace jraf {
 
 class global_scale_factor_corrector {
 

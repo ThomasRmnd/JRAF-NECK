@@ -1,15 +1,17 @@
-#ifndef JRAFNECK_READER_NAVIGATOR_CORRELATEDEVENTNAVIGATOR_HPP_
-#define JRAFNECK_READER_NAVIGATOR_CORRELATEDEVENTNAVIGATOR_HPP_
+#ifndef JRAFNECK_READER_NAVIGATOR_IBDLIKEEVENTNAVIGATOR_HPP_
+#define JRAFNECK_READER_NAVIGATOR_IBDLIKEEVENTNAVIGATOR_HPP_
 
 #include "event/vertex.hpp"
 #include "reader/containers/vector_reader.hpp"
 #include "reader/navigator/navigator.hpp"
 
-class correlated_event_navigator : public jraf::navigator_base {
+namespace jraf {
+
+class ibd_like_event_navigator : public jraf::navigator_base {
 
 public:
 
-    correlated_event_navigator(const std::string& filepath, const std::string& treename) :
+    ibd_like_event_navigator(const std::string& filepath, const std::string& treename) :
         navigator_base{filepath, treename}
     {
         if (!is_valid()) return;
@@ -54,58 +56,58 @@ public:
         m_chain->branch("meanhit_d", meta_delayed.meanhit);
         m_chain->branch("stdhit_d", meta_delayed.stdhit);
 
-        m_chain->branch("posx_n", posx_n.data());
-        m_chain->branch("posy_n", posy_n.data());
-        m_chain->branch("posz_n", posz_n.data());
-        m_chain->branch("e_n", e_n.data());
-        m_chain->branch("sec_n", sec_n.data());
-        m_chain->branch("nsec_n", nsec_n.data());
+        m_chain->branch("posx_n", posx_n.ptr());
+        m_chain->branch("posy_n", posy_n.ptr());
+        m_chain->branch("posz_n", posz_n.ptr());
+        m_chain->branch("e_n", e_n.ptr());
+        m_chain->branch("sec_n", sec_n.ptr());
+        m_chain->branch("nsec_n", nsec_n.ptr());
 
-        m_chain->branch("totq_n", totq_n.data());
-        m_chain->branch("meanq_n", meanq_n.data());
-        m_chain->branch("stdq_n", stdq_n.data());
-        m_chain->branch("minq_n", minq_n.data());
-        m_chain->branch("maxq_n", maxq_n.data());
-        m_chain->branch("meant_n", meant_n.data());
-        m_chain->branch("stdt_n", stdt_n.data());
-        m_chain->branch("npmt_n", npmt_n.data());
-        m_chain->branch("nhit_n", nhit_n.data());
-        m_chain->branch("meanhit_n", meanhit_n.data());
-        m_chain->branch("stdhit_n", stdhit_n.data());
+        m_chain->branch("totq_n", totq_n.ptr());
+        m_chain->branch("meanq_n", meanq_n.ptr());
+        m_chain->branch("stdq_n", stdq_n.ptr());
+        m_chain->branch("minq_n", minq_n.ptr());
+        m_chain->branch("maxq_n", maxq_n.ptr());
+        m_chain->branch("meant_n", meant_n.ptr());
+        m_chain->branch("stdt_n", stdt_n.ptr());
+        m_chain->branch("npmt_n", npmt_n.ptr());
+        m_chain->branch("nhit_n", nhit_n.ptr());
+        m_chain->branch("meanhit_n", meanhit_n.ptr());
+        m_chain->branch("stdhit_n", stdhit_n.ptr());
 
-        m_chain->branch("posx_mult", posx_mult.data());
-        m_chain->branch("posy_mult", posy_mult.data());
-        m_chain->branch("posz_mult", posz_mult.data());
-        m_chain->branch("e_mult", e_mult.data());
-        m_chain->branch("sec_mult", sec_mult.data());
-        m_chain->branch("nsec_mult", nsec_mult.data());
-        m_chain->branch("mult_type", mult_type.data());
+        m_chain->branch("posx_mult", posx_mult.ptr());
+        m_chain->branch("posy_mult", posy_mult.ptr());
+        m_chain->branch("posz_mult", posz_mult.ptr());
+        m_chain->branch("e_mult", e_mult.ptr());
+        m_chain->branch("sec_mult", sec_mult.ptr());
+        m_chain->branch("nsec_mult", nsec_mult.ptr());
+        m_chain->branch("mult_type", mult_type.ptr());
 
-        m_chain->branch("totq_mult", totq_mult.data());
-        m_chain->branch("meanq_mult", meanq_mult.data());
-        m_chain->branch("stdq_mult", stdq_mult.data());
-        m_chain->branch("minq_mult", minq_mult.data());
-        m_chain->branch("maxq_mult", maxq_mult.data());
-        m_chain->branch("meant_mult", meant_mult.data());
-        m_chain->branch("stdt_mult", stdt_mult.data());
-        m_chain->branch("npmt_mult", npmt_mult.data());
-        m_chain->branch("nhit_mult", nhit_mult.data());
-        m_chain->branch("meanhit_mult", meanhit_mult.data());
-        m_chain->branch("stdhit_mult", stdhit_mult.data());
+        m_chain->branch("totq_mult", totq_mult.ptr());
+        m_chain->branch("meanq_mult", meanq_mult.ptr());
+        m_chain->branch("stdq_mult", stdq_mult.ptr());
+        m_chain->branch("minq_mult", minq_mult.ptr());
+        m_chain->branch("maxq_mult", maxq_mult.ptr());
+        m_chain->branch("meant_mult", meant_mult.ptr());
+        m_chain->branch("stdt_mult", stdt_mult.ptr());
+        m_chain->branch("npmt_mult", npmt_mult.ptr());
+        m_chain->branch("nhit_mult", nhit_mult.ptr());
+        m_chain->branch("meanhit_mult", meanhit_mult.ptr());
+        m_chain->branch("stdhit_mult", stdhit_mult.ptr());
 
-        m_chain->branch("method_mu", method_mu.data());
-        m_chain->branch("loc_mu", loc_mu.data());
-        m_chain->branch("posx_mu", posx_mu.data());
-        m_chain->branch("posy_mu", posy_mu.data());
-        m_chain->branch("posz_mu", posz_mu.data());
-        m_chain->branch("dirx_mu", dirx_mu.data());
-        m_chain->branch("diry_mu", diry_mu.data());
-        m_chain->branch("dirz_mu", dirz_mu.data());
-        m_chain->branch("totq_cd_mu", totq_cd_mu.data());
-        m_chain->branch("totq_wp_mu", totq_wp_mu.data());
-        m_chain->branch("sec_mu", sec_mu.data());
-        m_chain->branch("nsec_mu", nsec_mu.data());
-        m_chain->branch("quality_mu", quality_mu.data());
+        m_chain->branch("method_mu", method_mu.ptr());
+        m_chain->branch("loc_mu", loc_mu.ptr());
+        m_chain->branch("posx_mu", posx_mu.ptr());
+        m_chain->branch("posy_mu", posy_mu.ptr());
+        m_chain->branch("posz_mu", posz_mu.ptr());
+        m_chain->branch("dirx_mu", dirx_mu.ptr());
+        m_chain->branch("diry_mu", diry_mu.ptr());
+        m_chain->branch("dirz_mu", dirz_mu.ptr());
+        m_chain->branch("totq_cd_mu", totq_cd_mu.ptr());
+        m_chain->branch("totq_wp_mu", totq_wp_mu.ptr());
+        m_chain->branch("sec_mu", sec_mu.ptr());
+        m_chain->branch("nsec_mu", nsec_mu.ptr());
+        m_chain->branch("quality_mu", quality_mu.ptr());
     }
 
     int run_id;
@@ -171,4 +173,6 @@ public:
 
 };
 
-#endif // JRAFNECK_READER_NAVIGATOR_CORRELATEDEVENTNAVIGATOR_HPP_
+} // namespace jraf
+
+#endif // JRAFNECK_READER_NAVIGATOR_IBDLIKEEVENTNAVIGATOR_HPP_

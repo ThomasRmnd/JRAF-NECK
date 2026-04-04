@@ -15,7 +15,7 @@ public:
 
     virtual ~analysis_base() = default;
 
-    virtual std::shared_ptr<navigator_base> navigator() const = 0;
+    virtual std::shared_ptr<jraf::navigator_base> navigator() const = 0;
 
     virtual bool selection() = 0;
     virtual bool process() = 0;

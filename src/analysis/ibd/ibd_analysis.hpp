@@ -1,6 +1,8 @@
 #ifndef JRAFNECK_ANALYSIS_IBD_IBDANALYSIS_HPP_
 #define JRAFNECK_ANALYSIS_IBD_IBDANALYSIS_HPP_
 
+#include <set>
+
 #include "analysis/analysis.hpp"
 #include "event/ibd.hpp"
 #include "reader/navigator/ibd_like_event_navigator.hpp"

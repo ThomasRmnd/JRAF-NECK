@@ -1,8 +1,6 @@
 #ifndef JRAFNECK_ANALYSIS_IBD_IBDSTANDARDANALYSIS_HPP_
 #define JRAFNECK_ANALYSIS_IBD_IBDSTANDARDANALYSIS_HPP_
 
-#include <set>
-
 #include "analysis/ibd/ibd_analysis.hpp"
 #include "selection/energy.hpp"
 #include "selection/flasher.hpp"

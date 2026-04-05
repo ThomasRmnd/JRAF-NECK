@@ -1,5 +1,5 @@
-#ifndef ANALYSIS_IBD_STANDARD_ANALYSIS_HPP_
-#define ANALYSIS_IBD_STANDARD_ANALYSIS_HPP_
+#ifndef JRAFNECK_ANALYSIS_IBD_IBDSTANDARDANALYSIS_HPP_
+#define JRAFNECK_ANALYSIS_IBD_IBDSTANDARDANALYSIS_HPP_
 
 #include <set>
 
@@ -15,9 +15,9 @@ public:
 
     using ibd_analysis::ibd_analysis;
 
-    virtual ~ibd_standard_analysis() override = default;
+    ~ibd_standard_analysis() override = default;
 
-    virtual bool selection() override {
+    bool selection() override {
         vertex prompt{m_nav->prompt};
         vertex delayed{m_nav->delayed};
         prompt.e /= m_gtc.interpolate(prompt.ts);
@@ -74,4 +74,4 @@ protected:
 
 };
 
-#endif // ANALYSIS_IBD_STANDARD_ANALYSIS_HPP_
+#endif // JRAFNECK_ANALYSIS_IBD_IBDSTANDARDANALYSIS_HPP_

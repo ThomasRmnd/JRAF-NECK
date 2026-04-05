@@ -11,7 +11,7 @@
 // #include "analysis/cosmogenic/cosmo_shape_muon_standard_analysis.hpp"
 // #include "analysis/cosmogenic/cosmo_shape_muon_with_neutron_analysis.hpp"
 // #include "analysis/cosmogenic/cosmo_shape_neutron_analysis.hpp"
-// #include "analysis/ibd/ibd_no_neutron_veto_analysis.hpp"
+#include "analysis/ibd/ibd_no_neutron_veto_analysis.hpp"
 // #include "analysis/ibd/ibd_no_neutron_veto_muon_veto_analysis.hpp"
 #include "analysis/ibd/ibd_standard_analysis.hpp"
 // #include "analysis/ibd/ibd_standard_muon_veto_analysis.hpp"
@@ -95,8 +95,8 @@ int jraf_neck(const std::string& filepath) {
 
 
 
-    // std::shared_ptr<analysis_base> ibd_no_neutron_veto_analysis_omilrec_jvertex(new ibd_no_neutron_veto_analysis("ibd_no_neutron_veto_analysis_omilrec_jvertex", filepath, suffix));
-    // if (!registry.book(ibd_no_neutron_veto_analysis_omilrec_jvertex)) return 1;
+    std::shared_ptr<analysis_base> ibd_no_neutron_veto_analysis_omilrec_jvertex(new ibd_no_neutron_veto_analysis("ibd_no_neutron_veto_analysis_omilrec_jvertex", filepath, suffix));
+    if (!registry.book(ibd_no_neutron_veto_analysis_omilrec_jvertex)) return 1;
 
     // std::shared_ptr<analysis_base> ibd_no_neutron_veto_muon_veto_analysis_omilrec_jvertex(new ibd_no_neutron_veto_muon_veto_analysis("ibd_no_neutron_veto_muon_veto_analysis_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, 3000.0));
     // if (!registry.book(ibd_no_neutron_veto_muon_veto_analysis_omilrec_jvertex)) return 1;

@@ -30,7 +30,7 @@ public:
         if (!c_fiducial_volume_cut.is_in(prompt)) return false;
         if (c_chimney_cut.is_in(prompt)) return false;
         if (!vertex_correlation_cut.is_in(delayed)) return false;
-        // if (!c_flasher_cut.is_in(prompt)) return false;
+        if (!c_flasher_cut.is_in(prompt)) return false;
 
         std::size_t nb_multu_veto = 0ul;
         for (const vertex& multiplicity : m_nav->multiplicities) {

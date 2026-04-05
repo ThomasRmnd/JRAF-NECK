@@ -6,9 +6,7 @@
 #include "reader/containers/vector_reader.hpp"
 #include "reader/navigator/navigator.hpp"
 
-namespace jraf {
-
-class ibd_like_event_navigator : public jraf::navigator_base {
+class ibd_like_event_navigator : public navigator_base {
 
 public:
 
@@ -158,61 +156,59 @@ public:
 
 protected:
 
-    jraf::vector_reader<double> posx_n;
-    jraf::vector_reader<double> posy_n;
-    jraf::vector_reader<double> posz_n;
-    jraf::vector_reader<double> e_n;
-    jraf::vector_reader<time_t> sec_n;
-    jraf::vector_reader<int> nsec_n;
+    vector_reader<double> posx_n;
+    vector_reader<double> posy_n;
+    vector_reader<double> posz_n;
+    vector_reader<double> e_n;
+    vector_reader<time_t> sec_n;
+    vector_reader<int> nsec_n;
 
-    jraf::vector_reader<double> totq_n;
-    jraf::vector_reader<double> meanq_n;
-    jraf::vector_reader<double> stdq_n;
-    jraf::vector_reader<double> minq_n;
-    jraf::vector_reader<double> maxq_n;
-    jraf::vector_reader<double> meant_n;
-    jraf::vector_reader<double> stdt_n;
-    jraf::vector_reader<std::size_t> npmt_n;
-    jraf::vector_reader<std::size_t> nhit_n;
-    jraf::vector_reader<double> meanhit_n;
-    jraf::vector_reader<double> stdhit_n;
+    vector_reader<double> totq_n;
+    vector_reader<double> meanq_n;
+    vector_reader<double> stdq_n;
+    vector_reader<double> minq_n;
+    vector_reader<double> maxq_n;
+    vector_reader<double> meant_n;
+    vector_reader<double> stdt_n;
+    vector_reader<std::size_t> npmt_n;
+    vector_reader<std::size_t> nhit_n;
+    vector_reader<double> meanhit_n;
+    vector_reader<double> stdhit_n;
 
-    jraf::vector_reader<double> posx_mult;
-    jraf::vector_reader<double> posy_mult;
-    jraf::vector_reader<double> posz_mult;
-    jraf::vector_reader<double> e_mult;
-    jraf::vector_reader<time_t> sec_mult;
-    jraf::vector_reader<int> nsec_mult;
-    jraf::vector_reader<int> mult_type;
+    vector_reader<double> posx_mult;
+    vector_reader<double> posy_mult;
+    vector_reader<double> posz_mult;
+    vector_reader<double> e_mult;
+    vector_reader<time_t> sec_mult;
+    vector_reader<int> nsec_mult;
+    vector_reader<int> mult_type;
 
-    jraf::vector_reader<double> totq_mult;
-    jraf::vector_reader<double> meanq_mult;
-    jraf::vector_reader<double> stdq_mult;
-    jraf::vector_reader<double> minq_mult;
-    jraf::vector_reader<double> maxq_mult;
-    jraf::vector_reader<double> meant_mult;
-    jraf::vector_reader<double> stdt_mult;
-    jraf::vector_reader<std::size_t> npmt_mult;
-    jraf::vector_reader<std::size_t> nhit_mult;
-    jraf::vector_reader<double> meanhit_mult;
-    jraf::vector_reader<double> stdhit_mult;
+    vector_reader<double> totq_mult;
+    vector_reader<double> meanq_mult;
+    vector_reader<double> stdq_mult;
+    vector_reader<double> minq_mult;
+    vector_reader<double> maxq_mult;
+    vector_reader<double> meant_mult;
+    vector_reader<double> stdt_mult;
+    vector_reader<std::size_t> npmt_mult;
+    vector_reader<std::size_t> nhit_mult;
+    vector_reader<double> meanhit_mult;
+    vector_reader<double> stdhit_mult;
 
-    jraf::vector_reader<std::string> method_mu;
-    jraf::vector_reader<int> loc_mu;
-    jraf::vector_reader<double> iposx_mu;
-    jraf::vector_reader<double> iposy_mu;
-    jraf::vector_reader<double> iposz_mu;
-    jraf::vector_reader<double> fposx_mu;
-    jraf::vector_reader<double> fposy_mu;
-    jraf::vector_reader<double> fposz_mu;
-    jraf::vector_reader<double> totq_cd_mu;
-    jraf::vector_reader<double> totq_wp_mu;
-    jraf::vector_reader<time_t> sec_mu;
-    jraf::vector_reader<int> nsec_mu;
-    jraf::vector_reader<double> quality_mu;
+    vector_reader<std::string> method_mu;
+    vector_reader<int> loc_mu;
+    vector_reader<double> iposx_mu;
+    vector_reader<double> iposy_mu;
+    vector_reader<double> iposz_mu;
+    vector_reader<double> fposx_mu;
+    vector_reader<double> fposy_mu;
+    vector_reader<double> fposz_mu;
+    vector_reader<double> totq_cd_mu;
+    vector_reader<double> totq_wp_mu;
+    vector_reader<time_t> sec_mu;
+    vector_reader<int> nsec_mu;
+    vector_reader<double> quality_mu;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_READER_NAVIGATOR_IBDLIKEEVENTNAVIGATOR_HPP_

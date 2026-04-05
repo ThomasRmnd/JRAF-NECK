@@ -6,8 +6,6 @@
 #include "reader/navigator/navigator.hpp"
 #include "utils/timestamp.hpp"
 
-namespace jraf {
-
 struct neutron {
 
     int run_id;
@@ -15,18 +13,18 @@ struct neutron {
 
 };
 
-class ibd_like_event_correlated_chain_navigator : public jraf::navigator_base {
+class ibd_like_event_correlated_chain_navigator : public navigator_base {
 
 public:
 
     ibd_like_event_correlated_chain_navigator(const std::string& filepath, const std::string& treename, const std::string& neutron_treename, const timestamp& low_bound, const timestamp& high_bound) :
-        jraf::navigator_base{filepath, treename},
+        navigator_base{filepath, treename},
         m_low_bound{low_bound},
         m_high_bound{high_bound}
     {
         if (!is_valid()) return;
 
-        m_chain_neutron = jraf::chain_reader_manager::retrieve(filepath, neutron_treename);
+        m_chain_neutron = chain_reader_manager::retrieve(filepath, neutron_treename);
         if (!m_chain_neutron->is_valid()) {
             std::cerr << "Neutron chain of filepath " << filepath << " and treename " << neutron_treename << " is not valid\n";
             return;
@@ -130,7 +128,7 @@ public:
     virtual ~ibd_like_event_correlated_chain_navigator() override = default;
 
     virtual bool entry(std::ptrdiff_t n) {
-        if (!jraf::navigator_base::entry(n)) return false;
+        if (!navigator_base::entry(n)) return false;
         
         timestamp ts = prompt.ts;
         timestamp low_ts = prompt.ts + m_low_bound;
@@ -182,49 +180,47 @@ public:
 
     std::vector<neutron> neutrons;
 
-    jraf::vector_reader<double> posx_mult;
-    jraf::vector_reader<double> posy_mult;
-    jraf::vector_reader<double> posz_mult;
-    jraf::vector_reader<double> e_mult;
-    jraf::vector_reader<time_t> sec_mult;
-    jraf::vector_reader<int> nsec_mult;
-    jraf::vector_reader<int> mult_type;
+    vector_reader<double> posx_mult;
+    vector_reader<double> posy_mult;
+    vector_reader<double> posz_mult;
+    vector_reader<double> e_mult;
+    vector_reader<time_t> sec_mult;
+    vector_reader<int> nsec_mult;
+    vector_reader<int> mult_type;
 
-    jraf::vector_reader<double> totq_mult;
-    jraf::vector_reader<double> meanq_mult;
-    jraf::vector_reader<double> stdq_mult;
-    jraf::vector_reader<double> minq_mult;
-    jraf::vector_reader<double> maxq_mult;
-    jraf::vector_reader<double> meant_mult;
-    jraf::vector_reader<double> stdt_mult;
-    jraf::vector_reader<std::size_t> npmt_mult;
-    jraf::vector_reader<std::size_t> nhit_mult;
-    jraf::vector_reader<double> meanhit_mult;
-    jraf::vector_reader<double> stdhit_mult;
+    vector_reader<double> totq_mult;
+    vector_reader<double> meanq_mult;
+    vector_reader<double> stdq_mult;
+    vector_reader<double> minq_mult;
+    vector_reader<double> maxq_mult;
+    vector_reader<double> meant_mult;
+    vector_reader<double> stdt_mult;
+    vector_reader<std::size_t> npmt_mult;
+    vector_reader<std::size_t> nhit_mult;
+    vector_reader<double> meanhit_mult;
+    vector_reader<double> stdhit_mult;
 
-    jraf::vector_reader<std::string> method_mu;
-    jraf::vector_reader<int> loc_mu;
-    jraf::vector_reader<double> posx_mu;
-    jraf::vector_reader<double> posy_mu;
-    jraf::vector_reader<double> posz_mu;
-    jraf::vector_reader<double> dirx_mu;
-    jraf::vector_reader<double> diry_mu;
-    jraf::vector_reader<double> dirz_mu;
-    jraf::vector_reader<double> totq_cd_mu;
-    jraf::vector_reader<double> totq_wp_mu;
-    jraf::vector_reader<time_t> sec_mu;
-    jraf::vector_reader<int> nsec_mu;
-    jraf::vector_reader<double> quality_mu;
+    vector_reader<std::string> method_mu;
+    vector_reader<int> loc_mu;
+    vector_reader<double> posx_mu;
+    vector_reader<double> posy_mu;
+    vector_reader<double> posz_mu;
+    vector_reader<double> dirx_mu;
+    vector_reader<double> diry_mu;
+    vector_reader<double> dirz_mu;
+    vector_reader<double> totq_cd_mu;
+    vector_reader<double> totq_wp_mu;
+    vector_reader<time_t> sec_mu;
+    vector_reader<int> nsec_mu;
+    vector_reader<double> quality_mu;
 
 private:
 
-    std::shared_ptr<jraf::chain_reader> m_chain_neutron;
+    std::shared_ptr<chain_reader> m_chain_neutron;
     neutron m_neutron;
     timestamp m_low_bound;
     timestamp m_high_bound;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_READER_NAVIGATOR_IBDLIKEEVENTCORRELATEDCHAINNAVIGATOR_HPP_

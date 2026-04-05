@@ -3,8 +3,6 @@
 
 #include "reader/navigator/navigator.hpp"
 
-namespace jraf {
-
 class navigator_manager {
 
 public:
@@ -39,13 +37,11 @@ public:
 
 private:
 
-    typedef std::unordered_map<std::string, std::weak_ptr<jraf::navigator_base>> map_type;
+    typedef std::unordered_map<std::string, std::weak_ptr<navigator_base>> map_type;
     inline static map_type s_cache;
 
     navigator_manager() = delete;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_READER_NAVIGATOR_NAVIGATORMANAGER_HPP_

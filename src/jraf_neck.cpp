@@ -90,24 +90,24 @@ int jraf_neck(const std::string& filepath) {
 
     // save_meta_info(filepath);
 
-    jraf::analysis_registry registry;
-    jraf::analysis_manager manager(registry);
+    analysis_registry registry;
+    analysis_manager manager(registry);
 
 
 
-    // std::shared_ptr<jraf::analysis_base> ibd_no_neutron_veto_analysis_omilrec_jvertex(new ibd_no_neutron_veto_analysis("ibd_no_neutron_veto_analysis_omilrec_jvertex", filepath, suffix));
+    // std::shared_ptr<analysis_base> ibd_no_neutron_veto_analysis_omilrec_jvertex(new ibd_no_neutron_veto_analysis("ibd_no_neutron_veto_analysis_omilrec_jvertex", filepath, suffix));
     // if (!registry.book(ibd_no_neutron_veto_analysis_omilrec_jvertex)) return 1;
 
-    // std::shared_ptr<jraf::analysis_base> ibd_no_neutron_veto_muon_veto_analysis_omilrec_jvertex(new ibd_no_neutron_veto_muon_veto_analysis("ibd_no_neutron_veto_muon_veto_analysis_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, 3000.0));
+    // std::shared_ptr<analysis_base> ibd_no_neutron_veto_muon_veto_analysis_omilrec_jvertex(new ibd_no_neutron_veto_muon_veto_analysis("ibd_no_neutron_veto_muon_veto_analysis_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, 3000.0));
     // if (!registry.book(ibd_no_neutron_veto_muon_veto_analysis_omilrec_jvertex)) return 1;
 
-    std::shared_ptr<jraf::analysis_base> ibd_standard_analysis_omilrec_jvertex(new ibd_standard_analysis("ibd_standard_analysis_omilrec_jvertex", filepath, suffix));
+    std::shared_ptr<analysis_base> ibd_standard_analysis_omilrec_jvertex(new ibd_standard_analysis("ibd_standard_analysis_omilrec_jvertex", filepath, suffix));
     if (!registry.book(ibd_standard_analysis_omilrec_jvertex)) return 1;
 
-    // std::shared_ptr<jraf::analysis_base> ibd_standard_muon_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new ibd_standard_muon_veto_analysis("ibd_standard_muon_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, 3000.0));
+    // std::shared_ptr<analysis_base> ibd_standard_muon_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new ibd_standard_muon_veto_analysis("ibd_standard_muon_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, 3000.0));
     // if (!registry.book(ibd_standard_muon_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex)) return 1;
 
-    // std::shared_ptr<jraf::analysis_base> ibd_standard_muon_veto_analysis_cdwpttchi2_1m_0_5s_omilrec_jvertex(new ibd_standard_muon_veto_analysis("ibd_standard_muon_veto_analysis_cdwpttchi2_1m_0_5s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 500000000}, 1000.0));
+    // std::shared_ptr<analysis_base> ibd_standard_muon_veto_analysis_cdwpttchi2_1m_0_5s_omilrec_jvertex(new ibd_standard_muon_veto_analysis("ibd_standard_muon_veto_analysis_cdwpttchi2_1m_0_5s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 500000000}, 1000.0));
     // if (!registry.book(ibd_standard_muon_veto_analysis_cdwpttchi2_1m_0_5s_omilrec_jvertex)) return 1;
 
 
@@ -120,21 +120,21 @@ int jraf_neck(const std::string& filepath) {
 
 
 
-    // std::shared_ptr<jraf::analysis_base> cosmo_shape_muon_standard_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new cosmo_shape_muon_standard_analysis("cosmo_shape_muon_standard_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
+    // std::shared_ptr<analysis_base> cosmo_shape_muon_standard_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new cosmo_shape_muon_standard_analysis("cosmo_shape_muon_standard_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
     // if (!registry.book(cosmo_shape_muon_standard_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex)) return 1;
 
-    // std::shared_ptr<jraf::analysis_base> cosmo_shape_muon_standard_analysis_cdwpttchi2_3m_2s_omilrec_jvertex(new cosmo_shape_muon_standard_analysis("cosmo_shape_muon_standard_analysis_cdwpttchi2_3m_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{2, 0}, timestamp{-2, 0}, timestamp{0, -5000000}, 3000.0));
+    // std::shared_ptr<analysis_base> cosmo_shape_muon_standard_analysis_cdwpttchi2_3m_2s_omilrec_jvertex(new cosmo_shape_muon_standard_analysis("cosmo_shape_muon_standard_analysis_cdwpttchi2_3m_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{2, 0}, timestamp{-2, 0}, timestamp{0, -5000000}, 3000.0));
     // if (!registry.book(cosmo_shape_muon_standard_analysis_cdwpttchi2_3m_2s_omilrec_jvertex)) return 1;
 
-    // std::shared_ptr<jraf::analysis_base> cosmo_shape_muon_with_neutron_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new cosmo_shape_muon_with_neutron_analysis("cosmo_shape_muon_with_neutron_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
+    // std::shared_ptr<analysis_base> cosmo_shape_muon_with_neutron_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new cosmo_shape_muon_with_neutron_analysis("cosmo_shape_muon_with_neutron_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
     // if (!registry.book(cosmo_shape_muon_with_neutron_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex)) return 1;
 
-    // std::shared_ptr<jraf::analysis_base> cosmo_shape_muon_changing_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new cosmo_shape_muon_changing_veto_analysis("cosmo_shape_muon_changing_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
+    // std::shared_ptr<analysis_base> cosmo_shape_muon_changing_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new cosmo_shape_muon_changing_veto_analysis("cosmo_shape_muon_changing_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
     // if (!registry.book(cosmo_shape_muon_changing_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex)) return 1;
 
 
 
-    // std::shared_ptr<jraf::analysis_base> cosmo_shape_neutron_analysis_3m_1_2s_omilred_jvertex(new cosmo_shape_neutron_analysis("cosmo_shape_neutron_analysis_3m_1_2s_omilred_jvertex", filepath, suffix, timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 4000.0));
+    // std::shared_ptr<analysis_base> cosmo_shape_neutron_analysis_3m_1_2s_omilred_jvertex(new cosmo_shape_neutron_analysis("cosmo_shape_neutron_analysis_3m_1_2s_omilred_jvertex", filepath, suffix, timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 4000.0));
     // if (!registry.book(cosmo_shape_neutron_analysis_3m_1_2s_omilred_jvertex)) return 1;
 
 

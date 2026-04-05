@@ -6,20 +6,18 @@
 
 #include "analysis/analysis.hpp"
 
-namespace jraf {
-
 class analysis_registry {
 
 public:
 
-    typedef std::vector<std::shared_ptr<jraf::analysis_base>>            vector_type;
-    typedef std::map<std::shared_ptr<jraf::navigator_base>, vector_type> map_type;
+    typedef std::vector<std::shared_ptr<analysis_base>>            vector_type;
+    typedef std::map<std::shared_ptr<navigator_base>, vector_type> map_type;
 
-    typedef typename map_type::const_iterator                            const_iterator;
+    typedef typename map_type::const_iterator                      const_iterator;
 
 
 
-    bool book(const std::shared_ptr<jraf::analysis_base>& analysis) {
+    bool book(const std::shared_ptr<analysis_base>& analysis) {
         if (!analysis) {
             std::cerr << "Cannot register analysis\n";
             return false;
@@ -43,7 +41,5 @@ private:
     map_type m_registry;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_ANALYSIS_ANALYSISREGISTRY_HPP_

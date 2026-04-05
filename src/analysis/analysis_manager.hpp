@@ -3,13 +3,11 @@
 
 #include "analysis/analysis_registry.hpp"
 
-namespace jraf {
-
 class analysis_manager {
 
 public:
 
-    analysis_manager(jraf::analysis_registry& reg) :
+    analysis_manager(analysis_registry& reg) :
         m_reg{reg}
     {}
 
@@ -32,7 +30,7 @@ public:
             for (Long64_t k = 0; k < entries; ++k) {
                 nav->entry(k); 
 
-                for (const std::shared_ptr<jraf::analysis_base>& analysis : analyses) {
+                for (const std::shared_ptr<analysis_base>& analysis : analyses) {
                     if (analysis->selection()) {
                         if (!analysis->process()) return false;
                     }
@@ -66,10 +64,8 @@ public:
 
 private:
 
-    jraf::analysis_registry& m_reg;
+    analysis_registry& m_reg;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_ANALYSIS_ANALYSISMANAGER_HPP_

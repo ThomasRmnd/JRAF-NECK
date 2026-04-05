@@ -4,14 +4,12 @@
 #include "reader/chain/chain_reader.hpp"
 #include "reader/chain/chain_reader_manager.hpp"
 
-namespace jraf {
-
 class navigator_base {
 
 public:
 
     navigator_base(const std::string& filepath, const std::string& treename) {
-        m_chain = jraf::chain_reader_manager::retrieve(filepath, treename);
+        m_chain = chain_reader_manager::retrieve(filepath, treename);
         if (!m_chain->is_valid()) {
             std::cerr << "Chain of filepath " << filepath << " and treename " << treename << " is not valid\n";
             return;
@@ -29,10 +27,8 @@ public:
 
 protected:
 
-    std::shared_ptr<jraf::chain_reader> m_chain;
+    std::shared_ptr<chain_reader> m_chain;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_READER_NAVIGATOR_NAVIGATOR_HPP_

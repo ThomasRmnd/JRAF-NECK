@@ -3,8 +3,6 @@
 
 #include "reader/navigator/navigator.hpp"
 
-namespace jraf {
-
 class analysis_base {
 
 public:
@@ -15,7 +13,7 @@ public:
 
     virtual ~analysis_base() = default;
 
-    virtual std::shared_ptr<jraf::navigator_base> navigator() const = 0;
+    virtual std::shared_ptr<navigator_base> navigator() const = 0;
 
     virtual bool selection() = 0;
     virtual bool process() = 0;
@@ -26,7 +24,5 @@ protected:
     std::string m_name;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_ANALYSIS_ANALYSIS_HPP_

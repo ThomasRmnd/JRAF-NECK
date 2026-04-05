@@ -4,14 +4,12 @@
 #include "event/vertex.hpp"
 #include "reader/navigator/navigator.hpp"
 
-namespace jraf {
-
-class single_event_navigator : public jraf::navigator_base {
+class single_event_navigator : public navigator_base {
 
 public:
 
     single_event_navigator(const std::string& filepath, const std::string& treename) :
-        jraf::navigator_base{filepath, treename}
+        navigator_base{filepath, treename}
     {
         m_chain->branch("run_id", run_id);
 
@@ -39,7 +37,5 @@ public:
     vertex single;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_READER_NAVIGATOR_SINGLEEVENTNAVIGATOR_HPP_

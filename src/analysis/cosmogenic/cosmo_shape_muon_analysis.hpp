@@ -13,7 +13,7 @@
 #include "reader/navigator/navigator_manager.hpp"
 #include "utils/muon_lookup.hpp"
 
-class cosmo_shape_muon_analysis : public jraf::analysis_base {
+class cosmo_shape_muon_analysis : public analysis_base {
 
 public:
 
@@ -25,7 +25,7 @@ public:
         const timestamp& bkg_low, const timestamp& bkg_high, 
         double radius
     ) :
-        jraf::analysis_base{name},
+        analysis_base{name},
         m_recname{recname},
         m_ts_sig_low{sig_low},
         m_ts_sig_high{sig_high},
@@ -34,7 +34,7 @@ public:
         m_radius{radius}
     {
         std::string treename = "IBDAnalysis" + suffix;
-        m_nav = jraf::navigator_manager::retrieve<jraf::ibd_like_event_navigator>(filepath, treename);
+        m_nav = navigator_manager::retrieve<ibd_like_event_navigator>(filepath, treename);
         if (!m_nav->is_valid()) {
             std::cerr << "Cannot retrieve navigator of filepath " << filepath << " and treename " << treename << '\n';
             return;
@@ -152,8 +152,6 @@ public:
         f->Close();
         return true;
     }
-
-    void result() override {}
 
 protected:
 

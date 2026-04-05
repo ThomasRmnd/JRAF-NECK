@@ -6,8 +6,6 @@
 
 #include <TChain.h>
 
-namespace jraf {
-
 class chain_reader {
 
 public:
@@ -50,7 +48,5 @@ private:
     friend class chain_reader_manager;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_READER_CHAIN_CHAINREADER_HPP_

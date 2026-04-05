@@ -22,15 +22,15 @@ inline bool operator<(const ibd_wmu& lhs, const ibd_wmu& rhs) {
     return lhs.i < rhs.i;
 }
 
-class ibd_analysis : public jraf::analysis_base {
+class ibd_analysis : public analysis_base {
 
 public:
 
     ibd_analysis(const std::string& name, const std::string& filepath, const std::string& suffix) :
-        jraf::analysis_base{name}
+        analysis_base{name}
     {
         std::string treename = "IBDAnalysis" + suffix;
-        m_nav = jraf::navigator_manager::retrieve<jraf::ibd_like_event_navigator>(filepath, treename);
+        m_nav = navigator_manager::retrieve<ibd_like_event_navigator>(filepath, treename);
         if (!m_nav->is_valid()) {
             std::cerr << "Cannot retrieve navigator of filepath " << filepath << " and treename " << treename << '\n';
             return;
@@ -43,7 +43,7 @@ public:
 
     virtual ~ibd_analysis() override = default;
 
-    std::shared_ptr<jraf::navigator_base> navigator() const override {
+    std::shared_ptr<navigator_base> navigator() const override {
         return m_nav;
     }
 
@@ -114,7 +114,7 @@ public:
 
 protected:
 
-    std::shared_ptr<jraf::ibd_like_event_navigator> m_nav;
+    std::shared_ptr<ibd_like_event_navigator> m_nav;
 
     global_scale_factor_corrector m_gtc;
 

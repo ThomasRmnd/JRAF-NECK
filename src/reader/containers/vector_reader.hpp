@@ -3,8 +3,6 @@
 
 #include <vector>
 
-namespace jraf {
-
 template<typename _Tp>
 class vector_reader {
 
@@ -52,7 +50,5 @@ private:
     vector_type* m_data = nullptr;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_READER_CONTAINERS_VECTORREADER_HPP_

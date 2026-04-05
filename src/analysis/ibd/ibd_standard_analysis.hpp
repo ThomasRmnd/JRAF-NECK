@@ -26,7 +26,7 @@ public:
         vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{0, 5000}, timestamp{0, 1000000}};
 
         if (!c_prompt_energy_cut.is_in(prompt)) return false;
-        // if (!c_delayed_energy_cut.is_in(delayed)) return false;
+        if (!c_delayed_energy_cut.is_in(delayed)) return false;
         // if (!c_fiducial_volume_cut.is_in(prompt)) return false;
         // if (!c_chimney_cut.is_in(prompt)) return false;
         // if (!vertex_correlation_cut.is_in(delayed)) return false;

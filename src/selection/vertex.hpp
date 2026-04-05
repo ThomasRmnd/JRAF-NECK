@@ -33,7 +33,7 @@ public:
 
     ~vertex_correlation_selection() override = default;
 
-    bool is_in(const vertex& vtx) const {
+    bool is_in(const vertex& vtx) const override {
         return c_spherical.is_in(vtx) && c_time.is_in(vtx);
     }
 

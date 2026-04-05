@@ -7,13 +7,13 @@
 #include "selection/spatial.hpp"
 #include "selection/vertex.hpp"
 
-class cosmo_shape_muon_standard_analysis : public li9he8_shape_muon_analysis {
+class li9he8_shape_muon_standard_analysis : public li9he8_shape_muon_analysis {
 
 public:
 
     using li9he8_shape_muon_analysis::li9he8_shape_muon_analysis;
 
-    ~cosmo_shape_muon_standard_analysis() override = default;
+    ~li9he8_shape_muon_standard_analysis() override = default;
 
     bool selection() override {
         vertex prompt{m_nav->prompt};

@@ -1,23 +1,23 @@
-#ifndef ANALYSIS_COSMO_MUON_SHAPE_ANALYSIS_HPP_
-#define ANALYSIS_COSMO_MUON_SHAPE_ANALYSIS_HPP_
+#ifndef JRAFNECK_ANALYSIS_LI9HE8_LI9HE8SHAPEMUONANALYSIS_HPP_
+#define JRAFNECK_ANALYSIS_LI9HE8_LI9HE8SHAPEMUONANALYSIS_HPP_
 
-#include <cmath>
-#include <vector>
 #include <set>
 
 #include <TFile.h>
 #include <TTree.h>
 
 #include "analysis/analysis.hpp"
+#include "event/cosmogenic.hpp"
 #include "reader/navigator/ibd_like_event_navigator.hpp"
 #include "reader/navigator/navigator_manager.hpp"
 #include "utils/muon_lookup.hpp"
+#include "utils/scale_factor.hpp"
 
-class cosmo_shape_muon_analysis : public analysis_base {
+class li9he8_shape_muon_analysis : public analysis_base {
 
 public:
 
-    cosmo_shape_muon_analysis(
+    li9he8_shape_muon_analysis(
         const std::string& name, 
         const std::string& filepath, const std::string& suffix, 
         const std::string& recname,
@@ -45,7 +45,11 @@ public:
         }
     }
 
-    virtual ~cosmo_shape_muon_analysis() override = default;
+    virtual ~li9he8_shape_muon_analysis() override = default;
+
+    std::shared_ptr<navigator_base> navigator() const override {
+        return m_nav;
+    }
 
     bool selection() override = 0;
 
@@ -155,6 +159,10 @@ public:
 
 protected:
 
+    std::shared_ptr<ibd_like_event_navigator> m_nav;
+
+    global_scale_factor_corrector m_gtc;
+
     std::string m_recname;
     timestamp m_ts_sig_low;
     timestamp m_ts_sig_high;
@@ -172,4 +180,4 @@ protected:
 
 };
 
-#endif // ANALYSIS_COSMO_MUON_SHAPE_ANALYSIS_HPP_
+#endif // JRAFNECK_ANALYSIS_LI9HE8_LI9HE8SHAPEMUONANALYSIS_HPP_

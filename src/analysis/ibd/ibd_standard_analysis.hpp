@@ -20,8 +20,8 @@ public:
     virtual bool selection() override {
         vertex prompt{m_nav->prompt};
         vertex delayed{m_nav->delayed};
-        prompt.e /= m_gtc.interpolate(m_nav->prompt.ts);
-        delayed.e /= m_gtc.interpolate(m_nav->delayed.ts);
+        prompt.e /= m_gtc.interpolate(prompt.ts);
+        delayed.e /= m_gtc.interpolate(delayed.ts);
 
         vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{0, 5000}, timestamp{0, 1000000}};
 
@@ -40,7 +40,7 @@ public:
             if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
             ++nb_multu_veto;
         }
-        if (nb_multu_veto) return false;
+        // if (nb_multu_veto) return false;
 
         std::size_t nb_neutron_veto = 0ul;
         for (const vertex& neutron : m_nav->neutrons) {
@@ -52,7 +52,7 @@ public:
             if (!vertex_correlation_neutron_cut.is_in(prompt) && !vertex_correlation_neutron_cut.is_in(delayed)) continue;
             ++nb_neutron_veto;
         }
-        if (nb_neutron_veto) return false;
+        // if (nb_neutron_veto) return false;
 
         calculate_dt_to_last_muon();
         calculate_dlat_dt_muon_to_prompt();

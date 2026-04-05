@@ -12,7 +12,6 @@ struct neutron {
 
     int run_id;
     vertex neu;
-    vertex_metadata meta_neu;
 
 };
 
@@ -20,7 +19,7 @@ class ibd_like_event_correlated_chain_navigator : public jraf::navigator_base {
 
 public:
 
-    ibd_like_event_correlated_chain_navigator(const std::string& filepath, const std::string& treename, const std::string& neutron_treename, const jraf::timestamp& low_bound, const jraf::timestamp& high_bound) :
+    ibd_like_event_correlated_chain_navigator(const std::string& filepath, const std::string& treename, const std::string& neutron_treename, const timestamp& low_bound, const timestamp& high_bound) :
         jraf::navigator_base{filepath, treename},
         m_low_bound{low_bound},
         m_high_bound{high_bound}
@@ -42,17 +41,17 @@ public:
         m_chain->branch("sec_p", prompt.ts.sec);
         m_chain->branch("nsec_p", prompt.ts.nsec);
 
-        m_chain->branch("totq_p", meta_prompt.totq);
-        m_chain->branch("meanq_p", meta_prompt.meanq);
-        m_chain->branch("stdq_p", meta_prompt.stdq);
-        m_chain->branch("minq_p", meta_prompt.minq);
-        m_chain->branch("maxq_p", meta_prompt.maxq);
-        m_chain->branch("meant_p", meta_prompt.meant);
-        m_chain->branch("stdt_p", meta_prompt.stdt);
-        m_chain->branch("npmt_p", meta_prompt.npmt);
-        m_chain->branch("nhit_p", meta_prompt.nhit);
-        m_chain->branch("meanhit_p", meta_prompt.meanhit);
-        m_chain->branch("stdhit_p", meta_prompt.stdhit);
+        m_chain->branch("totq_p", prompt.totq);
+        m_chain->branch("meanq_p", prompt.meanq);
+        m_chain->branch("stdq_p", prompt.stdq);
+        m_chain->branch("minq_p", prompt.minq);
+        m_chain->branch("maxq_p", prompt.maxq);
+        m_chain->branch("meant_p", prompt.meant);
+        m_chain->branch("stdt_p", prompt.stdt);
+        m_chain->branch("npmt_p", prompt.npmt);
+        m_chain->branch("nhit_p", prompt.nhit);
+        m_chain->branch("meanhit_p", prompt.meanhit);
+        m_chain->branch("stdhit_p", prompt.stdhit);
 
         m_chain->branch("posx_d", delayed.pos.x);
         m_chain->branch("posy_d", delayed.pos.y);
@@ -61,17 +60,17 @@ public:
         m_chain->branch("sec_d", delayed.ts.sec);
         m_chain->branch("nsec_d", delayed.ts.nsec);
 
-        m_chain->branch("totq_d", meta_delayed.totq);
-        m_chain->branch("meanq_d", meta_delayed.meanq);
-        m_chain->branch("stdq_d", meta_delayed.stdq);
-        m_chain->branch("minq_d", meta_delayed.minq);
-        m_chain->branch("maxq_d", meta_delayed.maxq);
-        m_chain->branch("meant_d", meta_delayed.meant);
-        m_chain->branch("stdt_d", meta_delayed.stdt);
-        m_chain->branch("npmt_d", meta_delayed.npmt);
-        m_chain->branch("nhit_d", meta_delayed.nhit);
-        m_chain->branch("meanhit_d", meta_delayed.meanhit);
-        m_chain->branch("stdhit_d", meta_delayed.stdhit);
+        m_chain->branch("totq_d", delayed.totq);
+        m_chain->branch("meanq_d", delayed.meanq);
+        m_chain->branch("stdq_d", delayed.stdq);
+        m_chain->branch("minq_d", delayed.minq);
+        m_chain->branch("maxq_d", delayed.maxq);
+        m_chain->branch("meant_d", delayed.meant);
+        m_chain->branch("stdt_d", delayed.stdt);
+        m_chain->branch("npmt_d", delayed.npmt);
+        m_chain->branch("nhit_d", delayed.nhit);
+        m_chain->branch("meanhit_d", delayed.meanhit);
+        m_chain->branch("stdhit_d", delayed.stdhit);
 
         m_chain_neutron->branch("run_id", m_neutron.run_id);
         m_chain_neutron->branch("posx", m_neutron.neu.pos.x);
@@ -81,17 +80,17 @@ public:
         m_chain_neutron->branch("sec", m_neutron.neu.ts.sec);
         m_chain_neutron->branch("nsec", m_neutron.neu.ts.nsec);
 
-        m_chain_neutron->branch("totq", m_neutron.meta_neu.totq);
-        m_chain_neutron->branch("meanq", m_neutron.meta_neu.meanq);
-        m_chain_neutron->branch("stdq", m_neutron.meta_neu.stdq);
-        m_chain_neutron->branch("minq", m_neutron.meta_neu.minq);
-        m_chain_neutron->branch("maxq", m_neutron.meta_neu.maxq);
-        m_chain_neutron->branch("meant", m_neutron.meta_neu.meant);
-        m_chain_neutron->branch("stdt", m_neutron.meta_neu.stdt);
-        m_chain_neutron->branch("npmt", m_neutron.meta_neu.npmt);
-        m_chain_neutron->branch("nhit", m_neutron.meta_neu.nhit);
-        m_chain_neutron->branch("meanhit", m_neutron.meta_neu.meanhit);
-        m_chain_neutron->branch("stdhit", m_neutron.meta_neu.stdhit);
+        m_chain_neutron->branch("totq", m_neutron.neu.totq);
+        m_chain_neutron->branch("meanq", m_neutron.neu.meanq);
+        m_chain_neutron->branch("stdq", m_neutron.neu.stdq);
+        m_chain_neutron->branch("minq", m_neutron.neu.minq);
+        m_chain_neutron->branch("maxq", m_neutron.neu.maxq);
+        m_chain_neutron->branch("meant", m_neutron.neu.meant);
+        m_chain_neutron->branch("stdt", m_neutron.neu.stdt);
+        m_chain_neutron->branch("npmt", m_neutron.neu.npmt);
+        m_chain_neutron->branch("nhit", m_neutron.neu.nhit);
+        m_chain_neutron->branch("meanhit", m_neutron.neu.meanhit);
+        m_chain_neutron->branch("stdhit", m_neutron.neu.stdhit);
 
         m_chain->branch("posx_mult", posx_mult.ptr());
         m_chain->branch("posy_mult", posy_mult.ptr());
@@ -133,9 +132,9 @@ public:
     virtual bool entry(std::ptrdiff_t n) {
         if (!jraf::navigator_base::entry(n)) return false;
         
-        jraf::timestamp ts = prompt.ts;
-        jraf::timestamp low_ts = prompt.ts + m_low_bound;
-        jraf::timestamp high_ts = prompt.ts + m_high_bound;
+        timestamp ts = prompt.ts;
+        timestamp low_ts = prompt.ts + m_low_bound;
+        timestamp high_ts = prompt.ts + m_high_bound;
 
         // binary search in the neutron chain
         std::size_t left = 0ul;
@@ -178,11 +177,8 @@ public:
 
     int run_id;
 
-    jraf::vertex prompt;
-    jraf::vertex delayed;
-
-    jraf::vertex_metadata meta_prompt;
-    jraf::vertex_metadata meta_delayed;
+    vertex prompt;
+    vertex delayed;
 
     std::vector<neutron> neutrons;
 
@@ -224,8 +220,8 @@ private:
 
     std::shared_ptr<jraf::chain_reader> m_chain_neutron;
     neutron m_neutron;
-    jraf::timestamp m_low_bound;
-    jraf::timestamp m_high_bound;
+    timestamp m_low_bound;
+    timestamp m_high_bound;
 
 };
 

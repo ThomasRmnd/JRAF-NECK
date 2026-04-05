@@ -3,23 +3,19 @@
 
 #include "event/vertex.hpp"
 
-namespace jraf {
-
 struct cosmogenic {
 
     int run_id;
-    jraf::vertex prompt;
+    vertex prompt;
     double dlat_mu2p;
     double dt_mu2p;
-    jraf::vertex delayed;
+    vertex delayed;
     double dlat_mu2d;
     double dt_mu2d; 
 
 };
 
-} // namespace jraf
-
-inline bool operator<(const jraf::cosmogenic& lhs, const jraf::cosmogenic& rhs) {
+inline bool operator<(const cosmogenic& lhs, const cosmogenic& rhs) {
     return lhs.prompt < rhs.prompt;
 }
 

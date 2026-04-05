@@ -1,6 +1,7 @@
 #ifndef JRAFNECK_READER_NAVIGATOR_IBDLIKEEVENTNAVIGATOR_HPP_
 #define JRAFNECK_READER_NAVIGATOR_IBDLIKEEVENTNAVIGATOR_HPP_
 
+#include "event/track.hpp"
 #include "event/vertex.hpp"
 #include "reader/containers/vector_reader.hpp"
 #include "reader/navigator/navigator.hpp"
@@ -25,17 +26,17 @@ public:
         m_chain->branch("sec_p", prompt.ts.sec);
         m_chain->branch("nsec_p", prompt.ts.nsec);
 
-        m_chain->branch("totq_p", meta_prompt.totq);
-        m_chain->branch("meanq_p", meta_prompt.meanq);
-        m_chain->branch("stdq_p", meta_prompt.stdq);
-        m_chain->branch("minq_p", meta_prompt.minq);
-        m_chain->branch("maxq_p", meta_prompt.maxq);
-        m_chain->branch("meant_p", meta_prompt.meant);
-        m_chain->branch("stdt_p", meta_prompt.stdt);
-        m_chain->branch("npmt_p", meta_prompt.npmt);
-        m_chain->branch("nhit_p", meta_prompt.nhit);
-        m_chain->branch("meanhit_p", meta_prompt.meanhit);
-        m_chain->branch("stdhit_p", meta_prompt.stdhit);
+        m_chain->branch("totq_p", prompt.totq);
+        m_chain->branch("meanq_p", prompt.meanq);
+        m_chain->branch("stdq_p", prompt.stdq);
+        m_chain->branch("minq_p", prompt.minq);
+        m_chain->branch("maxq_p", prompt.maxq);
+        m_chain->branch("meant_p", prompt.meant);
+        m_chain->branch("stdt_p", prompt.stdt);
+        m_chain->branch("npmt_p", prompt.npmt);
+        m_chain->branch("nhit_p", prompt.nhit);
+        m_chain->branch("meanhit_p", prompt.meanhit);
+        m_chain->branch("stdhit_p", prompt.stdhit);
 
         m_chain->branch("posx_d", delayed.pos.x);
         m_chain->branch("posy_d", delayed.pos.y);
@@ -44,17 +45,17 @@ public:
         m_chain->branch("sec_d", delayed.ts.sec);
         m_chain->branch("nsec_d", delayed.ts.nsec);
 
-        m_chain->branch("totq_d", meta_delayed.totq);
-        m_chain->branch("meanq_d", meta_delayed.meanq);
-        m_chain->branch("stdq_d", meta_delayed.stdq);
-        m_chain->branch("minq_d", meta_delayed.minq);
-        m_chain->branch("maxq_d", meta_delayed.maxq);
-        m_chain->branch("meant_d", meta_delayed.meant);
-        m_chain->branch("stdt_d", meta_delayed.stdt);
-        m_chain->branch("npmt_d", meta_delayed.npmt);
-        m_chain->branch("nhit_d", meta_delayed.nhit);
-        m_chain->branch("meanhit_d", meta_delayed.meanhit);
-        m_chain->branch("stdhit_d", meta_delayed.stdhit);
+        m_chain->branch("totq_d", delayed.totq);
+        m_chain->branch("meanq_d", delayed.meanq);
+        m_chain->branch("stdq_d", delayed.stdq);
+        m_chain->branch("minq_d", delayed.minq);
+        m_chain->branch("maxq_d", delayed.maxq);
+        m_chain->branch("meant_d", delayed.meant);
+        m_chain->branch("stdt_d", delayed.stdt);
+        m_chain->branch("npmt_d", delayed.npmt);
+        m_chain->branch("nhit_d", delayed.nhit);
+        m_chain->branch("meanhit_d", delayed.meanhit);
+        m_chain->branch("stdhit_d", delayed.stdhit);
 
         m_chain->branch("posx_n", posx_n.ptr());
         m_chain->branch("posy_n", posy_n.ptr());
@@ -97,12 +98,12 @@ public:
 
         m_chain->branch("method_mu", method_mu.ptr());
         m_chain->branch("loc_mu", loc_mu.ptr());
-        m_chain->branch("posx_mu", posx_mu.ptr());
-        m_chain->branch("posy_mu", posy_mu.ptr());
-        m_chain->branch("posz_mu", posz_mu.ptr());
-        m_chain->branch("dirx_mu", dirx_mu.ptr());
-        m_chain->branch("diry_mu", diry_mu.ptr());
-        m_chain->branch("dirz_mu", dirz_mu.ptr());
+        m_chain->branch("iposx_mu", iposx_mu.ptr());
+        m_chain->branch("iposy_mu", iposy_mu.ptr());
+        m_chain->branch("iposz_mu", iposz_mu.ptr());
+        m_chain->branch("fposx_mu", fposx_mu.ptr());
+        m_chain->branch("fposy_mu", fposy_mu.ptr());
+        m_chain->branch("fposz_mu", fposz_mu.ptr());
         m_chain->branch("totq_cd_mu", totq_cd_mu.ptr());
         m_chain->branch("totq_wp_mu", totq_wp_mu.ptr());
         m_chain->branch("sec_mu", sec_mu.ptr());
@@ -110,13 +111,52 @@ public:
         m_chain->branch("quality_mu", quality_mu.ptr());
     }
 
+    virtual bool entry(std::ptrdiff_t n) override {
+        if (!m_chain->entry(n)) return false;
+
+        neutrons.clear();
+        neutrons.reserve(posx_n.size());
+        for (std::size_t k = 0ul; k < posx_n.size(); ++k) {
+            neutrons.emplace_back(
+                e_n[k], vec3{posx_n[k], posy_n[k], posz_n[k]}, timestamp{sec_n[k], nsec_n[k]},
+                totq_n[k], meanq_n[k], stdq_n[k], minq_n[k], maxq_n[k], meant_n[k], stdt_n[k], npmt_n[k], nhit_n[k], meanhit_n[k], stdhit_n[k]
+            );
+        }
+
+        multiplicities.clear();
+        multiplicities.reserve(posx_mult.size());
+        for (std::size_t k = 0ul; k < posx_mult.size(); ++k) {
+            multiplicities.emplace_back(
+                e_mult[k], vec3{posx_mult[k], posy_mult[k], posz_mult[k]}, timestamp{sec_mult[k], nsec_mult[k]},
+                totq_mult[k], meanq_mult[k], stdq_mult[k], minq_mult[k], maxq_mult[k], meant_mult[k], stdt_mult[k], npmt_mult[k], nhit_mult[k], meanhit_mult[k], stdhit_mult[k]
+            );
+        }
+
+        muons.clear();
+        muons.reserve(method_mu.size());
+        for (std::size_t k = 0ul; k < method_mu.size(); ++k) {
+            muons.emplace_back(
+                method_mu[k], totq_cd_mu[k], totq_wp_mu[k], 
+                vec3{iposx_mu[k], iposy_mu[k], iposz_mu[k]},
+                vec3{fposx_mu[k], fposy_mu[k], fposz_mu[k]},
+                timestamp{sec_mu[k], nsec_mu[k]},
+                quality_mu[k], loc_mu[k]
+            );
+        }
+
+        return true;
+    }
+
     int run_id;
 
-    jraf::vertex prompt;
-    jraf::vertex delayed;
+    vertex prompt;
+    vertex delayed;
 
-    jraf::vertex_metadata meta_prompt;
-    jraf::vertex_metadata meta_delayed;
+    std::vector<vertex> neutrons;
+    std::vector<vertex> multiplicities;
+    std::vector<track> muons;
+
+protected:
 
     jraf::vector_reader<double> posx_n;
     jraf::vector_reader<double> posy_n;
@@ -159,12 +199,12 @@ public:
 
     jraf::vector_reader<std::string> method_mu;
     jraf::vector_reader<int> loc_mu;
-    jraf::vector_reader<double> posx_mu;
-    jraf::vector_reader<double> posy_mu;
-    jraf::vector_reader<double> posz_mu;
-    jraf::vector_reader<double> dirx_mu;
-    jraf::vector_reader<double> diry_mu;
-    jraf::vector_reader<double> dirz_mu;
+    jraf::vector_reader<double> iposx_mu;
+    jraf::vector_reader<double> iposy_mu;
+    jraf::vector_reader<double> iposz_mu;
+    jraf::vector_reader<double> fposx_mu;
+    jraf::vector_reader<double> fposy_mu;
+    jraf::vector_reader<double> fposz_mu;
     jraf::vector_reader<double> totq_cd_mu;
     jraf::vector_reader<double> totq_wp_mu;
     jraf::vector_reader<time_t> sec_mu;

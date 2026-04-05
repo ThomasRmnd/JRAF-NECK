@@ -3,19 +3,15 @@
 
 #include "event/vertex.hpp"
 
-namespace jraf {
-
 struct ibd {
 
     int run_id;
-    jraf::vertex prompt;
-    jraf::vertex delayed;
+    vertex prompt;
+    vertex delayed;
 
 };
 
-} // namespace jraf
-
-inline bool operator<(const jraf::ibd& lhs, const jraf::ibd& rhs) {
+inline bool operator<(const ibd& lhs, const ibd& rhs) {
     return lhs.prompt < rhs.prompt;
 }
 

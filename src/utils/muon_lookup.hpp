@@ -1,37 +1,34 @@
 #ifndef JRAFNECK_UTILS_MUONLOOKUP_HPP_
 #define JRAFNECK_UTILS_MUONLOOKUP_HPP_
 
-#include "reader/navigator/ibd_like_event_navigator.hpp"
-#include "utils/timestamp.hpp"
-
-namespace jraf {
+#include "event/track.hpp"
 
 class is_cd_muon_lookup {
 
 public:
 
-    void fill(const std::shared_ptr<jraf::ibd_like_event_navigator>& nav) {
+    void fill(const std::vector<track>& muons) {
         m_times.clear();
-        for (std::size_t k = 0ul; k < nav->method_mu.size(); ++k) {
-            if (nav->totq_cd_mu[k] <= 0.0) continue;
-            m_times.push_back(jraf::timestamp{nav->sec_mu[k], nav->nsec_mu[k]});
+        for (const track& muon : muons) {
+            if (muon.totq_cd <= 0.0) continue;
+            m_times.push_back(muon.ts);
         }
         std::sort(m_times.begin(), m_times.end());
     }
 
-    bool operator[](const jraf::timestamp& ts) const {
+    bool operator[](const timestamp& ts) const {
         if (m_times.empty()) return false;
-        jraf::timestamp low_bound = ts - window;
-        jraf::timestamp high_bound = ts + window;
-        std::vector<jraf::timestamp>::const_iterator it_low = std::lower_bound(m_times.begin(), m_times.end(), low_bound);
-        std::vector<jraf::timestamp>::const_iterator it_high = std::upper_bound(m_times.begin(), m_times.end(), high_bound);
+        timestamp low_bound = ts - window;
+        timestamp high_bound = ts + window;
+        std::vector<timestamp>::const_iterator it_low = std::lower_bound(m_times.begin(), m_times.end(), low_bound);
+        std::vector<timestamp>::const_iterator it_high = std::upper_bound(m_times.begin(), m_times.end(), high_bound);
         return std::distance(it_low, it_high) > 0l;
     }
 
 private:
 
-    std::vector<jraf::timestamp> m_times;
-    const jraf::timestamp window{0, 1000};
+    std::vector<timestamp> m_times;
+    const timestamp window{0, 1000};
 
 };
 
@@ -39,28 +36,28 @@ class multiplicity_muon_lookup {
 
 public:
 
-    void fill(const std::shared_ptr<jraf::ibd_like_event_navigator>& nav, const std::string& target) {
+    void fill(const std::vector<track>& muons, const std::string& target) {
         m_times.clear();
-        for (std::size_t k = 0ul; k < nav->method_mu.size(); ++k) {
-            if (nav->method_mu[k] != target) continue;
-            m_times.push_back(jraf::timestamp{nav->sec_mu[k], nav->nsec_mu[k]});
+        for (const track& muon : muons) {
+            if (muon.method != target) continue;
+            m_times.push_back(muon.ts);
         }
         std::sort(m_times.begin(), m_times.end());
     }
 
-    std::size_t operator[](const jraf::timestamp& ts) const {
+    std::size_t operator[](const timestamp& ts) const {
         if (m_times.empty()) return 0ul;
-        jraf::timestamp low_bound = ts - window;
-        jraf::timestamp high_bound = ts + window;
-        std::vector<jraf::timestamp>::const_iterator it_low = std::lower_bound(m_times.begin(), m_times.end(), low_bound);
-        std::vector<jraf::timestamp>::const_iterator it_high = std::upper_bound(m_times.begin(), m_times.end(), high_bound);
+        timestamp low_bound = ts - window;
+        timestamp high_bound = ts + window;
+        std::vector<timestamp>::const_iterator it_low = std::lower_bound(m_times.begin(), m_times.end(), low_bound);
+        std::vector<timestamp>::const_iterator it_high = std::upper_bound(m_times.begin(), m_times.end(), high_bound);
         return std::distance(it_low, it_high);
     }
 
 private:
 
-    std::vector<jraf::timestamp> m_times;
-    const jraf::timestamp window{0, 1000};
+    std::vector<timestamp> m_times;
+    const timestamp window{0, 1000};
 
 };
 
@@ -68,38 +65,30 @@ class stopping_muon_lookup {
 
 public:
 
-    void fill(const std::shared_ptr<jraf::ibd_like_event_navigator>& nav, const std::string& target) {
+    void fill(const std::vector<track>& muons, const std::string& target) {
         m_times.clear();
-        const jraf::vec3 dummy_point{-999999.0, -999999.0, -999999.0};
-        for (std::size_t k = 0ul; k < nav->method_mu.size(); ++k) {
-            if (nav->method_mu[k] != target) continue;
-            jraf::vec3 ipos{nav->posx_mu[k], nav->posy_mu[k], nav->posz_mu[k]};
-            jraf::vec3 dir = unit(jraf::vec3{nav->dirx_mu[k], nav->diry_mu[k], nav->dirz_mu[k]});
-            jraf::vec3 to_dummy = unit(dummy_point - ipos);
-            double alpha = angle(dir, to_dummy);
-            if (alpha > epsilon) continue;
-            m_times.push_back(jraf::timestamp{nav->sec_mu[k], nav->nsec_mu[k]});
+        for (const track& muon : muons) {
+            if (muon.method != target) continue;
+            if (mag2(muon.fpos) < 40000.0 * 40000.0) continue; // not stopping
+            m_times.push_back(muon.ts);
         }
         std::sort(m_times.begin(), m_times.end());
     }
         
-    bool operator[](const jraf::timestamp& ts) const {
+    bool operator[](const timestamp& ts) const {
         if (m_times.empty()) return false;
-        jraf::timestamp low_bound = ts - window;
-        jraf::timestamp high_bound = ts + window;
-        std::vector<jraf::timestamp>::const_iterator it_low = std::lower_bound(m_times.begin(), m_times.end(), low_bound);
-        std::vector<jraf::timestamp>::const_iterator it_high = std::upper_bound(m_times.begin(), m_times.end(), high_bound);
+        timestamp low_bound = ts - window;
+        timestamp high_bound = ts + window;
+        std::vector<timestamp>::const_iterator it_low = std::lower_bound(m_times.begin(), m_times.end(), low_bound);
+        std::vector<timestamp>::const_iterator it_high = std::upper_bound(m_times.begin(), m_times.end(), high_bound);
         return std::distance(it_low, it_high) > 0l;
     }
 
 private:
 
-    std::vector<jraf::timestamp> m_times;
-    const jraf::timestamp window{0, 1000};
-    const double epsilon = 1e-4;
+    std::vector<timestamp> m_times;
+    const timestamp window{0, 1000};
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_UTILS_MUONLOOKUP_HPP_

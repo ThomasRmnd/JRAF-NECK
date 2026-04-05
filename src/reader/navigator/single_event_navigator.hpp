@@ -22,22 +22,21 @@ public:
         m_chain->branch("sec", single.ts.sec);
         m_chain->branch("nsec", single.ts.nsec);
 
-        m_chain->branch("totq", meta.totq);
-        m_chain->branch("meanq", meta.meanq);
-        m_chain->branch("stdq", meta.stdq);
-        m_chain->branch("minq", meta.minq);
-        m_chain->branch("maxq", meta.maxq);
-        m_chain->branch("meant", meta.meant);
-        m_chain->branch("stdt", meta.stdt);
-        m_chain->branch("npmt", meta.npmt);
-        m_chain->branch("nhit", meta.nhit);
-        m_chain->branch("meanhit", meta.meanhit);
-        m_chain->branch("stdhit", meta.stdhit);
+        m_chain->branch("totq", single.totq);
+        m_chain->branch("meanq", single.meanq);
+        m_chain->branch("stdq", single.stdq);
+        m_chain->branch("minq", single.minq);
+        m_chain->branch("maxq", single.maxq);
+        m_chain->branch("meant", single.meant);
+        m_chain->branch("stdt", single.stdt);
+        m_chain->branch("npmt", single.npmt);
+        m_chain->branch("nhit", single.nhit);
+        m_chain->branch("meanhit", single.meanhit);
+        m_chain->branch("stdhit", single.stdhit);
     }
 
     int run_id;
-    jraf::vertex single;
-    jraf::vertex_metadata meta;
+    vertex single;
 
 };
 

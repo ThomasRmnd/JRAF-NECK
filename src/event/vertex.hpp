@@ -4,17 +4,11 @@
 #include "utils/timestamp.hpp"
 #include "utils/vec3.hpp"
 
-namespace jraf {
-
 struct vertex {
 
     double e;
-    jraf::vec3 pos;
-    jraf::timestamp ts;
-
-};
-
-struct vertex_metadata {
+    vec3 pos;
+    timestamp ts;
 
     double totq;
     double meanq;
@@ -30,13 +24,11 @@ struct vertex_metadata {
 
 };
 
-} // namespace jraf
-
-inline bool operator<(const jraf::vertex& lhs, const jraf::vertex& rhs) {
+inline bool operator<(const vertex& lhs, const vertex& rhs) {
     return lhs.ts < rhs.ts;
 }
 
-inline std::ostream& operator<<(std::ostream& os, const jraf::vertex& v) {
+inline std::ostream& operator<<(std::ostream& os, const vertex& v) {
     return os << '{' << v.e << ", " << v.pos << ", " << v.ts << '}';
 }
 

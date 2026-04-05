@@ -7,15 +7,13 @@
 
 #include "utils/timestamp.hpp"
 
-namespace jraf {
-
 class scale_factor_corrector {
 
 public:
 
     struct point {
 
-        jraf::timestamp ts;
+        timestamp ts;
         double factor;
 
         friend bool operator<(const point& lhs, const point& rhs) {
@@ -44,7 +42,7 @@ public:
             std::stringstream ss(line);
             if (std::getline(ss, ts_str, ',') && std::getline(ss, factor_str, ',')) {
                 long sec = std::stoll(ts_str);
-                jraf::timestamp ts{static_cast<time_t>(sec), 0};
+                timestamp ts{static_cast<time_t>(sec), 0};
                 m_data.push_back({ts, std::stod(factor_str)});
             }
         }
@@ -67,7 +65,7 @@ public:
     const_reverse_iterator rend() const { return m_data.rend(); }
     const_reverse_iterator crend() const { return m_data.crend(); }
 
-    double interpolate(const jraf::timestamp& ts) const {
+    double interpolate(const timestamp& ts) const {
         if (m_data.empty()) return 1.0;
         std::vector<point>::const_iterator it = std::lower_bound(m_data.begin(), m_data.end(), point{ts, 0.0});
         if (it == m_data.begin()) return m_data.front().factor;
@@ -76,7 +74,7 @@ public:
         const point& p1 = *(it - 1);
         const point& p2 = *it;
 
-        double fraction = jraf::timestamp_to_double(ts - p1.ts) / jraf::timestamp_to_double(p2.ts - p1.ts);
+        double fraction = timestamp_to_double(ts - p1.ts) / timestamp_to_double(p2.ts - p1.ts);
         return p1.factor + fraction * (p2.factor - p1.factor);
     }
 
@@ -100,7 +98,7 @@ public:
         return true;
     }
 
-    double interpolate(const jraf::timestamp& ts) {
+    double interpolate(const timestamp& ts) {
         if (!m_tc_p25c.size() || !m_tc_p25d.size()) return 1.0;
         if (ts <= m_tc_p25c.back().ts) return m_tc_p25c.interpolate(ts);
         if (ts <= m_tc_p25d.back().ts) return m_tc_p25d.interpolate(ts);
@@ -114,11 +112,9 @@ private:
     const int c_lower_run_id_p25d = 11049;
     const int c_upper_run_id_p25d = 12135;
 
-    jraf::scale_factor_corrector m_tc_p25c;
-    jraf::scale_factor_corrector m_tc_p25d;
+    scale_factor_corrector m_tc_p25c;
+    scale_factor_corrector m_tc_p25d;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_UTILS_SCALEFACTOR_HPP_

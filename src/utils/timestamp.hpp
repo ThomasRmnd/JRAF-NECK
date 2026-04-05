@@ -7,8 +7,6 @@
 #include <sstream>
 #include <string>
 
-namespace jraf {
-
 class timestamp {
 
 public:
@@ -115,7 +113,5 @@ inline std::string timestamp_to_string(const timestamp& ts) {
     oss << ts;
     return oss.str();
 }
-
-}  // namespace jraf
 
 #endif // JRAFNECK_UTILS_TIMESTAMP_HPP_

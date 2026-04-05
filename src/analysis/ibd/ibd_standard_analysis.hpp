@@ -4,6 +4,10 @@
 #include <set>
 
 #include "analysis/ibd/ibd_analysis.hpp"
+#include "selection/energy.hpp"
+#include "selection/flasher.hpp"
+#include "selection/spatial.hpp"
+#include "selection/vertex.hpp"
 
 class ibd_standard_analysis : public ibd_analysis {
 
@@ -14,46 +18,51 @@ public:
     virtual ~ibd_standard_analysis() override = default;
 
     virtual bool selection() override {
-        double e_p = m_nav->prompt.e / m_gtc.interpolate(m_nav->prompt.ts);
-        double e_d = m_nav->delayed.e / m_gtc.interpolate(m_nav->delayed.ts);
+        vertex prompt{m_nav->prompt};
+        vertex delayed{m_nav->delayed};
+        prompt.e /= m_gtc.interpolate(m_nav->prompt.ts);
+        delayed.e /= m_gtc.interpolate(m_nav->delayed.ts);
 
-        if (e_p < 0.7 || 12.0 < e_p) return false;
-        if (e_d < 2.0 || 2.5 < e_d) return false;
-        if (mag(m_nav->prompt.pos) > 16500.0) return false;
-        if (std::abs(m_nav->prompt.pos.z) > 15500.0 && std::sqrt(m_nav->prompt.pos.x * m_nav->prompt.pos.x + m_nav->prompt.pos.y * m_nav->prompt.pos.y) < 2000.0) return false;
-        jraf::timestamp ts_diff = m_nav->delayed.ts - m_nav->prompt.ts;
-        if (ts_diff < jraf::timestamp{0, 5000} || jraf::timestamp{0, 1000000} < ts_diff) return false;
-        jraf::vec3 pos_diff = m_nav->delayed.pos - m_nav->prompt.pos;
-        if (mag(pos_diff) > 1500.0) return false;
+        energy_range_selection prompt_energy_cut{0.7, 12.0};
+        energy_range_selection delayed_energy_cut{2.0, 2.5};
+        fiducial_volume_selection fiducial_volume_cut{16500.0};
+        chimney_selection chimney_cut{15500.0, 2000.0};
+        vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{0, 5000}, timestamp{0, 1000000}};
+        flasher_selection flasher_cut{0.55, 0.45, 170.0, 80.0};
+
+        energy_range_selection multiplicity_energy_cut{2.0, 12.0};
+
+        energy_range_selection neutron_energy_cut{1.5, 20.0};
+        vertex_correlation_selection vertex_correlation_neutron_prompt_cut{prompt, 4000.0, timestamp{0, -1200000000}, timestamp{0, -20000}};
+        vertex_correlation_selection vertex_correlation_neutron_delayed_cut{delayed, 4000.0, timestamp{0, -1200000000}, timestamp{0, -20000}};
+
+        if (!prompt_energy_cut.is_in(prompt)) return false;
+        if (!delayed_energy_cut.is_in(delayed)) return false;
+        if (!fiducial_volume_cut.is_in(prompt)) return false;
+        if (!chimney_cut.is_in(prompt)) return false;
+        if (!vertex_correlation_cut.is_in(delayed)) return false;
+        if (!flasher_cut.is_in(prompt)) return false;
 
         std::size_t nb_multu_veto = 0ul;
-        for (std::size_t k = 0ul; k < m_nav->e_mult.size(); ++k) {
-            jraf::timestamp ts_mult{m_nav->sec_mult[k], m_nav->nsec_mult[k]};
-            jraf::vec3 pos_mult{m_nav->posx_mult[k], m_nav->posy_mult[k], m_nav->posz_mult[k]};
-            double e_mult = m_nav->e_mult[k] / m_gtc.interpolate(ts_mult);
-            if (e_mult < 2.0 || 12.0 < e_mult) continue;
-            if (ts_mult < m_nav->prompt.ts - jraf::timestamp{0, 1000000} || m_nav->delayed.ts + jraf::timestamp{0, 1000000} < ts_mult) continue;
+        for (const vertex& multiplicity : m_nav->multiplicities) {
+            vertex mult{multiplicity};
+            mult.e /= m_gtc.interpolate(mult.ts);
+            if (!multiplicity_energy_cut.is_in(mult)) continue;
+            if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
             ++nb_multu_veto;
         }
         if (nb_multu_veto) return false;
 
         std::size_t nb_neutron_veto = 0ul;
-        for (std::size_t k = 0ul; k < m_nav->e_n.size(); ++k) {
-            jraf::timestamp ts_n{m_nav->sec_n[k], m_nav->nsec_n[k]};
-            jraf::vec3 pos_n{m_nav->posx_n[k], m_nav->posy_n[k], m_nav->posz_n[k]};
-            double e_n = m_nav->e_n[k] / m_gtc.interpolate(ts_n);
-            if (e_n < 1.5 || 20.0 < e_n) continue;
-            if (m_nav->stdt_n[k] > 275.0) continue;
-            if (
-                (mag(m_nav->prompt.pos - pos_n) < 4000.0 && ts_n + jraf::timestamp{0, 20000} < m_nav->prompt.ts && m_nav->prompt.ts < ts_n + jraf::timestamp{0, 1200000000}) ||
-                (mag(m_nav->delayed.pos - pos_n) < 4000.0 && ts_n + jraf::timestamp{0, 20000} < m_nav->delayed.ts && m_nav->delayed.ts < ts_n + jraf::timestamp{0, 1200000000})
-            ) {
-                ++nb_neutron_veto;
-            }
+        for (const vertex& neutron : m_nav->neutrons) {
+            vertex neu{neutron};
+            neu.e /= m_gtc.interpolate(neu.ts);
+            if (!neutron_energy_cut.is_in(neu)) continue;
+            if (neutron.stdt > 275.0) continue; // flasher cut
+            if (!vertex_correlation_neutron_prompt_cut.is_in(neu) && !vertex_correlation_neutron_delayed_cut.is_in(neu)) continue; // reverse correlation
+            ++nb_neutron_veto;
         }
         if (nb_neutron_veto) return false;
-
-        if ( std::pow((m_nav->meta_prompt.stdhit - 0.55) / 0.45, 2.0) + std::pow((m_nav->meta_prompt.stdt - 170.0) / 80.0, 2.0) > 1.0 ) return false;
 
         calculate_dt_to_last_muon();
         calculate_dlat_dt_muon_to_prompt();

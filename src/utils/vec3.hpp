@@ -4,8 +4,6 @@
 #include <cmath>
 #include <iostream>
 
-namespace jraf {
-
 struct vec3 {
 
     double x, y, z;
@@ -117,7 +115,5 @@ template<class _Char, class _Traits>
 std::basic_ostream<_Char, _Traits>& operator<<(std::basic_ostream<_Char, _Traits>& os, const vec3& vec) {
     return os << '(' << vec.x << ", " << vec.y << ", " << vec.z << ')';
 }
-
-} // namespace jraf
 
 #endif // JRAFNECK_UTILS_VEC3_HPP_

@@ -5,9 +5,7 @@
 
 #include "selection/selection.hpp"
 
-namespace jraf {
-
-class fiducial_volume_selection : public jraf::selection {
+class fiducial_volume_selection : public selection_base {
 
 public:
 
@@ -17,7 +15,7 @@ public:
 
     ~fiducial_volume_selection() override = default;
 
-    bool is_in(const jraf::vertex& vtx) const override {
+    bool is_in(const vertex& vtx) const override {
         return mag2(vtx.pos) <= c_thold2;
     }
 
@@ -28,7 +26,7 @@ private:
 
 };
 
-class height_range_selection : public jraf::selection {
+class height_range_selection : public selection_base {
 
 public:
 
@@ -39,7 +37,7 @@ public:
 
     ~height_range_selection() override = default;
 
-    bool is_in(const jraf::vertex& vtx) const override {
+    bool is_in(const vertex& vtx) const override {
         return c_min <= vtx.pos.z && vtx.pos.z <= c_max;
     }
 
@@ -50,7 +48,7 @@ private:
 
 };
 
-class radial_range_selection : public jraf::selection {
+class radial_range_selection : public selection_base {
 
 public:
 
@@ -61,7 +59,7 @@ public:
 
     ~radial_range_selection() override = default;
 
-    bool is_in(const jraf::vertex& vtx) const override {
+    bool is_in(const vertex& vtx) const override {
         const double rho2 = vtx.pos.x * vtx.pos.x + vtx.pos.y * vtx.pos.y;
         return c_min2 <= rho2 && rho2 <= c_max2;
     }
@@ -73,7 +71,7 @@ private:
 
 };
 
-class chimney_selection : public jraf::selection {
+class chimney_selection : public selection_base {
 
 public:
 
@@ -85,45 +83,45 @@ public:
 
     ~chimney_selection() override = default;
 
-    bool is_in(const jraf::vertex& vtx) const override {
+    bool is_in(const vertex& vtx) const override {
         return c_bottom.is_in(vtx) && c_top.is_in(vtx) && c_radial.is_in(vtx);
     }
 
 private:
 
-    const jraf::height_range_selection c_bottom;
-    const jraf::height_range_selection c_top;
-    const jraf::radial_range_selection c_radial;
+    const height_range_selection c_bottom;
+    const height_range_selection c_top;
+    const radial_range_selection c_radial;
 
 };
 
-class spherical_selection : public jraf::selection {
+class spherical_selection : public selection_base {
 
 public:
 
-    spherical_selection(const jraf::vec3 center, double radius) :
+    spherical_selection(const vec3 center, double radius) :
         c_center{center},
         c_radius2{radius * radius}
     {}
 
     ~spherical_selection() override = default;
 
-    bool is_in(const jraf::vertex& vtx) const override {
+    bool is_in(const vertex& vtx) const override {
         return mag2(vtx.pos - c_center) <= c_radius2;
     }
 
 private:
 
-    const jraf::vec3 c_center;
+    const vec3 c_center;
     const double c_radius2;
 
 };
 
-class cylindrical_selection : public jraf::selection {
+class cylindrical_selection : public selection_base {
 
 public:
 
-    cylindrical_selection(const jraf::vec3& ipos, const jraf::vec3& fpos, double radius) :
+    cylindrical_selection(const vec3& ipos, const vec3& fpos, double radius) :
         c_ipos{ipos},
         c_dir{unit(fpos - ipos)},
         c_radius2{radius * radius}
@@ -131,18 +129,16 @@ public:
 
     ~cylindrical_selection() override = default;
 
-    bool is_in(const jraf::vertex& vtx) const override {
+    bool is_in(const vertex& vtx) const override {
         return mag2(cross(c_dir, vtx.pos - c_ipos)) <= c_radius2;
     }
 
 private:
 
-    const jraf::vec3 c_ipos;
-    const jraf::vec3 c_dir;
+    const vec3 c_ipos;
+    const vec3 c_dir;
     const double c_radius2;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_SELECTION_SPATIAL_HPP_

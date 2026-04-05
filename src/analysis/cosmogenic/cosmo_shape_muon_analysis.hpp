@@ -21,8 +21,8 @@ public:
         const std::string& name, 
         const std::string& filepath, const std::string& suffix, 
         const std::string& recname,
-        const jraf::timestamp& sig_low, const jraf::timestamp& sig_high, 
-        const jraf::timestamp& bkg_low, const jraf::timestamp& bkg_high, 
+        const timestamp& sig_low, const timestamp& sig_high, 
+        const timestamp& bkg_low, const timestamp& bkg_high, 
         double radius
     ) :
         jraf::analysis_base{name},

@@ -11,10 +11,10 @@
 
 struct ibd_wmu {
 
-    jraf::ibd i;
-    jraf::timestamp dt_last_mu;
+    ibd i;
+    timestamp dt_last_mu;
     double dlat_mu2p; // to closest muon
-    jraf::timestamp dt_mu2p; // to closest muon
+    timestamp dt_mu2p; // to closest muon
 
 };
 
@@ -69,8 +69,8 @@ public:
             return false;
         }
         int run_id;
-        jraf::vec3 pos_p, pos_d;
-        jraf::timestamp ts_p, ts_d;
+        vec3 pos_p, pos_d;
+        timestamp ts_p, ts_d;
         double e_p, e_d;
         double dt_last_mu;
         double dlat_mu2p;
@@ -116,40 +116,39 @@ protected:
 
     std::shared_ptr<jraf::ibd_like_event_navigator> m_nav;
 
-    jraf::global_scale_factor_corrector m_gtc;
+    global_scale_factor_corrector m_gtc;
 
     std::set<ibd_wmu> m_ibds;
-    jraf::timestamp m_dt_last_mu;
+    timestamp m_dt_last_mu;
     double m_dlat_mu2p;
-    jraf::timestamp m_dt_mu2p;
+    timestamp m_dt_mu2p;
 
     void calculate_dt_to_last_muon() {
-        m_dt_last_mu = jraf::timestamp{0, 0};
+        m_dt_last_mu = timestamp{0, 0};
         bool is_set_dt_last_mu = false;
-        for (std::size_t k = 0ul; k < m_nav->method_mu.size(); ++k) {
-            jraf::timestamp ts_mu{m_nav->sec_mu[k], m_nav->nsec_mu[k]};
-            if (m_nav->prompt.ts < ts_mu) continue;
+        for (const track& muon : m_nav->muons) {
+            if (m_nav->prompt.ts < muon.ts) continue;
             bool found_neutron = false;
-            for (std::size_t l = 0ul; l < m_nav->e_n.size() && !found_neutron; ++l) {
-                jraf::timestamp ts_n{m_nav->sec_n[l], m_nav->nsec_n[l]};
-                if (ts_n < ts_mu + jraf::timestamp{0, 20000} || ts_mu + jraf::timestamp{0, 2000000} < ts_n) continue;
+            for (const vertex& neutron : m_nav->neutrons) {
+                if (neutron.ts < muon.ts + timestamp{0, 20000} || muon.ts + timestamp{0, 2000000} < neutron.ts) continue;
                 found_neutron = true;
+                break;
             }
             if (!found_neutron) continue;
-            if (is_set_dt_last_mu && m_nav->prompt.ts - ts_mu > m_dt_last_mu) continue;
-            m_dt_last_mu = m_nav->prompt.ts - ts_mu;
+            if (is_set_dt_last_mu && m_nav->prompt.ts - muon.ts > m_dt_last_mu) continue;
+            m_dt_last_mu = m_nav->prompt.ts - muon.ts;
             is_set_dt_last_mu = true;
         }
         if (!is_set_dt_last_mu) {
-            m_dt_last_mu = jraf::timestamp{-1, 0};
+            m_dt_last_mu = timestamp{-1, 0};
         }
     }
 
     void calculate_dlat_dt_muon_to_prompt() {
-        jraf::multiplicity_muon_lookup nb_muons_in_cd_event;
-        jraf::multiplicity_muon_lookup nb_muons_in_wp_event;
-        nb_muons_in_cd_event.fill(m_nav, "CdClassify");
-        nb_muons_in_wp_event.fill(m_nav, "WpBasic");
+        multiplicity_muon_lookup nb_muons_in_cd_event;
+        multiplicity_muon_lookup nb_muons_in_wp_event;
+        nb_muons_in_cd_event.fill(m_nav->muons, "CdClassify");
+        nb_muons_in_wp_event.fill(m_nav->muons, "WpBasic");
 
         // stopping_muon_lookup has_stopping_in_cd_event;
         // stopping_muon_lookup has_stopping_in_wp_event;
@@ -157,40 +156,32 @@ protected:
         // has_stopping_in_wp_event.fill(m_nav, "WpBasic");
 
         m_dlat_mu2p = std::numeric_limits<double>::infinity();
-        m_dt_mu2p = jraf::timestamp{0, 0};
+        m_dt_mu2p = timestamp{0, 0};
         bool is_set_dlat_mu2p = false;
-        for (std::size_t k = 0ul; k < m_nav->method_mu.size(); ++k) {
-            if (m_nav->method_mu[k] != "CdWpTtChi2") continue;
-            jraf::timestamp ts_mu{m_nav->sec_mu[k], m_nav->nsec_mu[k]};
-            if (nb_muons_in_cd_event[ts_mu] > 1ul || nb_muons_in_wp_event[ts_mu] > 1ul) continue;
-            // if (has_stopping_in_cd_event[ts_mu]) continue;
-            // if (has_stopping_in_wp_event[ts_mu]) continue;
+        for (const track& muon : m_nav->muons) {
+            if (muon.method != "CdWpTtChi2") continue;
+            if (nb_muons_in_cd_event[muon.ts] > 1ul || nb_muons_in_wp_event[muon.ts] > 1ul) continue;
+            // if (has_stopping_in_cd_event[muon.ts]) continue;
+            // if (has_stopping_in_wp_event[muon.ts]) continue;
 
             bool is_in_sig = (
-                ts_mu + jraf::timestamp{0, 5000000} <= m_nav->prompt.ts && m_nav->prompt.ts <= ts_mu + jraf::timestamp{0, 1200000000} &&
-                ts_mu + jraf::timestamp{0, 5000000} <= m_nav->delayed.ts && m_nav->delayed.ts <= ts_mu + jraf::timestamp{0, 1200000000}
+                muon.ts + timestamp{0, 5000000} <= m_nav->prompt.ts && m_nav->prompt.ts <= muon.ts + timestamp{0, 1200000000} &&
+                muon.ts + timestamp{0, 5000000} <= m_nav->delayed.ts && m_nav->delayed.ts <= muon.ts + timestamp{0, 1200000000}
             );
-
             if (!is_in_sig) continue;
 
-            jraf::vec3 pos_mu{m_nav->posx_mu[k], m_nav->posy_mu[k], m_nav->posz_mu[k]};
-            jraf::vec3 dir_mu = unit(jraf::vec3{m_nav->dirx_mu[k], m_nav->diry_mu[k], m_nav->dirz_mu[k]});
-            if (
-                std::isnan(pos_mu.x) || std::isnan(pos_mu.y) || std::isnan(pos_mu.z) ||
-                std::isnan(dir_mu.x) || std::isnan(dir_mu.y) || std::isnan(dir_mu.z)
-            ) continue;
-
-            double d_mu2p = mag(cross(dir_mu, m_nav->prompt.pos - pos_mu));
+            vec3 dir = unit(muon.fpos - muon.ipos);
+            double d_mu2p = mag(cross(dir, m_nav->prompt.pos - muon.ipos));
 
             if (m_dlat_mu2p < d_mu2p) continue;
             m_dlat_mu2p = d_mu2p;
-            m_dt_mu2p = m_nav->prompt.ts - ts_mu;
+            m_dt_mu2p = m_nav->prompt.ts - muon.ts;
             is_set_dlat_mu2p = true;
         }
 
         if (!is_set_dlat_mu2p) {
             m_dlat_mu2p = -1.0;
-            m_dt_mu2p = jraf::timestamp{-1, 0};
+            m_dt_mu2p = timestamp{-1, 0};
         }
     }
 

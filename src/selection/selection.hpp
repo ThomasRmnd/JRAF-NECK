@@ -3,18 +3,14 @@
 
 #include "event/vertex.hpp"
 
-namespace jraf {
-
-class selection {
+class selection_base {
 
 public:
 
-    virtual ~selection() = default;
+    virtual ~selection_base() = default;
 
-    virtual bool is_in(const jraf::vertex& vtx) const = 0;
+    virtual bool is_in(const vertex& vtx) const = 0;
 
 };
-
-} // namespace jraf
 
 #endif // JRAFNECK_SELECTION_SELECTION_HPP_

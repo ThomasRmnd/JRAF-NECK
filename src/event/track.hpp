@@ -4,25 +4,24 @@
 #include "utils/timestamp.hpp"
 #include "utils/vec3.hpp"
 
-namespace jraf {
-
 struct track {
 
+    std::string method;
     double totq_cd;
     double totq_wp;
-    jraf::vec3 ipos;
-    jraf::vec3 fpos;
-    jraf::timestamp ts;
+    vec3 ipos;
+    vec3 fpos;
+    timestamp ts;
+    double quality;
+    int loc;
 
 };
 
-} // namespace jraf
-
-inline bool operator<(const jraf::track& lhs, const jraf::track& rhs) {
+inline bool operator<(const track& lhs, const track& rhs) {
     return lhs.ts < rhs.ts;
 }
 
-inline std::ostream& operator<<(std::ostream& os, const jraf::track& t) {
+inline std::ostream& operator<<(std::ostream& os, const track& t) {
     return os << '{' << t.totq_cd << ", " << t.totq_wp << ", " << t.ipos << ", " << t.fpos << ", " << t.ts << '}';
 }
 

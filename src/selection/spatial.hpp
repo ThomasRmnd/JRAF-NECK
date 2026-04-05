@@ -84,7 +84,7 @@ public:
     ~chimney_selection() override = default;
 
     bool is_in(const vertex& vtx) const override {
-        return c_bottom.is_in(vtx) && c_top.is_in(vtx) && c_radial.is_in(vtx);
+        return (c_bottom.is_in(vtx) || c_top.is_in(vtx)) && c_radial.is_in(vtx);
     }
 
 private:

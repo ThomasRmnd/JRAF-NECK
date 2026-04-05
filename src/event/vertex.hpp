@@ -22,6 +22,24 @@ struct vertex {
     double meanhit;
     double stdhit;
 
+    vertex() = default;
+    vertex(const vertex&) = default;
+    vertex(vertex&&) = default;
+    vertex& operator=(const vertex&) = default;
+    vertex& operator=(vertex&&) = default;
+
+    vertex(
+        double e_, vec3 pos_, timestamp ts_, 
+        double totq_, double meanq_, double stdq_, double minq_, double maxq_, 
+        double meant_, double stdt_, 
+        std::size_t npmt_, std::size_t nhit_, double meanhit_, double stdhit_
+    ) :
+        e{e_}, pos{pos_}, ts{ts_},
+        totq{totq_}, meanq{meanq_}, stdq{stdq_}, minq{minq_}, maxq{maxq_},
+        meant{meant_}, stdt{stdt_},
+        npmt{npmt_}, nhit{nhit_}, meanhit{meanhit_}, stdhit{stdhit_}
+    {}
+
 };
 
 inline bool operator<(const vertex& lhs, const vertex& rhs) {

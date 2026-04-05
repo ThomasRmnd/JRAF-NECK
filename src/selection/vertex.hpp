@@ -15,7 +15,7 @@ public:
 
     ~vertex_selection() override = default;
 
-    virtual bool is_in(const vertex& vtx) const = 0;
+    virtual bool is_in(const vertex& vtx) const override = 0;
 
     const vertex c_vtx;
 

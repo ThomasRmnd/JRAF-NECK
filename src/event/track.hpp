@@ -15,6 +15,22 @@ struct track {
     double quality;
     int loc;
 
+    track() = default;
+    track(const track&) = default;
+    track(track&&) = default;
+    track& operator=(const track&) = default;
+    track& operator=(track&&) = default;
+
+    track(
+        std::string method_, double totq_cd_, double totq_wp_, 
+        vec3 ipos_, vec3 fpos_, timestamp ts_, 
+        double quality_, int loc_
+    ) :
+        method{method_}, totq_cd{totq_cd_}, totq_wp{totq_wp_}, 
+        ipos{ipos_}, fpos{fpos_}, ts{ts_}, 
+        quality{quality_}, loc{loc_}
+    {}
+
 };
 
 inline bool operator<(const track& lhs, const track& rhs) {

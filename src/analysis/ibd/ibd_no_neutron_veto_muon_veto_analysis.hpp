@@ -100,7 +100,7 @@ public:
         return true;
     }
 
-private:
+protected:
 
     const energy_range_selection c_prompt_energy_cut{0.7, 12.0};
     const energy_range_selection c_delayed_energy_cut{2.0, 2.5};

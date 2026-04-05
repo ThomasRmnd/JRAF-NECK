@@ -1,7 +1,11 @@
-#ifndef ANLYSIS_IBD_STANDARD_MUON_VETO_ANALYSIS_HPP_
-#define ANLYSIS_IBD_STANDARD_MUON_VETO_ANALYSIS_HPP_
+#ifndef JRAFNECK_ANLYSIS_IBD_IBDSTANDARDMUONVETOANALYSIS_HPP_
+#define JRAFNECK_ANLYSIS_IBD_IBDSTANDARDMUONVETOANALYSIS_HPP_
 
 #include "analysis/ibd/ibd_analysis.hpp"
+#include "selection/energy.hpp"
+#include "selection/flasher.hpp"
+#include "selection/spatial.hpp"
+#include "selection/vertex.hpp"
 
 class ibd_standard_muon_veto_analysis : public ibd_analysis {
 
@@ -21,78 +25,78 @@ public:
     {}
 
     bool selection() override {
-        double e_p = m_nav->prompt.e / m_gtc.interpolate(m_nav->prompt.ts);
-        double e_d = m_nav->delayed.e / m_gtc.interpolate(m_nav->delayed.ts);
+        vertex prompt{m_nav->prompt};
+        vertex delayed{m_nav->delayed};
+        prompt.e /= m_gtc.interpolate(prompt.ts);
+        delayed.e /= m_gtc.interpolate(delayed.ts);
 
-        if (e_p < 0.7 || 12.0 < e_p) return false;
-        if (e_d < 2.0 || 2.5 < e_d) return false;
-        if (mag(m_nav->prompt.pos) > 16500.0) return false;
-        if (std::abs(m_nav->prompt.pos.z) > 15500.0 && std::sqrt(m_nav->prompt.pos.x * m_nav->prompt.pos.x + m_nav->prompt.pos.y * m_nav->prompt.pos.y) < 2000.0) return false;
-        timestamp ts_diff = m_nav->delayed.ts - m_nav->prompt.ts;
-        if (ts_diff < timestamp{0, 5000} || timestamp{0, 1000000} < ts_diff) return false;
-        vec3 pos_diff = m_nav->delayed.pos - m_nav->prompt.pos;
-        if (mag(pos_diff) > 1500.0) return false;
+        vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{0, 5000}, timestamp{0, 1000000}};
+
+        if (!c_prompt_energy_cut.is_in(prompt)) return false;
+        if (!c_delayed_energy_cut.is_in(delayed)) return false;
+        if (!c_fiducial_volume_cut.is_in(prompt)) return false;
+        if (c_chimney_cut.is_in(prompt)) return false;
+        if (!vertex_correlation_cut.is_in(delayed)) return false;
+        if (!c_flasher_cut.is_in(prompt)) return false;
 
         std::size_t nb_multu_veto = 0ul;
-        for (std::size_t k = 0ul; k < m_nav->e_mult.size(); ++k) {
-            timestamp ts_mult{m_nav->sec_mult[k], m_nav->nsec_mult[k]};
-            vec3 pos_mult{m_nav->posx_mult[k], m_nav->posy_mult[k], m_nav->posz_mult[k]};
-            double e_mult = m_nav->e_mult[k] / m_gtc.interpolate(ts_mult);
-            if (e_mult < 2.0 || 12.0 < e_mult) continue;
-            if (ts_mult < m_nav->prompt.ts - timestamp{0, 1000000} || m_nav->delayed.ts + timestamp{0, 1000000} < ts_mult) continue;
+        for (const vertex& multiplicity : m_nav->multiplicities) {
+            vertex mult{multiplicity};
+            mult.e /= m_gtc.interpolate(mult.ts);
+            if (!c_multiplicity_energy_cut.is_in(mult)) continue;
+            if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
             ++nb_multu_veto;
         }
         if (nb_multu_veto) return false;
 
         std::size_t nb_neutron_veto = 0ul;
-        for (std::size_t k = 0ul; k < m_nav->e_n.size(); ++k) {
-            timestamp ts_n{m_nav->sec_n[k], m_nav->nsec_n[k]};
-            vec3 pos_n{m_nav->posx_n[k], m_nav->posy_n[k], m_nav->posz_n[k]};
-            double e_n = m_nav->e_n[k] / m_gtc.interpolate(ts_n);
-            if (e_n < 1.5 || 20.0 < e_n) continue;
-            if (m_nav->stdt_n[k] > 275.0) continue;
-            if (mag(m_nav->prompt.pos - pos_n) > 4000.0 || mag(m_nav->delayed.pos - pos_n) > 4000.0) continue;
-            if (m_nav->prompt.ts < ts_n + timestamp{0, 20000} || ts_n + timestamp{0, 1200000000} < m_nav->prompt.ts) continue;
-            if (m_nav->delayed.ts < ts_n + timestamp{0, 20000} || ts_n + timestamp{0, 1200000000} < m_nav->delayed.ts) continue;
+        for (const vertex& neutron : m_nav->neutrons) {
+            vertex neu{neutron};
+            neu.e /= m_gtc.interpolate(neu.ts);
+            if (!c_neutron_energy_cut.is_in(neu)) continue;
+            if (neutron.stdt > 275.0) continue; // flasher cut
+            vertex_correlation_selection vertex_correlation_neutron_cut{neu, 4000.0, timestamp{0, 20000}, timestamp{0, 1200000000}};
+            if (!vertex_correlation_neutron_cut.is_in(prompt) && !vertex_correlation_neutron_cut.is_in(delayed)) continue;
             ++nb_neutron_veto;
         }
         if (nb_neutron_veto) return false;
 
         multiplicity_muon_lookup nb_muons_in_cd_event;
         multiplicity_muon_lookup nb_muons_in_wp_event;
-        nb_muons_in_cd_event.fill(m_nav, "CdClassify");
-        nb_muons_in_wp_event.fill(m_nav, "WpBasic");
+        nb_muons_in_cd_event.fill(m_nav->muons, "CdClassify");
+        nb_muons_in_wp_event.fill(m_nav->muons, "WpBasic");
 
         // stopping_muon_lookup has_stopping_in_cd_event;
         // stopping_muon_lookup has_stopping_in_wp_event;
-        // has_stopping_in_cd_event.fill(m_nav, "CdClassify");
-        // has_stopping_in_wp_event.fill(m_nav, "WpBasic");
+        // has_stopping_in_cd_event.fill(m_nav->muons, "CdClassify");
+        // has_stopping_in_wp_event.fill(m_nav->muons, "WpBasic");
 
         std::size_t nb_muon_veto = 0ul;
-        for (std::size_t k = 0ul; k < m_nav->method_mu.size(); ++k) {
-            if (m_nav->method_mu[k] != m_recname) continue;
-            timestamp ts_mu{m_nav->sec_mu[k], m_nav->nsec_mu[k]};
-            if (nb_muons_in_cd_event[ts_mu] > 1ul || nb_muons_in_wp_event[ts_mu] > 1ul) continue;
-            // if (has_stopping_in_wp_event[ts_mu]) continue;
+        for (const track& muon : m_nav->muons) {
+            if (muon.method != m_recname) continue;
+            if (nb_muons_in_cd_event[muon.ts] > 1ul || nb_muons_in_wp_event[muon.ts] > 1ul) continue;
+            // if (has_stopping_in_wp_event[muon.ts]) continue;
 
             bool found_neutron = false;
-            for (std::size_t l = 0ul; l < m_nav->e_n.size() && !found_neutron; ++l) {
-                timestamp ts_n{m_nav->sec_n[l], m_nav->nsec_n[l]};
-                if (ts_n < ts_mu + timestamp{0, 20000} || ts_mu + timestamp{0, 2000000} < ts_n) continue;
+            for (const vertex& neutron : m_nav->neutrons) {
+                vertex neu{neutron};
+                neu.e /= m_gtc.interpolate(neu.ts);
+                time_range_selection time_spallation_neutron_cut{muon.ts, timestamp{0, 20000}, timestamp{0, 2000000}};
+                if (!time_spallation_neutron_cut.is_in(neu)) continue;
                 found_neutron = true;
+                break;
             }
             if (!found_neutron) continue;
 
-            vec3 pos_mu{m_nav->posx_mu[k], m_nav->posy_mu[k], m_nav->posz_mu[k]};
-            vec3 dir_mu{m_nav->dirx_mu[k], m_nav->diry_mu[k], m_nav->dirz_mu[k]};
-            
             bool is_in_ts_veto = (
-                ts_mu + m_ts_low < m_nav->prompt.ts && m_nav->prompt.ts < ts_mu + m_ts_high &&
-                ts_mu + m_ts_low < m_nav->delayed.ts && m_nav->delayed.ts < ts_mu + m_ts_high
+                muon.ts + m_ts_low < prompt.ts && prompt.ts < muon.ts + m_ts_high &&
+                muon.ts + m_ts_low < delayed.ts && delayed.ts < muon.ts + m_ts_high
             );
+
+            vec3 dir = unit(muon.fpos - muon.ipos);
             bool is_in_pos_veto = (
-                mag(cross(dir_mu, m_nav->prompt.pos - pos_mu)) < m_radius &&
-                mag(cross(dir_mu, m_nav->delayed.pos - pos_mu)) < m_radius
+                mag(cross(dir, prompt.pos - muon.ipos)) < m_radius &&
+                mag(cross(dir, delayed.pos - muon.ipos)) < m_radius
             );
             
             if (!is_in_ts_veto || !is_in_pos_veto) continue;
@@ -100,15 +104,23 @@ public:
         }
         if (nb_muon_veto) return false;
 
-        if ( std::pow((m_nav->meta_prompt.stdhit - 0.55) / 0.45, 2.0) + std::pow((m_nav->meta_prompt.stdt - 170.0) / 80.0, 2.0) > 1.0 ) return false;
-
         calculate_dt_to_last_muon();
         calculate_dlat_dt_muon_to_prompt();
 
         return true;
     }
 
-private:
+protected:
+
+    const energy_range_selection c_prompt_energy_cut{0.7, 12.0};
+    const energy_range_selection c_delayed_energy_cut{2.0, 2.5};
+    const fiducial_volume_selection c_fiducial_volume_cut{16500.0};
+    const chimney_selection c_chimney_cut{15500.0, 2000.0};
+    const flasher_selection c_flasher_cut{0.55, 0.45, 170.0, 80.0};
+
+    const energy_range_selection c_multiplicity_energy_cut{2.0, 12.0};
+
+    const energy_range_selection c_neutron_energy_cut{1.5, 20.0};
 
     std::string m_recname;
     timestamp m_ts_low;
@@ -117,4 +129,4 @@ private:
 
 };  
 
-#endif // ANLYSIS_IBD_STANDARD_MUON_VETO_ANALYSIS_HPP_
+#endif // JRAFNECK_ANLYSIS_IBD_IBDSTANDARDMUONVETOANALYSIS_HPP_

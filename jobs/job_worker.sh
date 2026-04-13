@@ -104,6 +104,14 @@ parse_args() {
 #==============================
 
 main() {
+    SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+    SRC_DIR="${SCRIPT_DIR}/../src"
+    JRAFNECK_CPP="${SRC_DIR}/jrafneck.cpp"
+    if [[ ! -f "${JRAFNECK_CPP}" ]]; then
+        log ERROR "Cannot find jrafneck.cpp at: ${JRAFNECK_CPP}"
+        exit 1
+    fi
+
     parse_args "$@"
 
     # OUTPUT_DIRECTORY="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/ibd/summary/jrafneck"
@@ -130,10 +138,24 @@ main() {
 
     source /pbs/home/t/traymond/J25.7.4/git_junosw_load_J25_7_4.sh
 
-    if ! root -l -b -q "../src/jrafneck.cpp(\"${ANALYSIS_FILEPATH}\",\"${RECONSTRUCTION_FILEPATH}\",\"${OUTPUT_FILEPATH}\")"; then
+    if ! root -I"${SRC_DIR}" -l -b -q "jrafneck.cpp(\"${ANALYSIS_FILEPATH}\",\"${RECONSTRUCTION_FILEPATH}\",\"${OUTPUT_FILEPATH}\")"; then
         log ERROR "ROOT execution failed for run ${RUN}"
+        popd > /dev/null
         exit 1
     fi
+
+    # pushd "${SRC_DIR}" > /dev/null || {
+    #     log ERROR "Failed to enter source directory: ${SRC_DIR}"
+    #     exit 1
+    # }
+
+    # if ! root -l -b -q "jrafneck.cpp(\"${ANALYSIS_FILEPATH}\",\"${RECONSTRUCTION_FILEPATH}\",\"${OUTPUT_FILEPATH}\")"; then
+    #     log ERROR "ROOT execution failed for run ${RUN}"
+    #     popd > /dev/null
+    #     exit 1
+    # fi
+
+    # popd > /dev/null
 }
 
 main "$@"

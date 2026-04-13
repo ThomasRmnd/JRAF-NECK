@@ -27,9 +27,10 @@ public:
             return;
         }
         m_tree->Branch("run_id", &m_run_id);
-        m_tree->Branch("veto_sec", &m_veto.sec);
-        m_tree->Branch("veto_nsec", &m_veto.nsec);
-        m_tree->Branch("veto_type", &m_veto_type);
+        m_tree->Branch("sec", &m_veto.sec);
+        m_tree->Branch("nsec", &m_veto.nsec);
+        m_tree->Branch("type", &m_veto_type);
+        m_tree->Branch("entries", &m_veto_entries);
     }
 
     ~veto_total_time_analysis() override = default;
@@ -47,12 +48,15 @@ public:
             for (auto& [type, veto] : m_vetoes) {
                 m_veto = veto;
                 m_veto_type = type;
+                m_veto_entries = m_vetoes_entries[type];
                 m_tree->Fill();
                 veto = timestamp{0l, 0};
+                m_vetoes_entries[type] = 0ul;
             }
         }
         m_run_id = m_nav->run_id;
         m_vetoes[m_nav->veto_type] += timestamp{m_nav->veto_sec, m_nav->veto_nsec};
+        m_vetoes_entries[m_nav->veto_type] += 1ul;
         return true;
     }
 
@@ -65,12 +69,15 @@ protected:
     int m_run_id = 0;
     timestamp m_veto{0l, 0};
     unsigned char m_veto_type;
+    std::size_t m_veto_entries;
     std::unordered_map<unsigned char, timestamp> m_vetoes;
+    std::unordered_map<unsigned char, std::size_t> m_vetoes_entries;
 
     bool save_content() override {
         for (const auto& [type, veto] : m_vetoes) {
             m_veto = veto;
             m_veto_type = type;
+            m_veto_entries = m_vetoes_entries[type];
             m_tree->Fill();
         }
         m_tree->Write();

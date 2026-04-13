@@ -47,8 +47,8 @@ public:
     bool process() override {
         if (m_run_id == 0) {
             m_run_id = m_nav->run_id;
-            m_starts[m_veto_type] = timestamp{m_nav->sec, m_nav->nsec};
-            m_durations[m_veto_type] = timestamp{m_nav->veto_sec, m_nav->veto_nsec};
+            m_starts[m_nav->veto_type] = timestamp{m_nav->sec, m_nav->nsec};
+            m_durations[m_nav->veto_type] = timestamp{m_nav->veto_sec, m_nav->veto_nsec};
         }
         else if (m_run_id != m_nav->run_id) {
             for (const auto& [type, start] : m_starts) {
@@ -58,11 +58,11 @@ public:
                 m_tree->Fill();
             }
             m_run_id = m_nav->run_id;
-            m_starts[m_veto_type] = timestamp{m_nav->sec, m_nav->nsec};
-            m_durations[m_veto_type] = timestamp{m_nav->veto_sec, m_nav->veto_nsec};
+            m_starts[m_nav->veto_type] = timestamp{m_nav->sec, m_nav->nsec};
+            m_durations[m_nav->veto_type] = timestamp{m_nav->veto_sec, m_nav->veto_nsec};
         }
         else {
-            m_durations[m_veto_type] += timestamp{m_nav->veto_sec, m_nav->veto_nsec};
+            m_durations[m_nav->veto_type] += timestamp{m_nav->veto_sec, m_nav->veto_nsec};
         }
         return true;
     }

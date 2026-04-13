@@ -104,7 +104,7 @@ parse_args() {
 #==============================
 
 main() {
-    SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+    SCRIPT_DIR="${SLURM_SUBMIT_DIR:-$(pwd)}"
     SRC_DIR="${SCRIPT_DIR}/../src"
     JRAFNECK_CPP="${SRC_DIR}/jrafneck.cpp"
     if [[ ! -f "${JRAFNECK_CPP}" ]]; then

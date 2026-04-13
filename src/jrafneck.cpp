@@ -16,6 +16,7 @@
 #include "analysis/li9he8/shape/li9he8_shape_muon_with_neutron_analysis.hpp"
 #include "analysis/lifetime/daq/daq_total_time_analysis.hpp"
 #include "analysis/lifetime/veto/veto_total_time_analysis.hpp"
+#include "analysis/muon/performance/muon_performance_single_analysis.hpp"
 #include "analysis/muon/rate/muon_rate_analysis.hpp"
 
 int jrafneck(const std::string& analysis_filepath, const std::string& reconstruction_filepath, const std::string& output_filepath) {
@@ -72,6 +73,9 @@ int jrafneck(const std::string& analysis_filepath, const std::string& reconstruc
     if (!registry.book(lifetime_veto__total_time__analysis)) return 1;
 
 
+
+    std::shared_ptr<analysis_base> muon_performance__single__analysis(new muon_performance_single_analysis("muon_performance__single__analysis", reconstruction_filepath, "muons", "CdWpTtChi2", "Tt"));
+    if (!registry.book(muon_performance__single__analysis)) return 1;
 
     std::shared_ptr<analysis_base> muon_rate__analysis(new muon_rate_analysis("muon_rate__analysis", reconstruction_filepath, "muons"));
     if (!registry.book(muon_rate__analysis)) return 1;

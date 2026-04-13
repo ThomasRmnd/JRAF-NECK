@@ -27,10 +27,8 @@ public:
             return;
         }
         m_tree->Branch("run_id", &m_run_id);
-        m_tree->Branch("start_sec", &m_start.sec);
-        m_tree->Branch("start_nsec", &m_start.nsec);
-        m_tree->Branch("duration_sec", &m_duration.sec);
-        m_tree->Branch("duration_nsec", &m_duration.nsec);
+        m_tree->Branch("veto_sec", &m_veto.sec);
+        m_tree->Branch("veto_nsec", &m_veto.nsec);
         m_tree->Branch("veto_type", &m_veto_type);
     }
 
@@ -45,25 +43,16 @@ public:
     }
 
     bool process() override {
-        if (m_run_id == 0) {
-            m_run_id = m_nav->run_id;
-            m_starts[m_nav->veto_type] = timestamp{m_nav->sec, m_nav->nsec};
-            m_durations[m_nav->veto_type] = timestamp{m_nav->veto_sec, m_nav->veto_nsec};
-        }
-        else if (m_run_id != m_nav->run_id) {
-            for (const auto& [type, start] : m_starts) {
-                m_start = start;
-                m_duration = m_durations[type];
+        if (m_run_id != 0 && m_run_id != m_nav->run_id) {
+            for (auto& [type, veto] : m_vetoes) {
+                m_veto = veto;
                 m_veto_type = type;
                 m_tree->Fill();
+                veto = timestamp{0l, 0};
             }
-            m_run_id = m_nav->run_id;
-            m_starts[m_nav->veto_type] = timestamp{m_nav->sec, m_nav->nsec};
-            m_durations[m_nav->veto_type] = timestamp{m_nav->veto_sec, m_nav->veto_nsec};
         }
-        else {
-            m_durations[m_nav->veto_type] += timestamp{m_nav->veto_sec, m_nav->veto_nsec};
-        }
+        m_run_id = m_nav->run_id;
+        m_vetoes[m_nav->veto_type] += timestamp{m_nav->veto_sec, m_nav->veto_nsec};
         return true;
     }
 
@@ -74,16 +63,13 @@ protected:
 
     TTree* m_tree = nullptr;
     int m_run_id = 0;
-    timestamp m_start{0l, 0};
-    timestamp m_duration{0l, 0};
+    timestamp m_veto{0l, 0};
     unsigned char m_veto_type;
-    std::unordered_map<unsigned char, timestamp> m_starts;
-    std::unordered_map<unsigned char, timestamp> m_durations;
+    std::unordered_map<unsigned char, timestamp> m_vetoes;
 
     bool save_content() override {
-        for (const auto& [type, start] : m_starts) {
-            m_start = start;
-            m_duration = m_durations[type];
+        for (const auto& [type, veto] : m_vetoes) {
+            m_veto = veto;
             m_veto_type = type;
             m_tree->Fill();
         }

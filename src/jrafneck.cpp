@@ -14,122 +14,67 @@
 #include "analysis/li9he8/shape/li9he8_shape_muon_changing_veto_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_standard_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_with_neutron_analysis.hpp"
+#include "analysis/lifetime/daq/daq_total_time_analysis.hpp"
+#include "analysis/lifetime/veto/veto_total_time_analysis.hpp"
+#include "analysis/muon/rate/muon_rate_analysis.hpp"
 
-struct DAQ {
-
-    int run_id;
-    time_t sec;
-    int nsec;
-
-};
-
-struct Veto {
-
-    int run_id;
-    time_t sec;
-    int nsec;
-    unsigned char veto_type;
-    time_t veto_sec;
-    int veto_nsec;
-
-};
-
-void save_meta_info(const std::string& filename) {
-    TChain* chain_daq = new TChain("DAQ");
-    TChain* chain_veto = new TChain("Veto");
-    if (!chain_daq || !chain_veto) {
-        std::cerr << "Cannot create TChain DAQ or Veto or MuonInfo\n";
-        return;
-    }
-    
-    chain_daq->Add(filename.c_str());
-    DAQ daq;
-    chain_daq->SetBranchAddress("run_id", &daq.run_id);
-    chain_daq->SetBranchAddress("sec", &daq.sec);
-    chain_daq->SetBranchAddress("nsec", &daq.nsec);
-
-    chain_veto->Add(filename.c_str());
-    Veto veto;
-    chain_veto->SetBranchAddress("run_id", &veto.run_id);
-    chain_veto->SetBranchAddress("sec", &veto.sec);
-    chain_veto->SetBranchAddress("nsec", &veto.nsec);
-    chain_veto->SetBranchAddress("veto_type", &veto.veto_type);
-    chain_veto->SetBranchAddress("veto_sec", &veto.veto_sec);
-    chain_veto->SetBranchAddress("veto_nsec", &veto.veto_nsec);
-
-    TFile* f_run_info = TFile::Open("run_info.root", "RECREATE");
-    if (!f_run_info) {
-        std::cerr << "Cannot open file run_info.root for writing\n";
-        return;
-    }
-    f_run_info->cd();
-
-    TTree* out_daq = chain_daq->CloneTree(0);
-    for (Long64_t i = 0; i < chain_daq->GetEntries(); ++i) {
-        chain_daq->GetEntry(i);
-        out_daq->Fill();
-    }
-    out_daq->Write();
-
-    TTree* out_veto = chain_veto->CloneTree(0);
-    for (Long64_t i = 0; i < chain_veto->GetEntries(); ++i) {
-        chain_veto->GetEntry(i);
-        out_veto->Fill();
-    }
-    out_veto->Write();
-
-    f_run_info->Write(); 
-    f_run_info->Close();
-    
-    std::cout << "Successfully saved meta info to run_info.root" << std::endl;
-}
-
-int jrafneck(const std::string& filepath) {
+int jrafneck(const std::string& analysis_filepath, const std::string& reconstruction_filepath, const std::string& output_filepath) {
     std::string suffix = "__OMILREC_JVtx";
 
-    // save_meta_info(filepath);
-
     analysis_registry registry;
-    analysis_manager manager("output.root", registry);
+    analysis_manager manager(output_filepath, registry);
 
 
 
-    std::shared_ptr<analysis_base> ibd_no_neutron_veto_analysis_omilrec_jvertex(new ibd_no_neutron_veto_analysis("ibd_no_neutron_veto_analysis_omilrec_jvertex", filepath, suffix));
-    if (!registry.book(ibd_no_neutron_veto_analysis_omilrec_jvertex)) return 1;
+    std::shared_ptr<analysis_base> ibd__no_neutron_veto__analysis__omilrec_jvertex(new ibd_no_neutron_veto_analysis("ibd__no_neutron_veto__analysis__omilrec_jvertex", analysis_filepath, suffix));
+    if (!registry.book(ibd__no_neutron_veto__analysis__omilrec_jvertex)) return 1;
 
-    std::shared_ptr<analysis_base> ibd_no_neutron_veto_muon_veto_analysis_omilrec_jvertex(new ibd_no_neutron_veto_muon_veto_analysis("ibd_no_neutron_veto_muon_veto_analysis_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, 3000.0));
-    if (!registry.book(ibd_no_neutron_veto_muon_veto_analysis_omilrec_jvertex)) return 1;
+    std::shared_ptr<analysis_base> ibd__no_neutron_veto_muon_veto__analysis__omilrec_jvertex(new ibd_no_neutron_veto_muon_veto_analysis("ibd__no_neutron_veto_muon_veto__analysis__omilrec_jvertex", analysis_filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, 3000.0));
+    if (!registry.book(ibd__no_neutron_veto_muon_veto__analysis__omilrec_jvertex)) return 1;
 
-    std::shared_ptr<analysis_base> ibd_standard_analysis_omilrec_jvertex(new ibd_standard_analysis("ibd_standard_analysis_omilrec_jvertex", filepath, suffix));
-    if (!registry.book(ibd_standard_analysis_omilrec_jvertex)) return 1;
+    std::shared_ptr<analysis_base> ibd__standard__analysis__omilrec_jvertex(new ibd_standard_analysis("ibd__standard__analysis__omilrec_jvertex", analysis_filepath, suffix));
+    if (!registry.book(ibd__standard__analysis__omilrec_jvertex)) return 1;
 
-    std::shared_ptr<analysis_base> ibd_standard_muon_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new ibd_standard_muon_veto_analysis("ibd_standard_muon_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, 3000.0));
-    if (!registry.book(ibd_standard_muon_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex)) return 1;
+    std::shared_ptr<analysis_base> ibd__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(new ibd_standard_muon_veto_analysis("ibd__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", analysis_filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, 3000.0));
+    if (!registry.book(ibd__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
 
-    std::shared_ptr<analysis_base> ibd_standard_muon_veto_analysis_cdwpttchi2_1m_0_5s_omilrec_jvertex(new ibd_standard_muon_veto_analysis("ibd_standard_muon_veto_analysis_cdwpttchi2_1m_0_5s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 500000000}, 1000.0));
-    if (!registry.book(ibd_standard_muon_veto_analysis_cdwpttchi2_1m_0_5s_omilrec_jvertex)) return 1;
+    std::shared_ptr<analysis_base> ibd__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex(new ibd_standard_muon_veto_analysis("ibd__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex", analysis_filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 500000000}, 1000.0));
+    if (!registry.book(ibd__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex)) return 1;
 
 
 
-    // std::shared_ptr<analysis_base> cosmo_rate_analysis_omilrec_jvertex(new cosmo_rate_analysis("cosmo_rate_analysis_omilrec_jvertex", filepath, suffix));
+    // std::shared_ptr<analysis_base> cosmo_rate_analysis_omilrec_jvertex(new cosmo_rate_analysis("cosmo_rate_analysis_omilrec_jvertex", analysis_filepath, suffix));
     // if (!registry.book(cosmo_rate_analysis_omilrec_jvertex)) return 1;
 
-    // std::shared_ptr<analysis_base> cosmo_rate_neutron_veto_analysis_omilrec_jvertex(new cosmo_rate_neutron_veto_analysis("cosmo_rate_neutron_veto_analysis_omilrec_jvertex", filepath, suffix));
+    // std::shared_ptr<analysis_base> cosmo_rate_neutron_veto_analysis_omilrec_jvertex(new cosmo_rate_neutron_veto_analysis("cosmo_rate_neutron_veto_analysis_omilrec_jvertex", analysis_filepath, suffix));
     // if (!registry.book(cosmo_rate_neutron_veto_analysis_omilrec_jvertex)) return 1;
 
 
 
-    std::shared_ptr<analysis_base> li9he8_shape_muon_standard_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new li9he8_shape_muon_standard_analysis("li9he8_shape_muon_standard_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
-    if (!registry.book(li9he8_shape_muon_standard_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex)) return 1;
+    std::shared_ptr<analysis_base> li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(new li9he8_shape_muon_standard_analysis("li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", analysis_filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
+    if (!registry.book(li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
 
-    std::shared_ptr<analysis_base> li9he8_shape_muon_standard_analysis_cdwpttchi2_3m_2s_omilrec_jvertex(new li9he8_shape_muon_standard_analysis("li9he8_shape_muon_standard_analysis_cdwpttchi2_3m_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{2, 0}, timestamp{-2, 0}, timestamp{0, -5000000}, 3000.0));
-    if (!registry.book(li9he8_shape_muon_standard_analysis_cdwpttchi2_3m_2s_omilrec_jvertex)) return 1;
+    std::shared_ptr<analysis_base> li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_2s__omilrec_jvertex(new li9he8_shape_muon_standard_analysis("li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_2s__omilrec_jvertex", analysis_filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{2, 0}, timestamp{-2, 0}, timestamp{0, -5000000}, 3000.0));
+    if (!registry.book(li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_2s__omilrec_jvertex)) return 1;
 
-    std::shared_ptr<analysis_base> li9he8_shape_muon_with_neutron_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new li9he8_shape_muon_with_neutron_analysis("li9he8_shape_muon_with_neutron_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
-    if (!registry.book(li9he8_shape_muon_with_neutron_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex)) return 1;
+    std::shared_ptr<analysis_base> li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(new li9he8_shape_muon_with_neutron_analysis("li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", analysis_filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
+    if (!registry.book(li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
 
-    std::shared_ptr<analysis_base> li9he8_shape_muon_changing_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex(new li9he8_shape_muon_changing_veto_analysis("li9he8_shape_muon_changing_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex", filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
-    if (!registry.book(li9he8_shape_muon_changing_veto_analysis_cdwpttchi2_3m_1_2s_omilrec_jvertex)) return 1;
+    std::shared_ptr<analysis_base> li9he8_shape_muon__changing_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(new li9he8_shape_muon_changing_veto_analysis("li9he8_shape_muon__changing_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", analysis_filepath, suffix, "CdWpTtChi2", timestamp{0, 5000000}, timestamp{0, 1200000000}, timestamp{0, -1200000000}, timestamp{0, -5000000}, 3000.0));
+    if (!registry.book(li9he8_shape_muon__changing_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
+
+
+
+    std::shared_ptr<analysis_base> lifetime_daq__total_time__analysis(new daq_total_time_analysis("lifetime_daq__total_time__analysis", analysis_filepath, "DAQ"));
+    if (!registry.book(lifetime_daq__total_time__analysis)) return 1;
+
+    std::shared_ptr<analysis_base> lifetime_veto__total_time__analysis(new veto_total_time_analysis("lifetime_veto__total_time__analysis", analysis_filepath, "Veto"));
+    if (!registry.book(lifetime_veto__total_time__analysis)) return 1;
+
+
+
+    std::shared_ptr<analysis_base> muon_rate__analysis(new muon_rate_analysis("muon_rate__analysis", reconstruction_filepath, "muons"));
+    if (!registry.book(muon_rate__analysis)) return 1;
 
 
     

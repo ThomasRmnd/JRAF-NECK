@@ -3,7 +3,6 @@
 
 #include <set>
 
-#include <TFile.h>
 #include <TTree.h>
 
 #include "analysis/analysis.hpp"
@@ -61,12 +60,18 @@ public:
         return true;
     }
 
-    bool save() override {
-        TFile* f = TFile::Open(Form("%s.root", m_name.c_str()), "RECREATE");
-        if (!f) {
-            std::cerr << "Cannot open file " << m_name << ".root for writing\n";
-            return false;
-        }
+protected:
+
+    std::shared_ptr<ibd_like_event_navigator> m_nav;
+
+    global_scale_factor_corrector m_gtc;
+
+    std::set<ibd_wmu> m_ibds;
+    timestamp m_dt_last_mu;
+    double m_dlat_mu2p;
+    timestamp m_dt_mu2p;
+
+        bool save_content() override {
         TTree* t = new TTree("events", "Events");
         if (!t) {
             std::cerr << "Cannot create tree events\n";
@@ -110,22 +115,8 @@ public:
             t->Fill();
         }
 
-        f->cd();
-        t->Write();
-        f->Close();
         return true;
     }
-
-protected:
-
-    std::shared_ptr<ibd_like_event_navigator> m_nav;
-
-    global_scale_factor_corrector m_gtc;
-
-    std::set<ibd_wmu> m_ibds;
-    timestamp m_dt_last_mu;
-    double m_dlat_mu2p;
-    timestamp m_dt_mu2p;
 
     void calculate_dt_to_last_muon() {
         m_dt_last_mu = timestamp{0, 0};

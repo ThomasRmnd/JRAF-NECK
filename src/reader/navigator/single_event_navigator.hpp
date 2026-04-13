@@ -33,6 +33,8 @@ public:
         m_chain->branch("stdhit", single.stdhit);
     }
 
+    virtual ~single_event_navigator() override = default;
+
     int run_id;
     vertex single;
 

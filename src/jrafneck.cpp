@@ -84,13 +84,13 @@ void save_meta_info(const std::string& filename) {
     std::cout << "Successfully saved meta info to run_info.root" << std::endl;
 }
 
-int jraf_neck(const std::string& filepath) {
+int jrafneck(const std::string& filepath) {
     std::string suffix = "__OMILREC_JVtx";
 
     // save_meta_info(filepath);
 
     analysis_registry registry;
-    analysis_manager manager(registry);
+    analysis_manager manager("output.root", registry);
 
 
 

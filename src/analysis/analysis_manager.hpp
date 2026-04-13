@@ -1,13 +1,16 @@
 #ifndef JRAFNECK_ANALYSIS_ANALYSISMANAGER_HPP_
 #define JRAFNECK_ANALYSIS_ANALYSISMANAGER_HPP_
 
+#include <TFile.h>
+
 #include "analysis/analysis_registry.hpp"
 
 class analysis_manager {
 
 public:
 
-    analysis_manager(analysis_registry& reg) :
+    analysis_manager(const std::string& filepath, analysis_registry& reg) :
+        m_filepath{filepath},
         m_reg{reg}
     {}
 
@@ -53,17 +56,32 @@ public:
             return true;
         }
 
+        TFile* file = TFile::Open(m_filepath.c_str(), "RECREATE");
+        if (!file) {
+            std::cerr << "Cannot open file " << m_filepath << " for writing\n";
+            return false;
+        }
+
         for (auto const& [nav, analyses] : m_reg) {
             for (const auto& analysis : analyses) {
-                analysis->save();
+                file->cd();
+                TDirectory* dir = file->mkdir(analysis->name().c_str());
+                if (!dir) {
+                    std::cerr << "Cannot create directory " << analysis->name() << " in file " << m_filepath << '\n';
+                    return false;
+                }
+                analysis->save(dir);
             }
         }
+        file->Write();
+        file->Close();
 
         return true;
     }
 
 private:
 
+    std::string m_filepath;
     analysis_registry& m_reg;
 
 };

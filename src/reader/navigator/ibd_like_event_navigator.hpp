@@ -109,6 +109,8 @@ public:
         m_chain->branch("quality_mu", quality_mu.ptr());
     }
 
+    virtual ~ibd_like_event_navigator() override = default;
+
     virtual bool entry(std::ptrdiff_t n) override {
         if (!m_chain->entry(n)) return false;
 

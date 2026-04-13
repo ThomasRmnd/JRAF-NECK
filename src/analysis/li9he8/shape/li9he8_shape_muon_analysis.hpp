@@ -3,7 +3,6 @@
 
 #include <set>
 
-#include <TFile.h>
 #include <TTree.h>
 
 #include "analysis/analysis.hpp"
@@ -65,12 +64,28 @@ public:
         return true;
     }
 
-    bool save() override {
-        TFile* f = TFile::Open(Form("%s.root", m_name.c_str()), "RECREATE");
-        if (!f) {
-            std::cerr << "Cannot open file " << m_name << ".root for writing\n";
-            return false;
-        }
+protected:
+
+    std::shared_ptr<ibd_like_event_navigator> m_nav;
+
+    global_scale_factor_corrector m_gtc;
+
+    std::string m_recname;
+    timestamp m_ts_sig_low;
+    timestamp m_ts_sig_high;
+    timestamp m_ts_bkg_low;
+    timestamp m_ts_bkg_high;
+    double m_radius;
+
+    std::vector<double> m_dlat_mu2p;
+    std::vector<double> m_dlat_mu2d;
+    std::vector<double> m_dt_mu2p;
+    std::vector<double> m_dt_mu2d;
+    std::vector<bool> m_is_sig;
+
+    std::set<cosmogenic> m_cosmos_bkg, m_cosmos_sig;
+
+    bool save_content() override {
         TTree* t_bkg = new TTree("background_events", "Cosmogenic depleted region");
         TTree* t_sig = new TTree("signal_events", "Cosmogenic enriched region");
         if (!t_bkg || !t_sig) {
@@ -150,33 +165,10 @@ public:
             t_sig->Fill();
         }
 
-        f->cd();
         t_bkg->Write();
         t_sig->Write();
-        f->Close();
         return true;
     }
-
-protected:
-
-    std::shared_ptr<ibd_like_event_navigator> m_nav;
-
-    global_scale_factor_corrector m_gtc;
-
-    std::string m_recname;
-    timestamp m_ts_sig_low;
-    timestamp m_ts_sig_high;
-    timestamp m_ts_bkg_low;
-    timestamp m_ts_bkg_high;
-    double m_radius;
-
-    std::vector<double> m_dlat_mu2p;
-    std::vector<double> m_dlat_mu2d;
-    std::vector<double> m_dt_mu2p;
-    std::vector<double> m_dt_mu2d;
-    std::vector<bool> m_is_sig;
-
-    std::set<cosmogenic> m_cosmos_bkg, m_cosmos_sig;
 
 };
 

@@ -138,24 +138,18 @@ main() {
 
     source /pbs/home/t/traymond/J25.7.4/git_junosw_load_J25_7_4.sh
 
-    if ! root -I"${SRC_DIR}" -l -b -q "jrafneck.cpp(\"${ANALYSIS_FILEPATH}\",\"${RECONSTRUCTION_FILEPATH}\",\"${OUTPUT_FILEPATH}\")"; then
+    pushd "${SRC_DIR}" > /dev/null || {
+        log ERROR "Failed to enter source directory: ${SRC_DIR}"
+        exit 1
+    }
+
+    if ! root -l -b -q "jrafneck.cpp(\"${ANALYSIS_FILEPATH}\",\"${RECONSTRUCTION_FILEPATH}\",\"${OUTPUT_FILEPATH}\")"; then
         log ERROR "ROOT execution failed for run ${RUN}"
         popd > /dev/null
         exit 1
     fi
 
-    # pushd "${SRC_DIR}" > /dev/null || {
-    #     log ERROR "Failed to enter source directory: ${SRC_DIR}"
-    #     exit 1
-    # }
-
-    # if ! root -l -b -q "jrafneck.cpp(\"${ANALYSIS_FILEPATH}\",\"${RECONSTRUCTION_FILEPATH}\",\"${OUTPUT_FILEPATH}\")"; then
-    #     log ERROR "ROOT execution failed for run ${RUN}"
-    #     popd > /dev/null
-    #     exit 1
-    # fi
-
-    # popd > /dev/null
+    popd > /dev/null
 }
 
 main "$@"

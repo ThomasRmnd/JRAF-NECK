@@ -12,14 +12,18 @@ IFS=$'\n\t'
 #==============================
 
 HOSTNAME=$(hostname -f 2>/dev/null || hostname)
-if [[ "${HOSTNAME}" =~ ^cca[0-9]+\.in2p3\.fr$ ]]; then
+if [[ "${HOSTNAME}" =~ ^cc.*\.in2p3\.fr$ ]]; then
     # Detect CC-IN2P3 cluster
     CLUSTER="CC-IN2P3"
     source /pbs/home/t/traymond/share/bash/logging.sh
+    TEMPDIR=${TMPDIR}
+    SOURCE_JUNOSW_PATH="/pbs/home/t/traymond/J25.7.4/git_junosw_load_J25_7_4.sh"
 elif [[ "${HOSTNAME}" =~ ^lxlogin[0-9]+\.ihep\.ac\.cn$ ]]; then
     # Detect IHEP cluster
     CLUSTER="IHEP"
     source /junofs/users/traymond/bash/logging.sh
+    TEMPDIR=${TEMP}
+    SOURCE_JUNOSW_PATH="/afs/ihep.ac.cn/users/t/traymond/J25.3.0/git_junosw_J25_load.sh"
 else
     echo "ERROR: Unknown cluster. Hostname: ${HOSTNAME}" >&2
     echo "Expected CC-IN2P3 (cca###) or IHEP (lxlogin###.ihep.ac.cn)" >&2

@@ -40,13 +40,18 @@ public:
         if (!muon_event_navigator::entry(n)) return false;
         if (muons.empty()) return true;
 
+        std::cout << "[Debug]: get entry " << n << ", currently having " << muons.size() << " muons\n";
+
         const timestamp ts  = muons.front().ts;
         const timestamp lo  = ts + timestamp{0, -1000};
         const timestamp hi  = ts + timestamp{0,  1000};
 
         append_correlated(m_amber_nav, lo, hi);
+        std::cout << "[Debug]: after adding Amber, currently having " << muons.size() << " muons\n";
         append_correlated(m_edwin_nav, lo, hi);
+        std::cout << "[Debug]: after adding Edwin, currently having " << muons.size() << " muons\n";
         append_correlated(m_tt_nav,    lo, hi);
+        std::cout << "[Debug]: after adding TT, currently having " << muons.size() << " muons\n";
 
         return true;
     }

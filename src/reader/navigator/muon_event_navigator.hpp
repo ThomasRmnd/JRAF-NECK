@@ -36,7 +36,9 @@ public:
     virtual ~muon_event_navigator() override = default;
 
     virtual bool entry(std::ptrdiff_t n) override {
+        std::cout << "[Debug]: get entry " << n << ", currently having " << muons.size() << " muons\n";
         if (!navigator_base::entry(n)) return false;
+        std::cout << "[Debug]: get entry " << n << ", currently having " << muons.size() << " muons\n";
 
         muons.clear();
         if (m_method.empty()) return true;

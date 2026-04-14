@@ -55,92 +55,92 @@ public:
         m_chain->branch("meanhit_d", delayed.meanhit);
         m_chain->branch("stdhit_d", delayed.stdhit);
 
-        m_chain->branch("posx_n", posx_n.ptr());
-        m_chain->branch("posy_n", posy_n.ptr());
-        m_chain->branch("posz_n", posz_n.ptr());
-        m_chain->branch("e_n", e_n.ptr());
-        m_chain->branch("sec_n", sec_n.ptr());
-        m_chain->branch("nsec_n", nsec_n.ptr());
+        m_chain->branch("posx_n", m_posx_n.ptr());
+        m_chain->branch("posy_n", m_posy_n.ptr());
+        m_chain->branch("posz_n", m_posz_n.ptr());
+        m_chain->branch("e_n", m_e_n.ptr());
+        m_chain->branch("sec_n", m_sec_n.ptr());
+        m_chain->branch("nsec_n", m_nsec_n.ptr());
 
-        m_chain->branch("totq_n", totq_n.ptr());
-        m_chain->branch("meanq_n", meanq_n.ptr());
-        m_chain->branch("stdq_n", stdq_n.ptr());
-        m_chain->branch("minq_n", minq_n.ptr());
-        m_chain->branch("maxq_n", maxq_n.ptr());
-        m_chain->branch("meant_n", meant_n.ptr());
-        m_chain->branch("stdt_n", stdt_n.ptr());
-        m_chain->branch("npmt_n", npmt_n.ptr());
-        m_chain->branch("nhit_n", nhit_n.ptr());
-        m_chain->branch("meanhit_n", meanhit_n.ptr());
-        m_chain->branch("stdhit_n", stdhit_n.ptr());
+        m_chain->branch("totq_n", m_totq_n.ptr());
+        m_chain->branch("meanq_n", m_meanq_n.ptr());
+        m_chain->branch("stdq_n", m_stdq_n.ptr());
+        m_chain->branch("minq_n", m_minq_n.ptr());
+        m_chain->branch("maxq_n", m_maxq_n.ptr());
+        m_chain->branch("meant_n", m_meant_n.ptr());
+        m_chain->branch("stdt_n", m_stdt_n.ptr());
+        m_chain->branch("npmt_n", m_npmt_n.ptr());
+        m_chain->branch("nhit_n", m_nhit_n.ptr());
+        m_chain->branch("meanhit_n", m_meanhit_n.ptr());
+        m_chain->branch("stdhit_n", m_stdhit_n.ptr());
 
-        m_chain->branch("posx_mult", posx_mult.ptr());
-        m_chain->branch("posy_mult", posy_mult.ptr());
-        m_chain->branch("posz_mult", posz_mult.ptr());
-        m_chain->branch("e_mult", e_mult.ptr());
-        m_chain->branch("sec_mult", sec_mult.ptr());
-        m_chain->branch("nsec_mult", nsec_mult.ptr());
-        m_chain->branch("mult_type", mult_type.ptr());
+        m_chain->branch("posx_mult", m_posx_mult.ptr());
+        m_chain->branch("posy_mult", m_posy_mult.ptr());
+        m_chain->branch("posz_mult", m_posz_mult.ptr());
+        m_chain->branch("e_mult", m_e_mult.ptr());
+        m_chain->branch("sec_mult", m_sec_mult.ptr());
+        m_chain->branch("nsec_mult", m_nsec_mult.ptr());
+        m_chain->branch("mult_type", m_mult_type.ptr());
 
-        m_chain->branch("totq_mult", totq_mult.ptr());
-        m_chain->branch("meanq_mult", meanq_mult.ptr());
-        m_chain->branch("stdq_mult", stdq_mult.ptr());
-        m_chain->branch("minq_mult", minq_mult.ptr());
-        m_chain->branch("maxq_mult", maxq_mult.ptr());
-        m_chain->branch("meant_mult", meant_mult.ptr());
-        m_chain->branch("stdt_mult", stdt_mult.ptr());
-        m_chain->branch("npmt_mult", npmt_mult.ptr());
-        m_chain->branch("nhit_mult", nhit_mult.ptr());
-        m_chain->branch("meanhit_mult", meanhit_mult.ptr());
-        m_chain->branch("stdhit_mult", stdhit_mult.ptr());
+        m_chain->branch("totq_mult", m_totq_mult.ptr());
+        m_chain->branch("meanq_mult", m_meanq_mult.ptr());
+        m_chain->branch("stdq_mult", m_stdq_mult.ptr());
+        m_chain->branch("minq_mult", m_minq_mult.ptr());
+        m_chain->branch("maxq_mult", m_maxq_mult.ptr());
+        m_chain->branch("meant_mult", m_meant_mult.ptr());
+        m_chain->branch("stdt_mult", m_stdt_mult.ptr());
+        m_chain->branch("npmt_mult", m_npmt_mult.ptr());
+        m_chain->branch("nhit_mult", m_nhit_mult.ptr());
+        m_chain->branch("meanhit_mult", m_meanhit_mult.ptr());
+        m_chain->branch("stdhit_mult", m_stdhit_mult.ptr());
 
-        m_chain->branch("method_mu", method_mu.ptr());
-        m_chain->branch("loc_mu", loc_mu.ptr());
-        m_chain->branch("iposx_mu", iposx_mu.ptr());
-        m_chain->branch("iposy_mu", iposy_mu.ptr());
-        m_chain->branch("iposz_mu", iposz_mu.ptr());
-        m_chain->branch("fposx_mu", fposx_mu.ptr());
-        m_chain->branch("fposy_mu", fposy_mu.ptr());
-        m_chain->branch("fposz_mu", fposz_mu.ptr());
-        m_chain->branch("totq_cd_mu", totq_cd_mu.ptr());
-        m_chain->branch("totq_wp_mu", totq_wp_mu.ptr());
-        m_chain->branch("sec_mu", sec_mu.ptr());
-        m_chain->branch("nsec_mu", nsec_mu.ptr());
-        m_chain->branch("quality_mu", quality_mu.ptr());
+        m_chain->branch("method_mu", m_method_mu.ptr());
+        m_chain->branch("loc_mu", m_loc_mu.ptr());
+        m_chain->branch("iposx_mu", m_iposx_mu.ptr());
+        m_chain->branch("iposy_mu", m_iposy_mu.ptr());
+        m_chain->branch("iposz_mu", m_iposz_mu.ptr());
+        m_chain->branch("fposx_mu", m_fposx_mu.ptr());
+        m_chain->branch("fposy_mu", m_fposy_mu.ptr());
+        m_chain->branch("fposz_mu", m_fposz_mu.ptr());
+        m_chain->branch("totq_cd_mu", m_totq_cd_mu.ptr());
+        m_chain->branch("totq_wp_mu", m_totq_wp_mu.ptr());
+        m_chain->branch("sec_mu", m_sec_mu.ptr());
+        m_chain->branch("nsec_mu", m_nsec_mu.ptr());
+        m_chain->branch("quality_mu", m_quality_mu.ptr());
     }
 
     virtual ~ibd_like_event_navigator() override = default;
 
     virtual bool entry(std::ptrdiff_t n) override {
-        if (!m_chain->entry(n)) return false;
+        if (!navigator_base::entry(n)) return false;
 
         neutrons.clear();
-        neutrons.reserve(posx_n.size());
-        for (std::size_t k = 0ul; k < posx_n.size(); ++k) {
+        neutrons.reserve(m_posx_n.size());
+        for (std::size_t k = 0ul; k < m_posx_n.size(); ++k) {
             neutrons.emplace_back(
-                e_n[k], vec3{posx_n[k], posy_n[k], posz_n[k]}, timestamp{sec_n[k], nsec_n[k]},
-                totq_n[k], meanq_n[k], stdq_n[k], minq_n[k], maxq_n[k], meant_n[k], stdt_n[k], npmt_n[k], nhit_n[k], meanhit_n[k], stdhit_n[k]
+                m_e_n[k], vec3{m_posx_n[k], m_posy_n[k], m_posz_n[k]}, timestamp{m_sec_n[k], m_nsec_n[k]},
+                m_totq_n[k], m_meanq_n[k], m_stdq_n[k], m_minq_n[k], m_maxq_n[k], m_meant_n[k], m_stdt_n[k], m_npmt_n[k], m_nhit_n[k], m_meanhit_n[k], m_stdhit_n[k]
             );
         }
 
         multiplicities.clear();
-        multiplicities.reserve(posx_mult.size());
-        for (std::size_t k = 0ul; k < posx_mult.size(); ++k) {
+        multiplicities.reserve(m_posx_mult.size());
+        for (std::size_t k = 0ul; k < m_posx_mult.size(); ++k) {
             multiplicities.emplace_back(
-                e_mult[k], vec3{posx_mult[k], posy_mult[k], posz_mult[k]}, timestamp{sec_mult[k], nsec_mult[k]},
-                totq_mult[k], meanq_mult[k], stdq_mult[k], minq_mult[k], maxq_mult[k], meant_mult[k], stdt_mult[k], npmt_mult[k], nhit_mult[k], meanhit_mult[k], stdhit_mult[k]
+                m_e_mult[k], vec3{m_posx_mult[k], m_posy_mult[k], m_posz_mult[k]}, timestamp{m_sec_mult[k], m_nsec_mult[k]},
+                m_totq_mult[k], m_meanq_mult[k], m_stdq_mult[k], m_minq_mult[k], m_maxq_mult[k], m_meant_mult[k], m_stdt_mult[k], m_npmt_mult[k], m_nhit_mult[k], m_meanhit_mult[k], m_stdhit_mult[k]
             );
         }
 
         muons.clear();
-        muons.reserve(method_mu.size());
-        for (std::size_t k = 0ul; k < method_mu.size(); ++k) {
+        muons.reserve(m_method_mu.size());
+        for (std::size_t k = 0ul; k < m_method_mu.size(); ++k) {
             muons.emplace_back(
-                method_mu[k], totq_cd_mu[k], totq_wp_mu[k], 
-                vec3{iposx_mu[k], iposy_mu[k], iposz_mu[k]},
-                vec3{fposx_mu[k], fposy_mu[k], fposz_mu[k]},
-                timestamp{sec_mu[k], nsec_mu[k]},
-                quality_mu[k], loc_mu[k]
+                m_method_mu[k], m_totq_cd_mu[k], m_totq_wp_mu[k], 
+                vec3{m_iposx_mu[k], m_iposy_mu[k], m_iposz_mu[k]},
+                vec3{m_fposx_mu[k], m_fposy_mu[k], m_fposz_mu[k]},
+                timestamp{m_sec_mu[k], m_nsec_mu[k]},
+                m_quality_mu[k], m_loc_mu[k]
             );
         }
 
@@ -158,58 +158,58 @@ public:
 
 protected:
 
-    vector_reader<double> posx_n;
-    vector_reader<double> posy_n;
-    vector_reader<double> posz_n;
-    vector_reader<double> e_n;
-    vector_reader<time_t> sec_n;
-    vector_reader<int> nsec_n;
+    vector_reader<double> m_posx_n;
+    vector_reader<double> m_posy_n;
+    vector_reader<double> m_posz_n;
+    vector_reader<double> m_e_n;
+    vector_reader<time_t> m_sec_n;
+    vector_reader<int> m_nsec_n;
 
-    vector_reader<double> totq_n;
-    vector_reader<double> meanq_n;
-    vector_reader<double> stdq_n;
-    vector_reader<double> minq_n;
-    vector_reader<double> maxq_n;
-    vector_reader<double> meant_n;
-    vector_reader<double> stdt_n;
-    vector_reader<std::size_t> npmt_n;
-    vector_reader<std::size_t> nhit_n;
-    vector_reader<double> meanhit_n;
-    vector_reader<double> stdhit_n;
+    vector_reader<double> m_totq_n;
+    vector_reader<double> m_meanq_n;
+    vector_reader<double> m_stdq_n;
+    vector_reader<double> m_minq_n;
+    vector_reader<double> m_maxq_n;
+    vector_reader<double> m_meant_n;
+    vector_reader<double> m_stdt_n;
+    vector_reader<std::size_t> m_npmt_n;
+    vector_reader<std::size_t> m_nhit_n;
+    vector_reader<double> m_meanhit_n;
+    vector_reader<double> m_stdhit_n;
 
-    vector_reader<double> posx_mult;
-    vector_reader<double> posy_mult;
-    vector_reader<double> posz_mult;
-    vector_reader<double> e_mult;
-    vector_reader<time_t> sec_mult;
-    vector_reader<int> nsec_mult;
-    vector_reader<int> mult_type;
+    vector_reader<double> m_posx_mult;
+    vector_reader<double> m_posy_mult;
+    vector_reader<double> m_posz_mult;
+    vector_reader<double> m_e_mult;
+    vector_reader<time_t> m_sec_mult;
+    vector_reader<int> m_nsec_mult;
+    vector_reader<int> m_mult_type;
 
-    vector_reader<double> totq_mult;
-    vector_reader<double> meanq_mult;
-    vector_reader<double> stdq_mult;
-    vector_reader<double> minq_mult;
-    vector_reader<double> maxq_mult;
-    vector_reader<double> meant_mult;
-    vector_reader<double> stdt_mult;
-    vector_reader<std::size_t> npmt_mult;
-    vector_reader<std::size_t> nhit_mult;
-    vector_reader<double> meanhit_mult;
-    vector_reader<double> stdhit_mult;
+    vector_reader<double> m_totq_mult;
+    vector_reader<double> m_meanq_mult;
+    vector_reader<double> m_stdq_mult;
+    vector_reader<double> m_minq_mult;
+    vector_reader<double> m_maxq_mult;
+    vector_reader<double> m_meant_mult;
+    vector_reader<double> m_stdt_mult;
+    vector_reader<std::size_t> m_npmt_mult;
+    vector_reader<std::size_t> m_nhit_mult;
+    vector_reader<double> m_meanhit_mult;
+    vector_reader<double> m_stdhit_mult;
 
-    vector_reader<std::string> method_mu;
-    vector_reader<int> loc_mu;
-    vector_reader<double> iposx_mu;
-    vector_reader<double> iposy_mu;
-    vector_reader<double> iposz_mu;
-    vector_reader<double> fposx_mu;
-    vector_reader<double> fposy_mu;
-    vector_reader<double> fposz_mu;
-    vector_reader<double> totq_cd_mu;
-    vector_reader<double> totq_wp_mu;
-    vector_reader<time_t> sec_mu;
-    vector_reader<int> nsec_mu;
-    vector_reader<double> quality_mu;
+    vector_reader<std::string> m_method_mu;
+    vector_reader<int> m_loc_mu;
+    vector_reader<double> m_iposx_mu;
+    vector_reader<double> m_iposy_mu;
+    vector_reader<double> m_iposz_mu;
+    vector_reader<double> m_fposx_mu;
+    vector_reader<double> m_fposy_mu;
+    vector_reader<double> m_fposz_mu;
+    vector_reader<double> m_totq_cd_mu;
+    vector_reader<double> m_totq_wp_mu;
+    vector_reader<time_t> m_sec_mu;
+    vector_reader<int> m_nsec_mu;
+    vector_reader<double> m_quality_mu;
 
 };
 

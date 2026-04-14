@@ -74,9 +74,9 @@ public:
         m_iposdist = mag(cross(dir_ref, it_target->ipos - it_ref->ipos)) / 1000.0;
         m_fposdist = mag(cross(dir_ref, it_target->fpos - it_ref->ipos)) / 1000.0;
         m_target_quality = it_target->quality;
-        m_target_clippingness = mag(cross(dir_target, -it_target->ipos));
+        m_target_clippingness = mag(cross(dir_target, -it_target->ipos)) / 1000.0;
         m_ref_quality = it_ref->quality;
-        m_ref_clippingness = mag(cross(dir_ref, -it_ref->ipos));
+        m_ref_clippingness = mag(cross(dir_ref, -it_ref->ipos)) / 1000.0;
 
         m_tree->Fill();
         return true;

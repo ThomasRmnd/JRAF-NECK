@@ -214,7 +214,7 @@ public:
     vector_reader<int> nsec_mu;
     vector_reader<double> quality_mu;
 
-private:
+protected:
 
     std::shared_ptr<chain_reader> m_chain_neutron;
     neutron m_neutron;

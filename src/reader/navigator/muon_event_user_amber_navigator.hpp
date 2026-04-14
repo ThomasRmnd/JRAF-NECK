@@ -32,6 +32,7 @@ public:
     virtual bool entry(std::ptrdiff_t n) override {
         if (!navigator_base::entry(n)) return false;
 
+        muons.clear();
         for (int k = 0; k < m_muonType + 1; ++k) {
             muons.emplace_back(
                 "Amber_v5.5", 0.0, static_cast<double>(m_charge),

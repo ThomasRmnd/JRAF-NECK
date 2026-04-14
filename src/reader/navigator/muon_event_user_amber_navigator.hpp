@@ -8,8 +8,8 @@ class muon_event_user_amber_navigator : public navigator_base {
 
 public:
 
-    muon_event_user_amber_navigator(const std::string& filepath) :
-        navigator_base{filepath, "MuonReco"}
+    muon_event_user_amber_navigator(const std::string& filepath, const std::string& treename = "MuonReco") :
+        navigator_base{filepath, treename}
     {
         if (!is_valid()) return;
 

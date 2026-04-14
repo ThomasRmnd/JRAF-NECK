@@ -8,8 +8,8 @@ class muon_event_user_edwin_navigator : public navigator_base {
 
 public:
 
-    muon_event_user_edwin_navigator(const std::string& filepath) :
-        navigator_base{filepath, "Edwin_Muon"}
+    muon_event_user_edwin_navigator(const std::string& filepath, const std::string& treename = "Edwin_Muon") :
+        navigator_base{filepath, treename}
     {
         if (!is_valid()) return;
     }

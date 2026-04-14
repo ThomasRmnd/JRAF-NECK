@@ -10,8 +10,8 @@ class muon_event_user_tt_navigator : public navigator_base {
 
 public:
 
-    muon_event_user_tt_navigator(const std::string& filepath) :
-        navigator_base{filepath, "TT"}
+    muon_event_user_tt_navigator(const std::string& filepath, const std::string& treename = "TT") :
+        navigator_base{filepath, treename}
     {
         if (!is_valid()) return;
 

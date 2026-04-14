@@ -36,13 +36,16 @@ public:
     virtual ~muon_event_navigator() override = default;
 
     virtual bool entry(std::ptrdiff_t n) override {
-        std::cout << "[Debug]: get entry " << n << ", currently having " << muons.size() << " muons\n";
+        std::cout << "[Debug]: (1) get entry " << n << ", currently having " << muons.size() << " muons\n";
         if (!navigator_base::entry(n)) return false;
-        std::cout << "[Debug]: get entry " << n << ", currently having " << muons.size() << " muons\n";
+        std::cout << "[Debug]: (2) get entry " << n << ", currently having " << muons.size() << " muons\n";
 
         muons.clear();
+        std::cout << "[Debug]: (3) get entry " << n << ", currently having " << muons.size() << " muons\n";
         if (m_method.empty()) return true;
+        std::cout << "[Debug]: (4) get entry " << n << ", currently having " << muons.size() << " muons\n";
         muons.reserve(m_method.size());
+        std::cout << "[Debug]: (5) get entry " << n << ", currently having " << muons.size() << " muons\n";
         for (std::size_t k = 0ul; k < m_method.size(); ++k) {
             muons.emplace_back(
                 m_method[k], m_totq_cd, m_totq_wp,
@@ -52,6 +55,7 @@ public:
                 m_quality[k], static_cast<int>(m_det[k])
             );
         }
+        std::cout << "[Debug]: (6) get entry " << n << ", currently having " << muons.size() << " muons\n";
 
         return true;
     }

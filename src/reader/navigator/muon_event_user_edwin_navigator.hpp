@@ -12,6 +12,28 @@ public:
         navigator_base{filepath, treename}
     {
         if (!is_valid()) return;
+
+        m_chain->branch("cd_time_s", m_cd_time_s);
+        m_chain->branch("cd_time_ns", m_cd_time_ns);
+        m_chain->branch("muon_classification", m_muon_classification);
+        m_chain->branch("Single_enterX", m_Single_enterX);
+        m_chain->branch("Single_enterY", m_Single_enterY);
+        m_chain->branch("Single_enterZ", m_Single_enterZ);
+        m_chain->branch("Single_exitX", m_Single_exitX);
+        m_chain->branch("Single_exitY", m_Single_exitY);
+        m_chain->branch("Single_exitZ", m_Single_exitZ);
+        m_chain->branch("Double_enterX_1", m_Double_enterX_1);
+        m_chain->branch("Double_enterY_1", m_Double_enterY_1);
+        m_chain->branch("Double_enterZ_1", m_Double_enterZ_1);
+        m_chain->branch("Double_exitX_1", m_Double_exitX_1);
+        m_chain->branch("Double_exitY_1", m_Double_exitY_1);
+        m_chain->branch("Double_exitZ_1", m_Double_exitZ_1);
+        m_chain->branch("Double_enterX_2", m_Double_enterX_2);
+        m_chain->branch("Double_enterY_2", m_Double_enterY_2);
+        m_chain->branch("Double_enterZ_2", m_Double_enterZ_2);
+        m_chain->branch("Double_exitX_2", m_Double_exitX_2);
+        m_chain->branch("Double_exitY_2", m_Double_exitY_2);
+        m_chain->branch("Double_exitZ_2", m_Double_exitZ_2);
     }
 
     virtual ~muon_event_user_edwin_navigator() override = default;

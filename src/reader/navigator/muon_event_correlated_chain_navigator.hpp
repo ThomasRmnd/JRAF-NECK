@@ -49,6 +49,12 @@ public:
         std::cout << "[Debug]: after adding Amber, currently having " << muons.size() << " muons\n";
         append_correlated(m_edwin_nav, lo, hi);
         std::cout << "[Debug]: after adding Edwin, currently having " << muons.size() << " muons\n";
+        for (const track muon : muons) {
+            if (muon.method == "Tt") {
+                std::cout << "[Debug]:  Event has already Tt reconstruction\n";
+                break;
+            }
+        }
         append_correlated(m_tt_nav,    lo, hi);
         std::cout << "[Debug]: after adding TT, currently having " << muons.size() << " muons\n";
 

@@ -39,8 +39,8 @@ public:
     virtual bool entry(std::ptrdiff_t n) override {
         std::cout << "[Debug]: get entry " << n << ", currently having " << muons.size() << " muons\n";
         if (!muon_event_navigator::entry(n)) return false;
+        std::cout << "[Debug]: get entry " << n << ", currently having " << muons.size() << " muons\n";
         if (muons.empty()) return true;
-
         std::cout << "[Debug]: get entry " << n << ", currently having " << muons.size() << " muons\n";
 
         const timestamp ts  = muons.front().ts;

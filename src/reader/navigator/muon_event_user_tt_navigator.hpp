@@ -39,7 +39,9 @@ public:
 
         muons.clear();
         if (m_NTracks != 1) return true;
+        std::cout << "      [Debug]: Tt reconstruction has exactly 1 track\n";
         if (m_NPoints[3] < 3) return true;
+        std::cout << "      [Debug]: Tt reconstruction has more than 3 points\n";
 
         std::unordered_set<int> layers_hit;
         layers_hit.reserve(6);
@@ -49,6 +51,7 @@ public:
             layers_hit.insert(lid);
         }
         if (layers_hit.size() < 3) return true;
+        std::cout << "      [Debug]: Tt reconstruction has more than 3 points on 3 different layers\n";
 
         vec3 ipos{m_Coeff0[0], m_Coeff1[0], m_Coeff2[0] + 26452.0};
         vec3 dir = unit(vec3{m_Coeff3[0], m_Coeff4[0], m_Coeff5[0]});

@@ -42,7 +42,7 @@ public:
 
         muons.clear();
         std::cout << "[Debug]: (3) get entry " << n << ", currently having " << muons.size() << " muons\n";
-        if (m_method.empty()) return true;
+        // if (m_method.empty()) return true;
         std::cout << "[Debug]: (4) get entry " << n << ", currently having " << muons.size() << " muons\n";
         muons.reserve(m_method.size());
         std::cout << "[Debug]: (5) get entry " << n << ", currently having " << muons.size() << " muons\n";

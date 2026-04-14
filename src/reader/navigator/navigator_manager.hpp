@@ -7,8 +7,8 @@ class navigator_manager {
 
 public:
 
-    template<typename _Nav>
-    static std::shared_ptr<_Nav> retrieve(const std::string& filepath, const std::string& treename) {
+    template<typename _Nav, typename... _Args>
+    static std::shared_ptr<_Nav> retrieve(const std::string& filepath, const std::string& treename, _Args&&... args) {
         std::string key = typeid(_Nav).name();
         key += "::" + filepath + "::" + treename;
 
@@ -24,7 +24,7 @@ public:
         }
 
         std::cout << "Creating new Navigator for " << key << '\n';
-        std::shared_ptr<_Nav> nav(new _Nav(filepath, treename));
+        std::shared_ptr<_Nav> nav(new _Nav(filepath, treename, std::forward<_Args>(args)...));
         
         if (!nav->is_valid()) {
             std::cerr << "Failed to create and validate Navigator " << key << '\n';

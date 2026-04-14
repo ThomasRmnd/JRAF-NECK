@@ -65,11 +65,12 @@ protected:
     void append_correlated(std::shared_ptr<_Nav>& nav, const timestamp& lo_ts, const timestamp& hi_ts) {
         const std::ptrdiff_t lower = lower_bound_in_navigator(nav, lo_ts);
         const std::ptrdiff_t upper = upper_bound_in_navigator(nav, hi_ts);
-        std::cout << "[Debug]: " << typeid(_Nav).name() << " lower bound is " << lower << ", upper bound is " << upper << '\n';
+        std::cout << "  [Debug]: " << "lower bound is " << lo_ts << ", upper bound is " << hi_ts << '\n';
+        std::cout << "  [Debug]: " << typeid(_Nav).name() << " lower bound index is " << lower << ", upper bound index is " << upper << '\n';
 
         for (std::ptrdiff_t i = lower; i < upper; ++i) {
             nav->entry(i);
-            std::cout << "[Debug]: " << typeid(_Nav).name() << " entry " << i << " has timestamp " << nav->ts() << '\n';
+            std::cout << "    [Debug]: " << typeid(_Nav).name() << " entry " << i << " has timestamp " << nav->ts() << '\n';
             muons.insert(muons.end(), nav->muons.begin(), nav->muons.end());
         }
     }

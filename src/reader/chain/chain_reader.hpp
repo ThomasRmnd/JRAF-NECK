@@ -11,7 +11,7 @@ class chain_reader {
 public:
 
     bool is_valid() const {
-        return m_chain != nullptr && m_chain->GetEntries() > 0;
+        return m_chain != nullptr;
     }
 
     std::size_t size() const {

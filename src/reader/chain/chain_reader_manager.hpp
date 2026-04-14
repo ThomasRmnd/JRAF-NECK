@@ -12,17 +12,17 @@ public:
 
     static std::shared_ptr<chain_reader> retrieve(const std::string& filepath, const std::string& treename) {
         std::string key = filepath + "::" + treename;
-        map_type::iterator it = s_cache.find(key);
-        if (it != s_cache.end()) {
-            if (std::shared_ptr<chain_reader> existing = it->second.lock()) {
-                std::cout << "Reusing existing chain for " << key << '\n';
-                return existing;
-            }
-            s_cache.erase(it);
-        }
+        // map_type::iterator it = s_cache.find(key);
+        // if (it != s_cache.end()) {
+        //     if (std::shared_ptr<chain_reader> existing = it->second.lock()) {
+        //         std::cout << "Reusing existing chain for " << key << '\n';
+        //         return existing;
+        //     }
+        //     s_cache.erase(it);
+        // }
         std::cout << "Creating new chain for " << key << '\n';
         std::shared_ptr<chain_reader> chain(new chain_reader(filepath, treename));
-        s_cache[key] = chain;
+        // s_cache[key] = chain;
         return chain;
     }
 

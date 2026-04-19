@@ -54,6 +54,7 @@ public:
         return true;
     }
 
+    virtual timestamp ts() const override { return timestamp{m_sec, m_nsec}; }
 
     int run_id;
     std::vector<track> muons;

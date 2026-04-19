@@ -46,6 +46,8 @@ public:
         return true;
     }
 
+    virtual timestamp ts() const override { return timestamp{static_cast<time_t>(m_fSec), m_fNanoSec}; }
+
     int run_id;
     std::vector<track> muons;
 
@@ -63,10 +65,6 @@ protected:
     float m_yout;
     float m_zout;
     float m_charge;
-
-    timestamp ts() const { return timestamp{static_cast<time_t>(m_fSec), m_fNanoSec}; }
-
-    friend class muon_event_correlated_chain_navigator;
 
 };
 

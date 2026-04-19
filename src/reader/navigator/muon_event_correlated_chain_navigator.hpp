@@ -61,6 +61,8 @@ public:
         return true;
     }
 
+    virtual timestamp ts() const override { return timestamp{m_sec, m_nsec}; }
+
 protected:
 
     std::shared_ptr<muon_event_user_amber_navigator> m_amber_nav;

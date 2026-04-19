@@ -23,6 +23,8 @@ public:
 
     virtual ~daq_navigator() override = default;
 
+    virtual timestamp ts() const override { return timestamp{start_sec, start_nsec}; }
+
     int run_id;
 
     time_t start_sec;

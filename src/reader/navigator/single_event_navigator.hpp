@@ -35,6 +35,8 @@ public:
 
     virtual ~single_event_navigator() override = default;
 
+    virtual timestamp ts() const override { return single.ts; }
+
     int run_id;
     vertex single;
 

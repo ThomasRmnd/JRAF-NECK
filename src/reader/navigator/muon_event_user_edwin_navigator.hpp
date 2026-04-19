@@ -71,6 +71,8 @@ public:
         return true;
     }
 
+    virtual timestamp ts() const override { return timestamp{static_cast<time_t>(m_cd_time_s), static_cast<int>(m_cd_time_ns)}; }
+
     std::vector<track> muons;
 
 protected:
@@ -96,10 +98,6 @@ protected:
     float m_Double_exitX_2;
     float m_Double_exitY_2;
     float m_Double_exitZ_2;
-
-    timestamp ts() const { return timestamp{static_cast<time_t>(m_cd_time_s), static_cast<int>(m_cd_time_ns)}; }
-
-    friend class muon_event_correlated_chain_navigator;
 
 };
 

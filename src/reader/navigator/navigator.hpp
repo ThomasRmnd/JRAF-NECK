@@ -24,6 +24,8 @@ public:
 
     virtual bool entry(std::ptrdiff_t n) { return m_chain->entry(n); }
 
+    virtual timestamp ts() const = 0;
+
 
 protected:
 

@@ -147,6 +147,8 @@ public:
         return true;
     }
 
+    virtual timestamp ts() const override { return prompt.ts; }
+
     int run_id;
 
     vertex prompt;

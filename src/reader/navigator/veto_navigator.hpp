@@ -25,6 +25,8 @@ public:
 
     virtual ~veto_navigator() override = default;
 
+    virtual timestamp ts() const override { return timestamp{sec, nsec}; }
+
     int run_id;
 
     time_t sec;

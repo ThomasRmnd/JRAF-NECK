@@ -67,6 +67,8 @@ public:
         return true;
     }
 
+    virtual timestamp ts() const override { return timestamp{m_start_TS->GetSec(), m_start_TS->GetNanoSec()}; }
+
     std::vector<track> muons;
 
 protected:
@@ -97,10 +99,6 @@ protected:
 
         return -1; // not inside any valid layer
     }
-
-    timestamp ts() const { return timestamp{m_start_TS->GetSec(), m_start_TS->GetNanoSec()}; }
-
-    friend class muon_event_correlated_chain_navigator;
 
 };
 

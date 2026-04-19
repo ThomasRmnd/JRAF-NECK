@@ -36,7 +36,7 @@ public:
             std::cerr << "TT chain of filepath " << tt_filepath << " and treename " << tt_treename << " is not valid\n";
             return;
         }
-        m_tt_corr = std::make_shared<first_binary_to_linear_correlator>(m_tt_nav);
+        m_tt_corr = std::make_shared<binary_search_correlator>(m_tt_nav);
     }
 
     virtual ~muon_event_correlated_chain_navigator() override = default;

@@ -64,6 +64,8 @@ public:
             m_Chi2[0], 4
         );
 
+        std::cout << "      [Debug]: track vector size " << muons.size() << '\n';
+
         return true;
     }
 

@@ -87,7 +87,7 @@ protected:
     double m_Coeff4[20];
     double m_Coeff5[20];
     double m_Chi2[20];
-    TTimeStamp* m_start_TS;
+    TTimeStamp* m_start_TS = nullptr;
 
     int get_tt_layer_id(double z) {
         if (24000.0 <= z && z <= 25000.0) return 0;  // main

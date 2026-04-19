@@ -44,29 +44,22 @@ public:
     virtual bool entry(std::ptrdiff_t n) override {
         if (!muon_event_navigator::entry(n)) return false;
         if (muons.empty()) return true;
-        std::cout << "[Debug]: get entry " << n << ", currently having " << muons.size() << " muons\n";
 
         const timestamp ts  = muons.front().ts;
         const timestamp lo  = ts + timestamp{0, -1000};
         const timestamp hi  = ts + timestamp{0,  1000};
 
-        std::cout << "[Debug]: time range low = " << lo << ", high = " << hi << '\n';
-
         corrlator_results res = m_amber_corr->correlate(lo, hi);
         append_correlated(m_amber_nav, res);
-        std::cout << "[Debug]: after adding Amber, currently having " << muons.size() << " muons\n";
         res = m_edwin_corr->correlate(lo, hi);
         append_correlated(m_edwin_nav, res);
-        std::cout << "[Debug]: after adding Edwin, currently having " << muons.size() << " muons\n";
         for (const track muon : muons) {
             if (muon.method == "Tt") {
-                std::cout << "[Debug]:  Event has already Tt reconstruction\n";
                 break;
             }
         }
         res = m_tt_corr->correlate(lo, hi);
         append_correlated(m_tt_nav, res);
-        std::cout << "[Debug]: after adding TT, currently having " << muons.size() << " muons\n";
 
         return true;
     }
@@ -84,11 +77,9 @@ protected:
 
     template<typename _Nav>
     void append_correlated(std::shared_ptr<_Nav>& nav, const corrlator_results& res) {
-        std::cout << "  [Debug]: " << typeid(_Nav).name() << " lower bound index is " << res.lower << ", upper bound index is " << res.upper << '\n';
 
         for (std::ptrdiff_t i = res.lower; i < res.upper; ++i) {
             nav->entry(i);
-            std::cout << "    [Debug]: " << typeid(_Nav).name() << " entry " << i << " has timestamp " << nav->ts() << '\n';
             muons.insert(muons.end(), nav->muons.begin(), nav->muons.end());
         }
     }

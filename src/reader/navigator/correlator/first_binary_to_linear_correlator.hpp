@@ -24,17 +24,15 @@ public:
         timestamp cur_ts = m_last_ts;
         std::ptrdiff_t lower = cur_idx, upper = cur_idx;
         while (cur_ts < lo) {
-            m_nav->entry(cur_idx);
+            m_nav->entry(++cur_idx);
             cur_ts = m_nav->ts();
-            ++cur_idx;
         }
         lower = cur_idx;
         m_last_idx = cur_idx;
         m_last_ts = cur_ts;
         while (cur_ts < hi) {
-            m_nav->entry(cur_idx);
+            m_nav->entry(++cur_idx);
             cur_ts = m_nav->ts();
-            ++cur_idx;
         }
         upper = cur_idx;
         return {lower, upper};

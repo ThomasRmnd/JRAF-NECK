@@ -7,6 +7,8 @@
 #include "reader/navigator/muon_event_user_edwin_navigator.hpp"
 #include "reader/navigator/muon_event_user_tt_navigator.hpp"
 #include "reader/navigator/navigator_manager.hpp"
+#include "reader/navigator/correlator/binary_search_correlator.hpp"
+#include "reader/navigator/correlator/first_binary_to_linear_correlator.hpp"
 
 class muon_event_correlated_chain_navigator : public muon_event_navigator {
 
@@ -22,16 +24,19 @@ public:
             std::cerr << "Amber chain of filepath " << amber_filepath << " and treename " << amber_treename << " is not valid\n";
             return;
         }
+        m_amber_corr = std::make_shared<first_binary_to_linear_correlator>(m_amber_nav);
         m_edwin_nav = navigator_manager::retrieve<muon_event_user_edwin_navigator>(edwin_filepath, edwin_treename);
         if (!m_edwin_nav->is_valid()) {
             std::cerr << "Edwin chain of filepath " << edwin_filepath << " and treename " << edwin_treename << " is not valid\n";
             return;
         }
+        m_edwin_corr = std::make_shared<binary_search_correlator>(m_edwin_nav);
         m_tt_nav = navigator_manager::retrieve<muon_event_user_tt_navigator>(tt_filepath, tt_treename);
         if (!m_tt_nav->is_valid()) {
             std::cerr << "TT chain of filepath " << tt_filepath << " and treename " << tt_treename << " is not valid\n";
             return;
         }
+        m_tt_corr = std::make_shared<first_binary_to_linear_correlator>(m_tt_nav);
     }
 
     virtual ~muon_event_correlated_chain_navigator() override = default;
@@ -45,9 +50,11 @@ public:
         const timestamp lo  = ts + timestamp{0, -1000};
         const timestamp hi  = ts + timestamp{0,  1000};
 
-        append_correlated(m_amber_nav, lo, hi);
+        corrlator_results res = m_amber_corr->correlate(lo, hi);
+        append_correlated(m_amber_nav, res);
         std::cout << "[Debug]: after adding Amber, currently having " << muons.size() << " muons\n";
-        append_correlated(m_edwin_nav, lo, hi);
+        res = m_edwin_corr->correlate(lo, hi);
+        append_correlated(m_edwin_nav, res);
         std::cout << "[Debug]: after adding Edwin, currently having " << muons.size() << " muons\n";
         for (const track muon : muons) {
             if (muon.method == "Tt") {
@@ -55,7 +62,8 @@ public:
                 break;
             }
         }
-        append_correlated(m_tt_nav,    lo, hi);
+        res = m_tt_corr->correlate(lo, hi);
+        append_correlated(m_tt_nav, res);
         std::cout << "[Debug]: after adding TT, currently having " << muons.size() << " muons\n";
 
         return true;
@@ -66,49 +74,21 @@ public:
 protected:
 
     std::shared_ptr<muon_event_user_amber_navigator> m_amber_nav;
+    std::shared_ptr<correlator_base> m_amber_corr;
     std::shared_ptr<muon_event_user_edwin_navigator> m_edwin_nav;
+    std::shared_ptr<correlator_base> m_edwin_corr;
     std::shared_ptr<muon_event_user_tt_navigator> m_tt_nav;
+    std::shared_ptr<correlator_base> m_tt_corr;
 
     template<typename _Nav>
-    void append_correlated(std::shared_ptr<_Nav>& nav, const timestamp& lo_ts, const timestamp& hi_ts) {
-        const std::ptrdiff_t lower = lower_bound_in_navigator(nav, lo_ts);
-        const std::ptrdiff_t upper = upper_bound_in_navigator(nav, hi_ts);
-        std::cout << "  [Debug]: " << "lower bound is " << lo_ts << ", upper bound is " << hi_ts << '\n';
-        std::cout << "  [Debug]: " << typeid(_Nav).name() << " lower bound index is " << lower << ", upper bound index is " << upper << '\n';
+    void append_correlated(std::shared_ptr<_Nav>& nav, const corrlator_results& res) {
+        std::cout << "  [Debug]: " << typeid(_Nav).name() << " lower bound index is " << res.lower << ", upper bound index is " << res.upper << '\n';
 
-        for (std::ptrdiff_t i = lower; i < upper; ++i) {
+        for (std::ptrdiff_t i = res.lower; i < res.upper; ++i) {
             nav->entry(i);
             std::cout << "    [Debug]: " << typeid(_Nav).name() << " entry " << i << " has timestamp " << nav->ts() << '\n';
             muons.insert(muons.end(), nav->muons.begin(), nav->muons.end());
         }
-    }
-
-    template<typename _Nav>
-    std::ptrdiff_t lower_bound_in_navigator(std::shared_ptr<_Nav>& nav, const timestamp& target) {
-        std::ptrdiff_t lo = 0;
-        std::ptrdiff_t hi = static_cast<std::ptrdiff_t>(nav->size());
-
-        while (lo < hi) {
-            const std::ptrdiff_t mid = lo + (hi - lo) / 2;
-            nav->entry(mid);
-            if (nav->ts() < target) lo = mid + 1;
-            else                    hi = mid;
-        }
-        return lo;
-    }
-
-    template<typename _Nav>
-    std::ptrdiff_t upper_bound_in_navigator(std::shared_ptr<_Nav>& nav, const timestamp& target) {
-        std::ptrdiff_t lo = 0;
-        std::ptrdiff_t hi = static_cast<std::ptrdiff_t>(nav->size());
-
-        while (lo < hi) {
-            const std::ptrdiff_t mid = lo + (hi - lo) / 2;
-            nav->entry(mid);
-            if (!(target < nav->ts())) lo = mid + 1;
-            else                       hi = mid;
-        }
-        return lo;
     }
 
 };

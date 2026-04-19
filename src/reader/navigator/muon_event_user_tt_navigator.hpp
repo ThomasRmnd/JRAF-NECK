@@ -40,7 +40,7 @@ public:
         muons.clear();
         if (m_NTracks != 1) return true;
         std::cout << "      [Debug]: (" << n << ") Tt reconstruction has exactly 1 track\n";
-        if (m_NPoints[3] < 3) return true;
+        if (m_NPoints[0] < 3) return true;
         std::cout << "      [Debug]: (" << n << ") Tt reconstruction has more than 3 points\n";
 
         std::unordered_set<int> layers_hit;

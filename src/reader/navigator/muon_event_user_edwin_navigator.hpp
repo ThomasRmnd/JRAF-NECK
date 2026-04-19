@@ -19,9 +19,9 @@ public:
         m_chain->branch("Single_enterX", m_Single_enterX);
         m_chain->branch("Single_enterY", m_Single_enterY);
         m_chain->branch("Single_enterZ", m_Single_enterZ);
-        m_chain->branch("Single_exitX", m_Single_exitX);
-        m_chain->branch("Single_exitY", m_Single_exitY);
-        m_chain->branch("Single_exitZ", m_Single_exitZ);
+        m_chain->branch("Single_exit_X", m_Single_exitX);
+        m_chain->branch("Single_exit_Y", m_Single_exitY);
+        m_chain->branch("Single_exit_Z", m_Single_exitZ);
         m_chain->branch("Double_enterX_1", m_Double_enterX_1);
         m_chain->branch("Double_enterY_1", m_Double_enterY_1);
         m_chain->branch("Double_enterZ_1", m_Double_enterZ_1);

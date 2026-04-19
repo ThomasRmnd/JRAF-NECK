@@ -4,7 +4,6 @@
 #include "event/vertex.hpp"
 #include "reader/containers/vector_reader.hpp"
 #include "reader/navigator/navigator.hpp"
-#include "utils/timestamp.hpp"
 
 struct neutron {
 

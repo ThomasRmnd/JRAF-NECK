@@ -3,6 +3,7 @@
 
 #include "reader/chain/chain_reader.hpp"
 #include "reader/chain/chain_reader_manager.hpp"
+#include "utils/timestamp.hpp"
 
 class navigator_base {
 

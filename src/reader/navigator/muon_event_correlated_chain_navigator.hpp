@@ -25,12 +25,14 @@ public:
             return;
         }
         m_amber_corr = std::make_shared<first_binary_to_linear_correlator>(m_amber_nav);
+    
         m_edwin_nav = navigator_manager::retrieve<muon_event_user_edwin_navigator>(edwin_filepath, edwin_treename);
         if (!m_edwin_nav->is_valid()) {
             std::cerr << "Edwin chain of filepath " << edwin_filepath << " and treename " << edwin_treename << " is not valid\n";
             return;
         }
-        m_edwin_corr = std::make_shared<binary_search_correlator>(m_edwin_nav);
+        m_edwin_corr = std::make_shared<first_binary_to_linear_correlator>(m_edwin_nav);
+    
         m_tt_nav = navigator_manager::retrieve<muon_event_user_tt_navigator>(tt_filepath, tt_treename);
         if (!m_tt_nav->is_valid()) {
             std::cerr << "TT chain of filepath " << tt_filepath << " and treename " << tt_treename << " is not valid\n";

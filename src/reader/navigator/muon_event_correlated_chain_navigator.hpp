@@ -50,6 +50,8 @@ public:
         const timestamp lo  = ts + timestamp{0, -1000};
         const timestamp hi  = ts + timestamp{0,  1000};
 
+        std::cout << "[Debug]: time range low = " << lo << ", high = " << hi << '\n';
+
         corrlator_results res = m_amber_corr->correlate(lo, hi);
         append_correlated(m_amber_nav, res);
         std::cout << "[Debug]: after adding Amber, currently having " << muons.size() << " muons\n";

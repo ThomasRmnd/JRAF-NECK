@@ -78,7 +78,7 @@ parse_args() {
             ;;
         EDWIN)
             IO_DIRECTORY="${IO_DIRECTORY_EDWIN}"
-            FILENAME="muonReco_EDWIN_run${RUN}.root"
+            FILENAME="RUN${RUN}-user.root"
             TREENAME="${TREENAME_EDWIN}"
             ;;
         *) 

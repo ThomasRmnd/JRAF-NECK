@@ -60,7 +60,7 @@ public:
     }
 
     timestamp_value get() const override {
-        return {sec, nsec};
+        return {static_cast<time_t>(sec), static_cast<int>(nsec)};
     }
 
 private:

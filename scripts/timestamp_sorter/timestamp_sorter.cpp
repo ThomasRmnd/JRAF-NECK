@@ -92,7 +92,6 @@ bool operator<(const entry& lhs, const entry& rhs) {
 }
 
 int timestamp_sorter(const char* input, const char* treename, const char* output) {
-
     TFile* fin = TFile::Open(input, "READ");
     if (!fin) {
         std::cerr << "Error: cannot open input file " << input << '\n';

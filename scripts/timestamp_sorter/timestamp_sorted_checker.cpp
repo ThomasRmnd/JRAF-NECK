@@ -78,7 +78,6 @@ std::unique_ptr<timestamp_reader> make_reader(const std::string& treename) {
 }
 
 int timestamp_sorted_checker(const char* input, const char* treename) {
-
     TFile* fin = TFile::Open(input, "READ");
     if (!fin) {
         std::cerr << "Error: cannot open file " << input << '\n';

@@ -4,6 +4,10 @@
 
 ### `src`
 
+### `jobs`
+
+Jobs need to be launch in the `jobs` directory in order to work.
+
 ### `scripts`
 
 #### `timestamp_sorter`

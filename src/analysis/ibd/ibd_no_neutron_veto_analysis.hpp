@@ -34,6 +34,7 @@ public:
 
         std::size_t nb_multu_veto = 0ul;
         for (const vertex& multiplicity : m_nav->multiplicities) {
+            if (multiplicity.ts == prompt.ts || multiplicity.ts == delayed.ts) continue; 
             vertex mult{multiplicity};
             mult.e /= m_gtc.interpolate(mult.ts);
             if (!c_multiplicity_energy_cut.is_in(mult)) continue;

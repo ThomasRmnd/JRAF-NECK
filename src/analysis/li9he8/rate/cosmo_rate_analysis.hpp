@@ -7,8 +7,6 @@
 
 class cosmo_rate_analysis : public basic_analysis {
 
-    // Regarder nombre cosmo en fonction du nombre de neutron ==> est-ce que ça suit une loi de poisson
-
 public:
 
     cosmo_rate_analysis(const std::string& name, const std::string& filepath, const std::string& suffix) :

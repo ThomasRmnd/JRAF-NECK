@@ -1,11 +1,9 @@
 #ifndef ANALYSIS_COSMO_RATE_NEUTRON_VETO_ANALYSIS_HPP_
 #define ANALYSIS_COSMO_RATE_NEUTRON_VETO_ANALYSIS_HPP_
 
-#include "analysis/cosmo_rate_analysis.hpp"
+#include "analysis/li9he8/rate/cosmo_rate_analysis.hpp"
 
 class cosmo_rate_neutron_veto_analysis : public cosmo_rate_analysis {
-
-    // Regarder nombre cosmo en fonction du nombre de neutron ==> est-ce que ça suit une loi de poisson
 
 public:
 

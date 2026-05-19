@@ -33,7 +33,8 @@ public:
         m_radius{radius}
     {
         std::string treename = "IBDAnalysis" + suffix;
-        m_nav = navigator_manager::retrieve<ibd_like_event_navigator>(filepath, treename);
+        m_nav = navigator_manager::retrieve<ibd_like_event_correlated_chain_navigator>(filepath, treename, filepath, "NeutronAnalysis" + suffix, filepath, "MultiplicityAnalysis" + suffix, "/sps/juno/jdeandre/rtraw_ThomasRaymond/test/analysis_after_hashmap/reconstruction/RUN.9789.reprod25c.reconstruction.output.root", "muons");
+        // m_nav = navigator_manager::retrieve<ibd_like_event_navigator>(filepath, treename);
         if (!m_nav->is_valid()) {
             std::cerr << "Cannot retrieve navigator of filepath " << filepath << " and treename " << treename << '\n';
             return;
@@ -66,7 +67,7 @@ public:
 
 protected:
 
-    std::shared_ptr<ibd_like_event_navigator> m_nav;
+    std::shared_ptr<ibd_like_event_correlated_chain_navigator> m_nav;
 
     global_scale_factor_corrector m_gtc;
 

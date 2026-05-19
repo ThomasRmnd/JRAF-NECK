@@ -90,8 +90,6 @@ public:
         const timestamp lo = ts + timestamp{-8, 0};
         const timestamp hi = ts + timestamp{8, 0};
 
-        std::cout << "[Debug] Correlating event " << n << " with timestamp " << ts << " in range [" << lo << ", " << hi << "]\n";
-
         neutrons.clear();
         corrlator_results res = m_neu_corr->correlate(lo, hi);
         append_correlated_vertex(m_neu_nav, res, neutrons);
@@ -101,8 +99,6 @@ public:
         res = m_muon_corr->correlate(lo, hi);
         muons.clear();
         append_correlated_track(m_muon_nav, res);
-
-        std::cout << "[Debug] Event " << n << ": " << neutrons.size() << " correlated neutrons, " << multiplicities.size() << " correlated multiplicities, " << muons.size() << " correlated muons\n";
 
         return true;   
     }

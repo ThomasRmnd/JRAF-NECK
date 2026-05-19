@@ -40,6 +40,7 @@ public:
             if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
             ++nb_multu_veto;
         }
+        std::cout << "[Debug] Event: " << nb_multu_veto << " multiplicity vetoes (over " << m_nav->multiplicities.size() << ")\n";
         if (nb_multu_veto) return false;
 
         calculate_dt_to_last_muon();

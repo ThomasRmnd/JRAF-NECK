@@ -83,7 +83,7 @@ public:
 
     virtual ~ibd_like_event_correlated_chain_navigator() override = default;
 
-    virtual bool entry(std::ptrdiff_t n) {
+    virtual bool entry(std::ptrdiff_t n) override {
         if (!navigator_base::entry(n)) return false;
 
         const timestamp ts = prompt.ts;

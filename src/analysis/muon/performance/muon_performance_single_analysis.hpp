@@ -2,7 +2,7 @@
 #define JRAFNECK_ANALYSIS_MUON_PERFORMANCE_MUONPERFORMANCESINGLEANALYSIS_HPP_
 
 #include "analysis/analysis.hpp"
-// #include "reader/navigator/muon_event_navigator.hpp"
+#include "reader/navigator/muon_event_navigator.hpp"
 #include "reader/navigator/muon_event_correlated_chain_navigator.hpp"
 #include "reader/navigator/navigator_manager.hpp"
 
@@ -15,13 +15,13 @@ public:
         m_targetname{targetname},
         m_refname{refname}
     {
-        // m_nav = navigator_manager::retrieve<muon_event_correlated_chain_navigator>(filepath, treename);
-        m_nav = navigator_manager::retrieve<muon_event_correlated_chain_navigator>(
-            filepath, treename, 
-            "/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/Amber_v5.5/muonReco_Amber_v5.5_run9789.root", "MuonReco",
-            "/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/EDWIN/RUN9789-user.root", "Edwin_Muon",
-            "root://xrootd-archive.cr.cnaf.infn.it:1095//production/storm/dirac/juno/user/j/jpandre_1/tt_data_auto/2025/0830/RUN.9789.*.EDM.user.root", "TT"
-        );
+        m_nav = navigator_manager::retrieve<muon_event_navigator>(filepath, treename);
+        // m_nav = navigator_manager::retrieve<muon_event_correlated_chain_navigator>(
+        //     filepath, treename, 
+        //     "/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/Amber_v5.5/muonReco_Amber_v5.5_run9789.root", "MuonReco",
+        //     "/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/EDWIN/RUN9789-user.root", "Edwin_Muon",
+        //     "root://xrootd-archive.cr.cnaf.infn.it:1095//production/storm/dirac/juno/user/j/jpandre_1/tt_data_auto/2025/0830/RUN.9789.*.EDM.user.root", "TT"
+        // );
         if (!m_nav->is_valid()) {
             std::cerr << "Cannot retrieve navigator of filepath " << filepath << " and treename " << treename << '\n';
             return;

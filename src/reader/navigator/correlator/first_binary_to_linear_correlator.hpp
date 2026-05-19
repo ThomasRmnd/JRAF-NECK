@@ -12,6 +12,7 @@ public:
     virtual ~first_binary_to_linear_correlator() override = default;
 
     virtual corrlator_results correlate(const timestamp& lo, const timestamp& hi) override {
+        std::ptrdiff_t size = static_cast<std::ptrdiff_t>(m_nav->size());
         if (m_is_first_search) {
             m_is_first_search = false;
             corrlator_results res = binary_search_correlator::correlate(lo, hi);
@@ -23,7 +24,7 @@ public:
         std::ptrdiff_t cur_idx = m_last_idx;
         timestamp cur_ts = m_last_ts;
         std::ptrdiff_t lower = cur_idx, upper = cur_idx;
-        while (cur_ts < lo) {
+        while (cur_ts < lo && cur_idx < size) {
             m_nav->entry(++cur_idx);
             std::cout << "[Test] Advancing lower bound: idx = " << cur_idx << ", ts = " << cur_ts << '\n';
             cur_ts = m_nav->ts();
@@ -31,7 +32,7 @@ public:
         lower = cur_idx;
         m_last_idx = cur_idx;
         m_last_ts = cur_ts;
-        while (cur_ts < hi) {
+        while (cur_ts < hi && cur_idx < size) {
             m_nav->entry(++cur_idx);
             std::cout << "[Test] Advancing upper bound: idx = " << cur_idx << ", ts = " << cur_ts << '\n';
             cur_ts = m_nav->ts();

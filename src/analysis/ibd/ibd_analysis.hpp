@@ -8,6 +8,7 @@
 #include "analysis/analysis.hpp"
 #include "event/ibd.hpp"
 #include "reader/navigator/ibd_like_event_navigator.hpp"
+#include "reader/navigator/ibd_like_event_correlated_chain_navigator.hpp"
 #include "reader/navigator/navigator_manager.hpp"
 #include "utils/muon_lookup.hpp"
 #include "utils/scale_factor.hpp"
@@ -33,7 +34,7 @@ public:
         analysis_base{name}
     {
         std::string treename = "IBDAnalysis" + suffix;
-        m_nav = navigator_manager::retrieve<ibd_like_event_navigator>(filepath, treename);
+        m_nav = navigator_manager::retrieve<ibd_like_event_correlated_chain_navigator>(filepath, treename, filepath, "NeutronAnalysis" + suffix, filepath, "MultiplicityAnalysis" + suffix, "/sps/juno/jdeandre/rtraw_ThomasRaymond/test/analysis_after_hashmap/reconstruction/RUN.9789.reprod25c.reconstruction.output.root", "muons");
         if (!m_nav->is_valid()) {
             std::cerr << "Cannot retrieve navigator of filepath " << filepath << " and treename " << treename << '\n';
             return;
@@ -62,7 +63,7 @@ public:
 
 protected:
 
-    std::shared_ptr<ibd_like_event_navigator> m_nav;
+    std::shared_ptr<ibd_like_event_correlated_chain_navigator> m_nav;
 
     global_scale_factor_corrector m_gtc;
 

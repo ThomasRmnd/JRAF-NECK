@@ -56,7 +56,9 @@ public:
         if (m_nav->muons.empty()) return false;
         std::vector<track>::const_iterator it_target = std::find_if(m_nav->muons.begin(), m_nav->muons.end(), [&](const track& t) { return t.method == m_targetname; });
         std::vector<track>::const_iterator it_ref = std::find_if(m_nav->muons.begin(), m_nav->muons.end(), [&](const track& t) { return t.method == m_refname; });
-        return it_target != m_nav->muons.end() && it_ref != m_nav->muons.end();
+        std::size_t nb_cd_muons = std::count_if(m_nav->muons.begin(), m_nav->muons.end(), [&](const track& t) { return t.method == "CdClassify"; });
+        std::size_t nb_wp_muons = std::count_if(m_nav->muons.begin(), m_nav->muons.end(), [&](const track& t) { return t.method == "WpBasic"; });
+        return it_target != m_nav->muons.end() && it_ref != m_nav->muons.end() && nb_cd_muons == 1ul && nb_wp_muons == 1ul;
     }
 
     bool process() override {

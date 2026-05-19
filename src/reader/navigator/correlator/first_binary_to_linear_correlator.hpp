@@ -26,7 +26,6 @@ public:
         std::ptrdiff_t lower = cur_idx, upper = cur_idx;
         while (cur_ts < lo && cur_idx < size) {
             m_nav->entry(++cur_idx);
-            std::cout << "[Test] Advancing lower bound: idx = " << cur_idx << ", ts = " << cur_ts << '\n';
             cur_ts = m_nav->ts();
         }
         lower = cur_idx;
@@ -34,7 +33,6 @@ public:
         m_last_ts = cur_ts;
         while (cur_ts < hi && cur_idx < size) {
             m_nav->entry(++cur_idx);
-            std::cout << "[Test] Advancing upper bound: idx = " << cur_idx << ", ts = " << cur_ts << '\n';
             cur_ts = m_nav->ts();
         }
         upper = cur_idx;

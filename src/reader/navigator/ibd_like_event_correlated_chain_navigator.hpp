@@ -90,13 +90,16 @@ public:
         const timestamp lo = ts + timestamp{0, -1000};
         const timestamp hi = ts + timestamp{0,  1000};
 
+        neutrons.clear();
         corrlator_results res = m_neu_corr->correlate(lo, hi);
         std::cout << "[Debug] Correlated neutrons for event " << n << ": " << res.lower << " to " << res.upper << '\n';
         append_correlated_vertex(m_neu_nav, res, neutrons);
+        multiplicities.clear();
         res = m_mult_corr->correlate(lo, hi);
         std::cout << "[Debug] Correlated multiplicities for event " << n << ": " << res.lower << " to " << res.upper << '\n';
         append_correlated_vertex(m_mult_nav, res, multiplicities);
         res = m_muon_corr->correlate(lo, hi);
+        muons.clear();
         std::cout << "[Debug] Correlated muons for event " << n << ": " << res.lower << " to " << res.upper << '\n';
         append_correlated_track(m_muon_nav, res);
 

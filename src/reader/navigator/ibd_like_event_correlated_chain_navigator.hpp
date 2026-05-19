@@ -87,8 +87,8 @@ public:
         if (!navigator_base::entry(n)) return false;
 
         const timestamp ts = prompt.ts;
-        const timestamp lo = ts + timestamp{0, -1000};
-        const timestamp hi = ts + timestamp{0,  1000};
+        const timestamp lo = ts + timestamp{-8, 0};
+        const timestamp hi = ts + timestamp{8, 0};
 
         neutrons.clear();
         corrlator_results res = m_neu_corr->correlate(lo, hi);

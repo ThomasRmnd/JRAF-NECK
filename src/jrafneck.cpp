@@ -75,10 +75,10 @@ int jrafneck(const std::string& analysis_filepath, const std::string& reconstruc
 
 
     std::shared_ptr<analysis_base> muon_performance__single__analysis(new muon_performance_single_analysis("muon_performance__single__analysis", reconstruction_filepath, "muons", "CdWpTtChi2", "Tt"));
-    if (!registry.book(muon_performance__single__analysis)) return 1;
+    // if (!registry.book(muon_performance__single__analysis)) return 1;
 
     std::shared_ptr<analysis_base> muon_rate__analysis(new muon_rate_analysis("muon_rate__analysis", reconstruction_filepath, "muons"));
-    if (!registry.book(muon_rate__analysis)) return 1;
+    // if (!registry.book(muon_rate__analysis)) return 1;
 
 
     

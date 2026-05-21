@@ -28,7 +28,10 @@ public:
             }
 
             Long64_t entries = nav->size();
-            std::cout << "\n[Group Start] Processing " << analyses.size() << " analyses over " << entries << " entries\n";
+            std::cout << "\n[Group Start] Processing " << analyses.size() << " analyses over " << entries << " entries:\n";
+            for (const auto& analysis : analyses) {
+                std::cout << "  - " << analysis->name() << '\n';
+            }
             
             for (Long64_t k = 0; k < entries; ++k) {
                 nav->entry(k); 

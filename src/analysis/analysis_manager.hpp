@@ -70,6 +70,7 @@ public:
                     std::cerr << "Cannot create directory " << analysis->name() << " in file " << m_filepath << '\n';
                     return false;
                 }
+                std::cout << "Saving analysis " << analysis->name() << '\n';
                 analysis->save(dir);
             }
         }

@@ -19,6 +19,7 @@ public:
     li9he8_shape_muon_analysis(
         const std::string& name, 
         const std::string& filepath, const std::string& suffix, 
+        const std::string& reconstruction_filepath,
         const std::string& recname,
         const timestamp& sig_low, const timestamp& sig_high, 
         const timestamp& bkg_low, const timestamp& bkg_high, 
@@ -33,7 +34,12 @@ public:
         m_radius{radius}
     {
         std::string treename = "IBDAnalysis" + suffix;
-        m_nav = navigator_manager::retrieve<ibd_like_event_correlated_chain_navigator>(filepath, treename, filepath, "NeutronAnalysis" + suffix, filepath, "MultiplicityAnalysis" + suffix, "/sps/juno/jdeandre/rtraw_ThomasRaymond/test/analysis_after_hashmap/reconstruction/RUN.9789.reprod25c.reconstruction.output.root", "muons");
+        m_nav = navigator_manager::retrieve<ibd_like_event_correlated_chain_navigator>(
+            filepath, treename, 
+            filepath, "NeutronAnalysis" + suffix, 
+            filepath, "MultiplicityAnalysis" + suffix, 
+            reconstruction_filepath, "muons"
+        );
         // m_nav = navigator_manager::retrieve<ibd_like_event_navigator>(filepath, treename);
         if (!m_nav->is_valid()) {
             std::cerr << "Cannot retrieve navigator of filepath " << filepath << " and treename " << treename << '\n';

@@ -14,10 +14,11 @@ public:
     ibd_no_neutron_veto_muon_veto_analysis(
         const std::string& name, 
         const std::string& filepath, const std::string& suffix,
+        const std::string& reconstruction_filepath, 
         const std::string& recname,
         const timestamp& low, const timestamp& high, double radius
     ) :
-        ibd_analysis{name, filepath, suffix},
+        ibd_analysis{name, filepath, suffix, reconstruction_filepath},
         m_recname{recname},
         m_ts_low{low},
         m_ts_high{high},

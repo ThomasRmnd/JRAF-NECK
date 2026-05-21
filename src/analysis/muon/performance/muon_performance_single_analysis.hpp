@@ -10,7 +10,14 @@ class muon_performance_single_analysis : public analysis_base {
 
 public:
 
-    muon_performance_single_analysis(const std::string& name, const std::string& filepath, const std::string& treename, const std::string& targetname, const std::string& refname) :
+    muon_performance_single_analysis(
+        const std::string& name, 
+        const std::string& filepath, const std::string& treename, 
+        const std::string& edwin_filepath,
+        const std::string& amber_filepath,
+        const std::string& tt_filepath,
+        const std::string& targetname, const std::string& refname
+    ) :
         analysis_base{name},
         m_targetname{targetname},
         m_refname{refname}
@@ -18,9 +25,9 @@ public:
         // m_nav = navigator_manager::retrieve<muon_event_navigator>(filepath, treename);
         m_nav = navigator_manager::retrieve<muon_event_correlated_chain_navigator>(
             filepath, treename, 
-            "/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/Amber_v5.5/muonReco_Amber_v5.5_run9789.root", "MuonReco",
-            "/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/EDWIN/RUN9789-user.root", "Edwin_Muon",
-            "root://xrootd-archive.cr.cnaf.infn.it:1095//production/storm/dirac/juno/user/j/jpandre_1/tt_data_auto/2025/0830/RUN.9789.*.EDM.user.root", "TT"
+            amber_filepath, "MuonReco",
+            edwin_filepath, "Edwin_Muon",
+            tt_filepath, "TT"
         );
         if (!m_nav->is_valid()) {
             std::cerr << "Cannot retrieve navigator of filepath " << filepath << " and treename " << treename << '\n';

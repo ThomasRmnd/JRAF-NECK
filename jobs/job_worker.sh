@@ -114,15 +114,15 @@ main() {
 
     parse_args "$@"
 
-    # OUTPUT_DIRECTORY="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/ibd/summary/jrafneck"
-    OUTPUT_DIRECTORY="/sps/juno/jdeandre/rtraw_ThomasRaymond/test/jrafneck"
+    OUTPUT_DIRECTORY="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/ibd/jrafneck"
+    # OUTPUT_DIRECTORY="/sps/juno/jdeandre/rtraw_ThomasRaymond/test/jrafneck"
     mkdir -p "${OUTPUT_DIRECTORY}" || {
         log ERROR "Failed to create directory: ${OUTPUT_DIRECTORY}"
         exit 1
     }
 
-    # ANALYSIS_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/ibd/summary/RUN.${RUN}.${INPUT_ANALYSIS_SUFFIX}"
-    ANALYSIS_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/test/RUN.${RUN}.output.root"
+    ANALYSIS_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/ibd/summary/RUN.${RUN}.${INPUT_ANALYSIS_SUFFIX}"
+    # ANALYSIS_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/test/RUN.${RUN}.output.root"
     if [[ ! -f "${ANALYSIS_FILEPATH}" ]]; then
         log ERROR "Missing analysis file: ${ANALYSIS_FILEPATH}"
         exit 1
@@ -134,6 +134,20 @@ main() {
         exit 1
     fi
 
+    RECONSTRUCTION_EDWIN_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/EDWIN/RUN${RUN}-user.root"
+    if [[ ! -f "${RECONSTRUCTION_EDWIN_FILEPATH}" ]]; then
+        log ERROR "Missing EDWIN reconstruction file: ${RECONSTRUCTION_EDWIN_FILEPATH}"
+        exit 1
+    fi
+
+    RECONSTRUCTION_AMBER_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/Amber_v5.5/muonReco_Amber_v5.5_run${RUN}.root"
+    if [[ ! -f "${RECONSTRUCTION_AMBER_FILEPATH}" ]]; then
+        log ERROR "Missing Amber reconstruction file: ${RECONSTRUCTION_AMBER_FILEPATH}"
+        exit 1
+    fi
+
+    RECONSTRUCTION_TT_FILEPATH=""
+
     OUTPUT_FILEPATH="${OUTPUT_DIRECTORY}/RUN.${RUN}.${OUTPUT_SUFFIX}"
 
     source /pbs/home/t/traymond/J25.7.4/git_junosw_load_J25_7_4.sh
@@ -143,7 +157,7 @@ main() {
         exit 1
     }
 
-    if ! root -l -b -q "jrafneck.cpp(\"${ANALYSIS_FILEPATH}\",\"${RECONSTRUCTION_FILEPATH}\",\"${OUTPUT_FILEPATH}\")"; then
+    if ! root -l -b -q "jrafneck.cpp(\"${ANALYSIS_FILEPATH}\",\"${RECONSTRUCTION_FILEPATH}\",\"${RECONSTRUCTION_EDWIN_FILEPATH}\",\"${RECONSTRUCTION_AMBER_FILEPATH}\",\"${RECONSTRUCTION_TT_FILEPATH}\",\"${OUTPUT_FILEPATH}\")"; then
         log ERROR "ROOT execution failed for run ${RUN}"
         popd > /dev/null
         exit 1

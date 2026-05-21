@@ -30,11 +30,20 @@ class ibd_analysis : public analysis_base {
 
 public:
 
-    ibd_analysis(const std::string& name, const std::string& filepath, const std::string& suffix) :
+    ibd_analysis(
+        const std::string& name, 
+        const std::string& filepath, const std::string& suffix, 
+        const std::string& reconstruction_filepath
+    ) :
         analysis_base{name}
     {
         std::string treename = "IBDAnalysis" + suffix;
-        m_nav = navigator_manager::retrieve<ibd_like_event_correlated_chain_navigator>(filepath, treename, filepath, "NeutronAnalysis" + suffix, filepath, "MultiplicityAnalysis" + suffix, "/sps/juno/jdeandre/rtraw_ThomasRaymond/test/analysis_after_hashmap/reconstruction/RUN.9789.reprod25c.reconstruction.output.root", "muons");
+        m_nav = navigator_manager::retrieve<ibd_like_event_correlated_chain_navigator>(
+            filepath, treename, 
+            filepath, "NeutronAnalysis" + suffix, 
+            filepath, "MultiplicityAnalysis" + suffix, 
+            reconstruction_filepath, "muons"
+        );
         // m_nav = navigator_manager::retrieve<ibd_like_event_navigator>(filepath, treename);
         if (!m_nav->is_valid()) {
             std::cerr << "Cannot retrieve navigator of filepath " << filepath << " and treename " << treename << '\n';

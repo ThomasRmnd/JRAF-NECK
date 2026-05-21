@@ -11,9 +11,7 @@ class ibd_no_neutron_veto_analysis : public ibd_analysis {
 
 public:
 
-    ibd_no_neutron_veto_analysis(const std::string& name, const std::string& filepath, const std::string& suffix) :
-        ibd_analysis{name, filepath, suffix}
-    {}
+    using ibd_analysis::ibd_analysis;
 
     ~ibd_no_neutron_veto_analysis() override = default;
 

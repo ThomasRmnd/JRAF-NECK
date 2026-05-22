@@ -12,6 +12,7 @@ public:
     virtual ~first_binary_to_linear_correlator() override = default;
 
     virtual corrlator_results correlate(const timestamp& lo, const timestamp& hi) override {
+        if (!m_nav->is_valid() || m_nav->size() == 0ul) return {0l, 0l};
         std::ptrdiff_t size = static_cast<std::ptrdiff_t>(m_nav->size());
         if (m_is_first_search) {
             m_is_first_search = false;

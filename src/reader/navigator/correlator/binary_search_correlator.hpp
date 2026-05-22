@@ -12,6 +12,7 @@ public:
     virtual ~binary_search_correlator() override = default;
 
     virtual corrlator_results correlate(const timestamp& lo, const timestamp& hi) override {
+        if (!m_nav->is_valid() || m_nav->size() == 0ul) return {0l, 0l};
         std::ptrdiff_t lower = lower_bound_in_navigator(lo);
         std::ptrdiff_t upper = upper_bound_in_navigator(hi);
         return {lower, upper};

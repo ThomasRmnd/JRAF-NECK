@@ -47,16 +47,21 @@ public:
         if (!muon_event_navigator::entry(n)) return false;
         if (muons.empty()) return true;
 
+        std::cout << "[Debug]: Currently having " << muons.size() << " muons\n";
+
         const timestamp ts = muons.front().ts;
         const timestamp lo = ts + timestamp{0, -1000};
         const timestamp hi = ts + timestamp{0,  1000};
 
         corrlator_results res = m_amber_corr->correlate(lo, hi);
         append_correlated(m_amber_nav, res);
+        std::cout << "[Debug]: Currently having " << muons.size() << " muons, after adding amber\n";
         res = m_edwin_corr->correlate(lo, hi);
         append_correlated(m_edwin_nav, res);
+        std::cout << "[Debug]: Currently having " << muons.size() << " muons, after adding edwin\n";
         res = m_tt_corr->correlate(lo, hi);
         append_correlated(m_tt_nav, res);
+        std::cout << "[Debug]: Currently having " << muons.size() << " muons, after adding tt\n";
 
         return true;
     }

@@ -15,10 +15,15 @@ public:
         std::ptrdiff_t size = static_cast<std::ptrdiff_t>(m_nav->size());
         if (m_is_first_search) {
             m_is_first_search = false;
+            std::cout << "[Debug]: Starting binary search\n";
             corrlator_results res = binary_search_correlator::correlate(lo, hi);
+            std::cout << "[Debug]: Finished binary search\n";
             m_last_idx = res.lower;
+            std::cout << "[Debug]: Get last index\n";
             m_nav->entry(m_last_idx);
+            std::cout << "[Debug]: Get last timestamp\n";
             m_last_ts = m_nav->ts();
+            std::cout << "[Debug]: Returning\n";
             return res;
         }
         std::ptrdiff_t cur_idx = m_last_idx;

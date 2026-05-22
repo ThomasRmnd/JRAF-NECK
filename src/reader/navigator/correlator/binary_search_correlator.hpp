@@ -12,8 +12,11 @@ public:
     virtual ~binary_search_correlator() override = default;
 
     virtual corrlator_results correlate(const timestamp& lo, const timestamp& hi) override {
+        std::cout << "[Debug]: Starting correlation\n";
         std::ptrdiff_t lower = lower_bound_in_navigator(lo);
+        std::cout << "[Debug]: Got lower bound\n";
         std::ptrdiff_t upper = upper_bound_in_navigator(hi);
+        std::cout << "[Debug]: Got upper bound\n";
         return {lower, upper};
     }
 

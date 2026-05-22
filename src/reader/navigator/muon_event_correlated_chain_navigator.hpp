@@ -55,9 +55,7 @@ public:
         append_correlated(m_amber_nav, res);
         res = m_edwin_corr->correlate(lo, hi);
         append_correlated(m_edwin_nav, res);
-        std::cout << "[Debug]: Before correlation\n";
         res = m_tt_corr->correlate(lo, hi);
-        std::cout << "[Debug]: After correlation\n";
         append_correlated(m_tt_nav, res);
 
         return true;

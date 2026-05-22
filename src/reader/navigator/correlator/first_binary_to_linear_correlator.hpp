@@ -21,7 +21,7 @@ public:
             m_last_idx = res.lower;
             std::cout << "[Debug]: Get last index\n";
             m_nav->entry(m_last_idx);
-            std::cout << "[Debug]: Get last timestamp (m_nav = " << m_nav << ")\n";
+            std::cout << "[Debug]: Get last timestamp (m_nav = " << m_nav << ", m_last_idx = " << m_last_idx << ")\n";
             m_last_ts = m_nav->ts();
             std::cout << "[Debug]: Returning\n";
             return res;

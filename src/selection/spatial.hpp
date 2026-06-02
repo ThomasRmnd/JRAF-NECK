@@ -76,7 +76,7 @@ class chimney_selection : public selection_base {
 public:
 
     chimney_selection(double z, double rho) :
-        c_bottom{-std::numeric_limits<double>::infinity(), z},
+        c_bottom{-std::numeric_limits<double>::infinity(), -z},
         c_top{z, std::numeric_limits<double>::infinity()},
         c_radial{0.0, rho}
     {}

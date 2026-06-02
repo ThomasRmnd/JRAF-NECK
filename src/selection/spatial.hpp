@@ -53,8 +53,8 @@ class radial_range_selection : public selection_base {
 public:
 
     radial_range_selection(double min, double max) :
-        c_min2{min},
-        c_max2{max}
+        c_min2{min * min},
+        c_max2{max * max}
     {}
 
     ~radial_range_selection() override = default;

@@ -36,21 +36,15 @@ log INFO "Cluster detected: ${CLUSTER}"
 # Configuration defaults
 #==============================
 
-INPUT_ANALYSIS_SUFFIX_REPROD25C="output.reprod25c.root"
-INPUT_ANALYSIS_SUFFIX_REPROD25D="output.reprod25d.root"
-
-INPUT_RECONSTRUCTION_SUFFIX_REPROD25C="output.reprod25c.cca.root"
-INPUT_RECONSTRUCTION_SUFFIX_REPROD25D="output.reprod25d.cca.root"
-
-OUTPUT_SUFFIX_REPROD25C="jrafneck.reprod25c.root"
-OUTPUT_SUFFIX_REPROD25D="jrafneck.reprod25d.root"
+INPUT_ANALYSIS_SUFFIX="analysis.root"
+INPUT_RECONSTRUCTION_SUFFIX="reconstruction.root"
+OUTPUT_SUFFIX="jrafneck.root"
 
 usage() {
     cat <<EOF
-Usage: $(basename "$0") --campaign <str> --run <int>
+Usage: $(basename "$0") --run <int>
 
 Required:
-  --campaign <str>               Reprod name {ReProd25C|ReProd25D}
   --run      <int>               Run ID
 EOF
 }
@@ -64,14 +58,13 @@ parse_args() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --run)       RUN="$2"; shift 2 ;;
-            --campaign)  CAMPAIGN="$2"; shift 2 ;;
             --help|-h)   usage; exit 0 ;;
             *) log ERROR "Unknown argument: $1"; usage; exit 1 ;;
         esac
     done
 
-    if [[ -z "${RUN:-}" || -z "${CAMPAIGN:-}" ]]; then
-        log ERROR "--run and --campaign are required"
+    if [[ -z "${RUN:-}" ]]; then
+        log ERROR "--run is required"
         usage
         exit 1
     fi
@@ -80,23 +73,6 @@ parse_args() {
         log ERROR "--run must be an integer"
         exit 1
     fi
-
-    case "${CAMPAIGN}" in
-        ReProd25C)
-            INPUT_ANALYSIS_SUFFIX="${INPUT_ANALYSIS_SUFFIX_REPROD25C}"
-            INPUT_RECONSTRUCTION_SUFFIX="${INPUT_RECONSTRUCTION_SUFFIX_REPROD25C}"
-            OUTPUT_SUFFIX="${OUTPUT_SUFFIX_REPROD25C}"
-            ;;
-        ReProd25D)
-            INPUT_ANALYSIS_SUFFIX="${INPUT_ANALYSIS_SUFFIX_REPROD25D}"
-            INPUT_RECONSTRUCTION_SUFFIX="${INPUT_RECONSTRUCTION_SUFFIX_REPROD25D}"
-            OUTPUT_SUFFIX="${OUTPUT_SUFFIX_REPROD25D}"
-            ;;
-        *)
-            log ERROR "Invalid --campaign: ${CAMPAIGN} (expected {ReProd25C|ReProd25D})"
-            exit 1
-            ;;
-    esac
 }
 
 #==============================

@@ -1,12 +1,47 @@
 #!/bin/bash
 
-#--------------------------------------------------------------------------------------------------
-#  JUNO Job Multi-Submission Helper
-#  Purpose: Automate job multi-submissions for multi processing
-#--------------------------------------------------------------------------------------------------
-
 set -euo pipefail
 IFS=$'\n\t'
+
+#==============================
+#  Utility logging function
+#==============================
+
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+log() {
+    local level="$1"; shift
+    local msg="$*"
+    local timestamp
+    timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
+
+    local level_num=0 color="$NC"
+    case "$level" in
+        ERROR) level_num=1; color="$RED" ;;
+        WARN)  level_num=2; color="$YELLOW" ;;
+        INFO)  level_num=3; color="$GREEN" ;;
+        DEBUG) level_num=4; color="$CYAN" ;;
+        ALL)   level_num=5; color="$BLUE" ;;
+        *)     level_num=3 ;;
+    esac
+
+    local prefix="${color}[$timestamp][$level]${NC}"
+
+    case "$level" in
+        DEBUG|INFO) echo -e "${prefix} $msg" >&1 ;;
+        WARN|ERROR) echo -e "${prefix} $msg" >&2 ;;
+        ALL)
+            echo -e "${prefix} $msg" >&1
+            echo -e "${prefix} $msg" >&2
+            ;;
+        *) echo -e "${prefix} $msg" >&1 ;;
+    esac
+}
 
 #==============================
 # Utility functions
@@ -16,11 +51,9 @@ HOSTNAME=$(hostname -f 2>/dev/null || hostname)
 if [[ "${HOSTNAME}" =~ ^cc.*\.in2p3\.fr$ ]]; then
     # Detect CC-IN2P3 cluster
     CLUSTER="CC-IN2P3"
-    source /pbs/home/t/traymond/share/bash/logging.sh
 elif [[ "${HOSTNAME}" =~ ^lxlogin[0-9]+\.ihep\.ac\.cn$ ]]; then
     # Detect IHEP cluster
     CLUSTER="IHEP"
-    source /junofs/users/traymond/bash/logging.sh
 else
     echo "ERROR: Unknown cluster. Hostname: ${HOSTNAME}" >&2
     echo "Expected CC-IN2P3 (cca###) or IHEP (lxlogin###.ihep.ac.cn)" >&2
@@ -33,9 +66,7 @@ log INFO "Cluster detected: ${CLUSTER}"
 # Configuration defaults
 #==============================
 
-XRD_URL_EOS="root://junoeos01.ihep.ac.cn/"
-RUN_LIST_REPROD25C="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/other/GoodList/ReProd25C/physics_good.txt"
-RUN_LIST_REPROD25D="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/other/GoodList/ReProd25D/physics_good.txt"
+LIST_BASE="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/other/GoodList"
 
 LOWER_BOUND=""
 UPPER_BOUND=""
@@ -45,23 +76,33 @@ usage() {
 Usage: $(basename "$0") [options]
 
 Required:
+  --campaign    <str>      
 
 Optional:
-  --lower <num>         Starting run number (inclusive)
-  --upper <num>         Ending run number (inclusive)
-  --help                Show this help message and exit
+  --lower       <int>           Starting run number (inclusive)
+  --upper       <int>           Ending run number (inclusive)
+  --list-base   <str>           Base directory of the run list
+  --help                        Show this help message and exit
 EOF
 }
 
 parse_args() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            --lower)    LOWER_BOUND="$2"; shift 2 ;;
-            --upper)    UPPER_BOUND="$2"; shift 2 ;;
+            --campaign)     CAMPAIGN="$2"; shift 2 ;;
+            --lower)        LOWER_BOUND="$2"; shift 2 ;;
+            --upper)        UPPER_BOUND="$2"; shift 2 ;;
+            --list-base)    LIST_BASE="$2"; shift 2 ;;
             --help|-h) usage; exit 0 ;;
             *) log ERROR "Unknown argument: $1"; usage; exit 1 ;;
         esac
     done
+
+    if [[ -z "${CAMPAIGN:-}" ]]; then
+        log ERROR "--campaign is required"
+        usage
+        exit 1
+    fi
 }
 
 #==============================
@@ -69,21 +110,9 @@ parse_args() {
 #==============================
 
 load_run_list() {
-    log INFO "Fetching run lists with campaign mapping"
+    log INFO "Fetching run lists"
 
-    RUN_LIST=()
-
-    # Load ReProd25C
-    while read -r run; do
-        [[ -z "$run" ]] && continue
-        RUN_LIST+=("${run}:ReProd25C")
-    done < <(tr -d '\r' < "${RUN_LIST_REPROD25C}" | sed '/^$/d')
-
-    # Load ReProd25D
-    while read -r run; do
-        [[ -z "$run" ]] && continue
-        RUN_LIST+=("${run}:ReProd25D")
-    done < <(tr -d '\r' < "${RUN_LIST_REPROD25D}" | sed '/^$/d')
+    mapfile -t RUN_LIST < <(cat "${LIST_BASE}/${CAMPAIGN}/physics_good.txt")
 
     log INFO "Total run entries loaded: ${#RUN_LIST[@]}"
 }
@@ -108,7 +137,7 @@ filter_runs() {
             continue
         fi
 
-        filtered+=("${run}:${campaign}")
+        filtered+=("${run}")
     done
 
     RUN_LIST=("${filtered[@]}")
@@ -130,15 +159,14 @@ filter_runs() {
 
 launch_jobs() {
     for entry in "${RUN_LIST[@]}"; do
-        run="${entry%%:*}"
-        campaign="${entry##*:}"
+        run="${entry}"
 
-        log INFO ">>> Launching job for run ${run} (${campaign})"
+        log INFO ">>> Launching job for run ${run}"
 
         if sbatch \
-            --job-name="jrafneck_${campaign}_${run}" \
-            --output="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/log/jrafneck_${campaign}_${run}.log" \
-            --error="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/err/jrafneck_${campaign}_${run}.err" \
+            --job-name="jrafneck_${run}" \
+            --output="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/log/jrafneck_${run}.log" \
+            --error="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/err/jrafneck_${run}.err" \
             --partition="htc" \
             --ntasks=1 \
             --cpus-per-task=1 \
@@ -147,12 +175,11 @@ launch_jobs() {
             --mail-user="thomas.raymond@iphc.cnrs.fr" \
             --mail-type="FAIL" \
             job_worker.sh \
-            --campaign "${campaign}" \
             --run "${run}"
         then
-            log INFO "Run ${run} (${campaign}) submitted successfully"
+            log INFO "Run ${run} submitted successfully"
         else
-            log ERROR "Submission failed for run ${run} (${campaign})"
+            log ERROR "Submission failed for run ${run}"
         fi
     done
 }

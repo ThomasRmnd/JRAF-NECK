@@ -25,6 +25,20 @@ public:
         m_hist_wp_only->SetDirectory(0);
         m_hist_cd_wp = std::make_unique<TH1D>("muon_time_difference_cd_wp", "Muon time difference (CD+WP);#Delta t_{#mu} (s);Entries;", 50, 0.0, 2.0);
         m_hist_cd_wp->SetDirectory(0);
+
+        m_hist_cd_only_ptr = m_hist_cd_only.get();
+        m_hist_wp_only_ptr = m_hist_wp_only.get();
+        m_hist_cd_wp_ptr = m_hist_cd_wp.get();
+
+        m_tree = new TTree("rate", "Muon rate");
+        if (!m_tree) {
+            std::cerr << "Cannot create tree rate\n";
+            return;
+        }
+        m_tree->Branch("run_id", &m_run_id);
+        m_tree->Branch("hist_cd_only", &m_hist_cd_only_ptr);
+        m_tree->Branch("hist_wp_only", &m_hist_wp_only_ptr);
+        m_tree->Branch("hist_cd_wp", &m_hist_cd_wp_ptr);
     }
 
     ~muon_rate_analysis() override = default;
@@ -38,6 +52,15 @@ public:
     }
 
     bool process() override {
+        if (m_run_id == 0) {
+            m_run_id = m_nav->run_id;
+        }
+        else if (m_run_id != m_nav->run_id) {
+            m_tree->Fill();
+            reset_run();
+            m_run_id = m_nav->run_id;
+        }
+
         if (m_nav->muons.empty()) return false;
         double totq_cd = m_nav->muons.front().totq_cd;
         double totq_wp = m_nav->muons.front().totq_wp;
@@ -76,10 +99,27 @@ protected:
     timestamp m_last_wp_only{0l, 0};
     timestamp m_last_cd_wp{0l, 0};
 
+    TTree* m_tree;
+    int m_run_id = 0;
+    TH1D* m_hist_cd_only_ptr = nullptr;
+    TH1D* m_hist_wp_only_ptr = nullptr;
+    TH1D* m_hist_cd_wp_ptr = nullptr;
+
+    void reset_run() {
+        m_hist_cd_only->Reset();
+        m_hist_wp_only->Reset();
+        m_hist_cd_wp->Reset();
+
+        m_last_cd_only = {0l, 0};
+        m_last_wp_only = {0l, 0};
+        m_last_cd_wp = {0l, 0};
+    }
+
     bool save_content() override {
-        m_hist_cd_only->Write();
-        m_hist_wp_only->Write();
-        m_hist_cd_wp->Write();
+        if (m_run_id != 0) {
+            m_tree->Fill();
+        }
+        m_tree->Write();
         return true;
     }
 

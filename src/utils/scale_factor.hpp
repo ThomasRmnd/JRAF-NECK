@@ -89,20 +89,20 @@ class global_scale_factor_corrector {
 public:
 
     bool load() {
-        if (!m_tc_p25c.load("/cvmfs/juno.ihep.ac.cn/dbdata/main/dbdata/offline-data/Reconstruction/OMILREC/RecMap/nPEMap/Final_time_correction_P25C_AvgSPN.csv")) return false;
-        if (!m_tc_p25d.load("/cvmfs/juno.ihep.ac.cn/dbdata/main/dbdata/offline-data/Reconstruction/OMILREC/RecMap/nPEMap/Final_time_correction_P25D_AvgSPN.csv")) return false;
-        if (!m_tc_p25c.size() || !m_tc_p25d.size()) {
-            std::cerr << "P25C or P25D time correction is empty\n";
+        if (!m_tc_p26b.load("/cvmfs/juno.ihep.ac.cn/dbdata/main/dbdata/offline-data/Reconstruction/OMILREC/RecMap/nPEMap/Final_time_correction_P26B_Po214.csv")) return false;
+        if (!m_tc_p26b.size()) {
+            std::cerr << "P26B time correction is empty\n";
             return false;
         }
         return true;
     }
 
     double interpolate(const timestamp& ts) {
-        if (!m_tc_p25c.size() || !m_tc_p25d.size()) return 1.0;
-        if (ts <= m_tc_p25c.back().ts) return m_tc_p25c.interpolate(ts);
-        if (ts <= m_tc_p25d.back().ts) return m_tc_p25d.interpolate(ts);
-        return 1.0;
+        // if (!m_tc_p25c.size() || !m_tc_p25d.size()) return 1.0;
+        // if (ts <= m_tc_p25c.back().ts) return m_tc_p25c.interpolate(ts);
+        // if (ts <= m_tc_p25d.back().ts) return m_tc_p25d.interpolate(ts);
+        // return 1.0;
+        return m_tc_p26b.interpolate(ts);
     }
 
 private:
@@ -112,8 +112,7 @@ private:
     const int c_lower_run_id_p25d = 11049;
     const int c_upper_run_id_p25d = 12135;
 
-    scale_factor_corrector m_tc_p25c;
-    scale_factor_corrector m_tc_p25d;
+    scale_factor_corrector m_tc_p26b;
 
 };
 

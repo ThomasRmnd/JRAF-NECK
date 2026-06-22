@@ -1,5 +1,5 @@
-#ifndef JRAFNECK_ANALYSIS_IBD_IBDANALYSIS_HPP_
-#define JRAFNECK_ANALYSIS_IBD_IBDANALYSIS_HPP_
+#ifndef JRAFNECK_ANALYSIS_ACCIDENTAL_ACCIDENTALANALYSIS_HPP_
+#define JRAFNECK_ANALYSIS_ACCIDENTAL_ACCIDENTALANALYSIS_HPP_
 
 #include <set>
 
@@ -12,18 +12,18 @@
 #include "utils/muon_lookup.hpp"
 #include "utils/scale_factor.hpp"
 
-class ibd_analysis : public analysis_base {
+class accidental_analysis : public analysis_base {
 
 public:
 
-    ibd_analysis(
-        const std::string& name, 
-        const std::string& filepath, const std::string& suffix, 
+    accidental_analysis(
+        const std::string& name,
+        const std::string& filepath, const std::string& suffix,
         const std::string& reconstruction_filepath
     ) :
         analysis_base{name}
     {
-        std::string treename = "IBDAnalysis" + suffix;
+        std::string treename = "AccidentalAnalysis" + suffix;
         m_nav = navigator_manager::retrieve<ibd_like_event_correlated_chain_navigator>(
             filepath, treename, 
             filepath, "NeutronAnalysis" + suffix, 
@@ -40,7 +40,7 @@ public:
         }
     }
 
-    virtual ~ibd_analysis() override = default;
+    virtual ~accidental_analysis() override = default;
 
     std::shared_ptr<navigator_base> navigator() const override {
         return m_nav;
@@ -49,7 +49,7 @@ public:
     virtual bool selection() override = 0;
 
     bool process() override {
-        m_ibds.insert({
+        m_accs.insert({
             {m_nav->run_id, m_nav->prompt, m_nav->delayed}, 
             m_dt_last_mu, m_dlat_mu2p, m_dt_mu2p
         });
@@ -62,7 +62,7 @@ protected:
 
     global_scale_factor_corrector m_gtc;
 
-    std::set<ibd_with_muon> m_ibds;
+    std::set<ibd_with_muon> m_accs;
     timestamp m_dt_last_mu;
     double m_dlat_mu2p;
     timestamp m_dt_mu2p;
@@ -97,7 +97,7 @@ protected:
         t->Branch("dlat_mu2p", &dlat_mu2p);
         t->Branch("dt_mu2p", &dt_mu2p);
 
-        for (std::set<ibd_with_muon>::const_iterator it = m_ibds.begin(); it != m_ibds.end(); ++it) {
+        for (std::set<ibd_with_muon>::const_iterator it = m_accs.begin(); it != m_accs.end(); ++it) {
             run_id = it->i.run_id;
             pos_p = it->i.prompt.pos;
             pos_d = it->i.delayed.pos;
@@ -178,4 +178,4 @@ protected:
 
 };
 
-#endif // JRAFNECK_ANALYSIS_IBD_IBDANALYSIS_HPP_
+#endif // JRAFNECK_ANALYSIS_ACCIDENTAL_ACCIDENTALANALYSIS_HPP_

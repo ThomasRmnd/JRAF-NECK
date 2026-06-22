@@ -4,6 +4,8 @@
 #include <TFile.h>
 
 #include "analysis/analysis_manager.hpp"
+#include "analysis/accidental/accidental_standard_analysis.hpp"
+#include "analysis/accidental/accidental_standard_muon_veto_analysis.hpp"
 #include "analysis/ibd/ibd_no_neutron_veto_analysis.hpp"
 #include "analysis/ibd/ibd_no_neutron_veto_muon_veto_analysis.hpp"
 #include "analysis/ibd/ibd_standard_analysis.hpp"
@@ -32,7 +34,46 @@ int jrafneck(
     analysis_registry registry;
     analysis_manager manager(output_filepath, registry);
 
+    // --------------------------------------------------------------------------------------------
+    // Accidental
+    // --------------------------------------------------------------------------------------------
 
+    std::shared_ptr<analysis_base> accidental__standard__analysis__omilrec_jvertex(
+        new accidental_standard_analysis(
+            "accidental__standard__analysis__omilrec_jvertex", 
+            analysis_filepath, suffix, 
+            reconstruction_filepath
+        )
+    );
+    if (!registry.book(accidental__standard__analysis__omilrec_jvertex)) return 1;
+
+    std::shared_ptr<analysis_base> accidental__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
+        new accidental_standard_muon_veto_analysis(
+            "accidental__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", 
+            analysis_filepath, suffix, 
+            reconstruction_filepath, 
+            "CdWpTtChi2", 
+            timestamp{0, 5000000}, timestamp{0, 1200000000}, 
+            3000.0
+        )
+    );
+    if (!registry.book(accidental__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
+
+    std::shared_ptr<analysis_base> accidental__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex(
+        new accidental_standard_muon_veto_analysis(
+            "accidental__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex", 
+            analysis_filepath, suffix, 
+            reconstruction_filepath, 
+            "CdWpTtChi2", 
+            timestamp{0, 5000000}, timestamp{0, 500000000}, 
+            1000.0
+        )
+    );
+    if (!registry.book(accidental__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex)) return 1;
+
+    // --------------------------------------------------------------------------------------------
+    // IBD
+    // --------------------------------------------------------------------------------------------
 
     std::shared_ptr<analysis_base> ibd__no_neutron_veto__analysis__omilrec_jvertex(
         new ibd_no_neutron_veto_analysis(
@@ -88,7 +129,9 @@ int jrafneck(
     );
     if (!registry.book(ibd__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex)) return 1;
 
-
+    // --------------------------------------------------------------------------------------------
+    // Li9He8
+    // --------------------------------------------------------------------------------------------
 
     // std::shared_ptr<analysis_base> cosmo_rate_analysis_omilrec_jvertex(
     //     new cosmo_rate_analysis(
@@ -160,7 +203,9 @@ int jrafneck(
     );
     if (!registry.book(li9he8_shape_muon__changing_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
 
-
+    // --------------------------------------------------------------------------------------------
+    // Lifetime
+    // --------------------------------------------------------------------------------------------
 
     std::shared_ptr<analysis_base> lifetime_daq__total_time__analysis(
         new daq_total_time_analysis(
@@ -180,7 +225,9 @@ int jrafneck(
     );
     if (!registry.book(lifetime_veto__total_time__analysis)) return 1;
 
-
+    // --------------------------------------------------------------------------------------------
+    // Muon
+    // --------------------------------------------------------------------------------------------
 
     std::shared_ptr<analysis_base> muon_performance__single__analysis(
         new muon_performance_single_analysis(
@@ -200,7 +247,7 @@ int jrafneck(
             reconstruction_filepath, "muons"
         )
     );
-    // if (!registry.book(muon_rate__analysis)) return 1;
+    if (!registry.book(muon_rate__analysis)) return 1;
 
 
     

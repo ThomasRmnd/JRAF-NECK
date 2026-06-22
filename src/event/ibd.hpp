@@ -27,4 +27,17 @@ inline bool operator<(const ibd& lhs, const ibd& rhs) {
     return lhs.prompt < rhs.prompt;
 }
 
+struct ibd_with_muon {
+
+    ibd i;
+    timestamp dt_last_mu;
+    double dlat_mu2p; // to closest muon
+    timestamp dt_mu2p; // to closest muon
+
+};
+
+inline bool operator<(const ibd_with_muon& lhs, const ibd_with_muon& rhs) {
+    return lhs.i < rhs.i;
+}
+
 #endif // JRAFNECK_EVENT_IBD_HPP_

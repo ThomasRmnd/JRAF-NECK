@@ -7,7 +7,7 @@
 
 #include "analysis/analysis.hpp"
 #include "event/cosmogenic.hpp"
-#include "reader/navigator/ibd_like_event_navigator.hpp"
+#include "reader/navigator/ibd_like_event_correlated_chain_navigator.hpp"
 #include "reader/navigator/navigator_manager.hpp"
 #include "utils/muon_lookup.hpp"
 #include "utils/scale_factor.hpp"
@@ -40,7 +40,6 @@ public:
             filepath, "MultiplicityAnalysis" + suffix, 
             reconstruction_filepath, "muons"
         );
-        // m_nav = navigator_manager::retrieve<ibd_like_event_navigator>(filepath, treename);
         if (!m_nav->is_valid()) {
             std::cerr << "Cannot retrieve navigator of filepath " << filepath << " and treename " << treename << '\n';
             return;

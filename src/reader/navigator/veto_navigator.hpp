@@ -18,9 +18,6 @@ public:
         m_chain->branch("nsec", nsec);
 
         m_chain->branch("veto_type", veto_type);
-
-        m_chain->branch("veto_sec", veto_sec);
-        m_chain->branch("veto_nsec", veto_nsec);
     }
 
     virtual ~veto_navigator() override = default;
@@ -33,9 +30,6 @@ public:
     int nsec;
 
     unsigned char veto_type;
-
-    time_t veto_sec;
-    int veto_nsec;
 
 };
 

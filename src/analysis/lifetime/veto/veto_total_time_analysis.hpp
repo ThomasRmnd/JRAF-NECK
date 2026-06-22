@@ -7,7 +7,7 @@
 #include "analysis/analysis.hpp"
 #include "reader/navigator/veto_navigator.hpp"
 #include "reader/navigator/navigator_manager.hpp"
-#include "utils/timestamp.hpp"
+#include "utils/veto.hpp"
 
 class veto_total_time_analysis : public analysis_base {
 
@@ -54,8 +54,16 @@ public:
                 m_vetoes_entries[type] = 0ul;
             }
         }
+
+        std::unordered_map<veto_type, timestamp>::const_iterator it = g_veto_map.find(static_cast<veto_type>(m_nav->veto_type));
+        if (it == g_veto_map.end()) {
+            std::cerr << "Error: veto type not found in the global map\n";
+            return false;
+        }
+        timestamp veto_duration{it->second};
+
         m_run_id = m_nav->run_id;
-        m_vetoes[m_nav->veto_type] += timestamp{m_nav->veto_sec, m_nav->veto_nsec};
+        m_vetoes[m_nav->veto_type] += timestamp{veto_duration.sec, veto_duration.nsec};
         m_vetoes_entries[m_nav->veto_type] += 1ul;
         return true;
     }

@@ -171,7 +171,7 @@ launch_jobs() {
             --ntasks=1 \
             --cpus-per-task=1 \
             --mem="2G" \
-            --time="0-00:15:00" \
+            --time="0-00:05:00" \
             --mail-user="thomas.raymond@iphc.cnrs.fr" \
             --mail-type="FAIL" \
             job_worker.sh \

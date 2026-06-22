@@ -197,11 +197,11 @@ main() {
     elif (( RUN >= 10176 && RUN <= 10479 )); then
         RECONSTRUCTION_TT_FILEPATH="${XRD_URL}${XRD_BASEPATH}/juno/user/j/jpandre_1/tt_data_auto/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
 
-    elif (( RUN_NUMBER >= 10480 )); then
+    elif (( RUN >= 10480 )); then
         RECONSTRUCTION_TT_FILEPATH="${XRD_URL}${XRD_BASEPATH}/juno/juno-reprod/TT25A/J25.4.3-patched/user_rec/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
 
     else
-        log ERROR "No TT reco path rule defined for run ${RUN_NUMBER}"
+        log ERROR "No TT reco path rule defined for run ${RUN}"
         exit 1
     fi
 

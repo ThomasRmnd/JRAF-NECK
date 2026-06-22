@@ -76,7 +76,7 @@ usage() {
 Usage: $(basename "$0") [options]
 
 Required:
-  --campaign    <str>      
+  --campaign    <str>           Campaign name
 
 Optional:
   --lower       <int>           Starting run number (inclusive)
@@ -175,7 +175,7 @@ launch_jobs() {
             --mail-user="thomas.raymond@iphc.cnrs.fr" \
             --mail-type="FAIL" \
             job_worker.sh \
-            --run "${run}"
+            --campaign "${CAMPAIGN}" --run "${run}" --list-base "${LIST_BASE}"
         then
             log INFO "Run ${run} submitted successfully"
         else

@@ -8,6 +8,46 @@ set -euo pipefail
 IFS=$'\n\t'
 
 #==============================
+#  Utility logging function
+#==============================
+
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+log() {
+    local level="$1"; shift
+    local msg="$*"
+    local timestamp
+    timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
+
+    local level_num=0 color="$NC"
+    case "$level" in
+        ERROR) level_num=1; color="$RED" ;;
+        WARN)  level_num=2; color="$YELLOW" ;;
+        INFO)  level_num=3; color="$GREEN" ;;
+        DEBUG) level_num=4; color="$CYAN" ;;
+        ALL)   level_num=5; color="$BLUE" ;;
+        *)     level_num=3 ;;
+    esac
+
+    local prefix="${color}[$timestamp][$level]${NC}"
+
+    case "$level" in
+        DEBUG|INFO) echo -e "${prefix} $msg" >&1 ;;
+        WARN|ERROR) echo -e "${prefix} $msg" >&2 ;;
+        ALL)
+            echo -e "${prefix} $msg" >&1
+            echo -e "${prefix} $msg" >&2
+            ;;
+        *) echo -e "${prefix} $msg" >&1 ;;
+    esac
+}
+
+#==============================
 # Utility functions
 #==============================
 
@@ -15,13 +55,11 @@ HOSTNAME=$(hostname -f 2>/dev/null || hostname)
 if [[ "${HOSTNAME}" =~ ^cc.*\.in2p3\.fr$ ]]; then
     # Detect CC-IN2P3 cluster
     CLUSTER="CC-IN2P3"
-    source /pbs/home/t/traymond/share/bash/logging.sh
     TEMPDIR=${TMPDIR}
     SOURCE_JUNOSW_PATH="/pbs/home/t/traymond/J25.7.4/git_junosw_load_J25_7_4.sh"
 elif [[ "${HOSTNAME}" =~ ^lxlogin[0-9]+\.ihep\.ac\.cn$ ]]; then
     # Detect IHEP cluster
     CLUSTER="IHEP"
-    source /junofs/users/traymond/bash/logging.sh
     TEMPDIR=${TEMP}
     SOURCE_JUNOSW_PATH="/afs/ihep.ac.cn/users/t/traymond/J25.3.0/git_junosw_J25_load.sh"
 else
@@ -36,16 +74,21 @@ log INFO "Cluster detected: ${CLUSTER}"
 # Configuration defaults
 #==============================
 
+XRD_URL="root://xrootd-archive.cr.cnaf.infn.it:1095/"
+XRD_BASEPATH="/production/storm/dirac"
+
 INPUT_ANALYSIS_SUFFIX="analysis.root"
 INPUT_RECONSTRUCTION_SUFFIX="reconstruction.root"
 OUTPUT_SUFFIX="jrafneck.root"
 
 usage() {
     cat <<EOF
-Usage: $(basename "$0") --run <int>
+Usage: $(basename "$0") --campaign <str> --run <int> --list-base <str>
 
 Required:
-  --run      <int>               Run ID
+  --campaign    <str>           Campaign name
+  --run         <int>           Run ID
+  --list-base   <str>           Base directory of the run list
 EOF
 }
 
@@ -57,7 +100,9 @@ parse_args() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            --run)       RUN="$2"; shift 2 ;;
+            --campaign)     CAMPAIGN="$2"; shift 2 ;;
+            --run)          RUN="$2"; shift 2 ;;
+            --list-base)    LIST_BASE="$2"; shift 2 ;;
             --help|-h)   usage; exit 0 ;;
             *) log ERROR "Unknown argument: $1"; usage; exit 1 ;;
         esac
@@ -89,6 +134,12 @@ main() {
     fi
 
     parse_args "$@"
+
+    local bucket_val=$(( (10#$RUN / 1000) * 1000 ))
+    local group_val=$(( (10#$RUN / 100) * 100 ))
+
+    RUN_BUCKET=$(printf "%08d" "${bucket_val}")
+    RUN_GROUP=$(printf "%08d" "${group_val}")
 
     OUTPUT_DIRECTORY="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/ibd/jrafneck"
     # OUTPUT_DIRECTORY="/sps/juno/jdeandre/rtraw_ThomasRaymond/test/jrafneck"
@@ -122,9 +173,41 @@ main() {
     #     exit 1
     # fi
 
+    mapfile -t RUN_LIST < <(cat "${LIST_BASE}/${CAMPAIGN}/physics_good.txt")
+
+    if (( ${#RUN_LIST[@]} == 0 )); then
+        log WARN "No runs matched the provided range"
+        exit 0
+    fi
+
+    if [[ "${RUN_LIST[0]}" =~ RUN\.([0-9]+)\.[^/]*([0-9]{14})[^/]* ]]; then
+        local run="${BASH_REMATCH[1]}"
+        local timestamp="${BASH_REMATCH[2]}"
+    else
+        log ERROR "Unrecognized ReProd path format: ${RUN_LIST[0]}"
+        exit 1
+    fi    
+
+    if (( RUN >= 9591 && RUN <= 10169 )); then
+        local year="${timestamp:0:4}"
+        local month="${timestamp:4:2}"
+        local day="${timestamp:6:2}"
+        RECONSTRUCTION_TT_FILEPATH="${XRD_URL}${XRD_BASEPATH}/juno/user/j/jpandre_1/tt_data_auto/${year}/${month}${day}/RUN.${RUN}.*.EDM.user.root"
+
+    elif (( RUN >= 10176 && RUN <= 10479 )); then
+        RECONSTRUCTION_TT_FILEPATH="${XRD_URL}${XRD_BASEPATH}/juno/user/j/jpandre_1/tt_data_auto/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
+
+    elif (( RUN_NUMBER >= 10480 )); then
+        RECONSTRUCTION_TT_FILEPATH="${XRD_URL}${XRD_BASEPATH}/juno/juno-reprod/TT25A/J25.4.3-patched/user_rec/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
+
+    else
+        log ERROR "No TT reco path rule defined for run ${RUN_NUMBER}"
+        exit 1
+    fi
+
     RECONSTRUCTION_EDWIN_FILEPATH=""
     RECONSTRUCTION_AMBER_FILEPATH=""
-    RECONSTRUCTION_TT_FILEPATH=""
+    # RECONSTRUCTION_TT_FILEPATH=""
 
     OUTPUT_FILEPATH="${OUTPUT_DIRECTORY}/RUN.${RUN}.${OUTPUT_SUFFIX}"
 

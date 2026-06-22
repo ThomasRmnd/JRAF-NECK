@@ -110,18 +110,20 @@ main() {
         exit 1
     fi
 
-    RECONSTRUCTION_EDWIN_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/EDWIN/RUN${RUN}-user.root"
-    if [[ ! -f "${RECONSTRUCTION_EDWIN_FILEPATH}" ]]; then
-        log ERROR "Missing EDWIN reconstruction file: ${RECONSTRUCTION_EDWIN_FILEPATH}"
-        exit 1
-    fi
+    # RECONSTRUCTION_EDWIN_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/EDWIN/RUN${RUN}-user.root"
+    # if [[ ! -f "${RECONSTRUCTION_EDWIN_FILEPATH}" ]]; then
+    #     log ERROR "Missing EDWIN reconstruction file: ${RECONSTRUCTION_EDWIN_FILEPATH}"
+    #     exit 1
+    # fi
 
-    RECONSTRUCTION_AMBER_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/Amber_v5.5/muonReco_Amber_v5.5_run${RUN}.root"
-    if [[ ! -f "${RECONSTRUCTION_AMBER_FILEPATH}" ]]; then
-        log ERROR "Missing Amber reconstruction file: ${RECONSTRUCTION_AMBER_FILEPATH}"
-        exit 1
-    fi
+    # RECONSTRUCTION_AMBER_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/Amber_v5.5/muonReco_Amber_v5.5_run${RUN}.root"
+    # if [[ ! -f "${RECONSTRUCTION_AMBER_FILEPATH}" ]]; then
+    #     log ERROR "Missing Amber reconstruction file: ${RECONSTRUCTION_AMBER_FILEPATH}"
+    #     exit 1
+    # fi
 
+    RECONSTRUCTION_EDWIN_FILEPATH=""
+    RECONSTRUCTION_AMBER_FILEPATH=""
     RECONSTRUCTION_TT_FILEPATH=""
 
     OUTPUT_FILEPATH="${OUTPUT_DIRECTORY}/RUN.${RUN}.${OUTPUT_SUFFIX}"

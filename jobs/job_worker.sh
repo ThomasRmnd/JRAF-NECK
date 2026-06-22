@@ -173,7 +173,7 @@ main() {
     #     exit 1
     # fi
 
-    mapfile -t RUN_LIST < <(cat "${LIST_BASE}/${CAMPAIGN}/physics_good.txt")
+    mapfile -t RUN_LIST < <(cat "${LIST_BASE}/${CAMPAIGN}/esd_list/run_${RUN}.txt")
 
     if (( ${#RUN_LIST[@]} == 0 )); then
         log WARN "No runs matched the provided range"

@@ -39,6 +39,7 @@ public:
             std::cerr << "Cannot create tree performance\n";
             return;
         }
+        m_tree->Branch("run_id", &m_run_id);
         m_tree->Branch("sec", &m_sec);
         m_tree->Branch("nsec", &m_nsec);
         m_tree->Branch("totq_cd", &m_totq_cd);
@@ -74,6 +75,7 @@ public:
         std::vector<track>::const_iterator it_ref = std::find_if(m_nav->muons.begin(), m_nav->muons.end(), [&](const track& t) { return t.method == m_refname; });
         if (it_target == m_nav->muons.end() || it_ref == m_nav->muons.end()) return false;
 
+        m_run_id = m_nav->run_id;
         m_sec = m_nav->muons.front().ts.sec;
         m_nsec = m_nav->muons.front().ts.nsec;
         m_totq_cd = m_nav->muons.front().totq_cd;
@@ -106,6 +108,7 @@ protected:
     std::string m_refname;
 
     TTree* m_tree;
+    int m_run_id;
     time_t m_sec;
     int m_nsec;
     double m_totq_cd;

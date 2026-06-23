@@ -24,7 +24,7 @@ public:
         vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{0, 5000}, timestamp{0, 1000000}};
 
         if (!c_prompt_energy_cut.is_in(prompt)) return false;
-        if (!c_delayed_energy_cut.is_in(delayed)) return false;
+        if (!c_delayed_hydrogen_energy_cut.is_in(delayed) && !c_delayed_carbon_energy_cut.is_in(delayed)) return false;
         if (!c_fiducial_volume_cut.is_in(prompt)) return false;
         if (c_chimney_cut.is_in(prompt)) return false;
         if (!vertex_correlation_cut.is_in(delayed)) return false;
@@ -117,8 +117,9 @@ public:
 protected:
 
     const energy_range_selection c_prompt_energy_cut{0.7, 12.0};
-    const energy_range_selection c_delayed_energy_cut{2.0, 2.5};
-    const fiducial_volume_selection c_fiducial_volume_cut{16500.0};
+    const energy_range_selection c_delayed_hydrogen_energy_cut{2.0, 2.5};
+    const energy_range_selection c_delayed_carbon_energy_cut{4.5, 5.5};
+    const fiducial_volume_selection c_fiducial_volume_cut{17200.0};
     const chimney_selection c_chimney_cut{15500.0, 2000.0};
     const flasher_selection c_flasher_cut{0.55, 0.45, 170.0, 80.0};
 

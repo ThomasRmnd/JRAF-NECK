@@ -3,7 +3,6 @@
 
 #include "event/track.hpp"
 #include "event/vertex.hpp"
-// #include "reader/navigator/muon_event_correlated_chain_navigator.hpp"
 #include "reader/navigator/muon_event_navigator.hpp"
 #include "reader/navigator/navigator_manager.hpp"
 #include "reader/navigator/single_event_navigator.hpp"

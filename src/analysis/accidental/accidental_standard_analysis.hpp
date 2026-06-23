@@ -30,16 +30,16 @@ public:
         if (!vertex_correlation_cut.is_in(delayed)) return false;
         if (!c_flasher_cut.is_in(prompt)) return false;
 
-        std::size_t nb_multu_veto = 0ul;
-        for (const vertex& multiplicity : m_nav->multiplicities) {
-            if (multiplicity.ts == prompt.ts || multiplicity.ts == delayed.ts) continue;
-            vertex mult{multiplicity};
-            mult.e /= m_gtc.interpolate(mult.ts);
-            if (!c_multiplicity_energy_cut.is_in(mult)) continue;
-            if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
-            ++nb_multu_veto;
-        }
-        if (nb_multu_veto) return false;
+        // std::size_t nb_multu_veto = 0ul;
+        // for (const vertex& multiplicity : m_nav->multiplicities) {
+        //     if (multiplicity.ts == prompt.ts || multiplicity.ts == delayed.ts) continue;
+        //     vertex mult{multiplicity};
+        //     mult.e /= m_gtc.interpolate(mult.ts);
+        //     if (!c_multiplicity_energy_cut.is_in(mult)) continue;
+        //     if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
+        //     ++nb_multu_veto;
+        // }
+        // if (nb_multu_veto) return false;
 
         std::size_t nb_neutron_veto = 0ul;
         for (const vertex& neutron : m_nav->neutrons) {

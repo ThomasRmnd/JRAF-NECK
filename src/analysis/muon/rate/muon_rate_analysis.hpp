@@ -26,19 +26,21 @@ public:
         m_hist_cd_wp = std::make_unique<TH1D>("muon_time_difference_cd_wp", "Muon time difference (CD+WP);#Delta t_{#mu} (s);Entries;", 50, 0.0, 2.0);
         m_hist_cd_wp->SetDirectory(0);
 
-        m_hist_cd_only_ptr = m_hist_cd_only.get();
-        m_hist_wp_only_ptr = m_hist_wp_only.get();
-        m_hist_cd_wp_ptr = m_hist_cd_wp.get();
-
         m_tree = new TTree("rate", "Muon rate");
         if (!m_tree) {
             std::cerr << "Cannot create tree rate\n";
             return;
         }
         m_tree->Branch("run_id", &m_run_id);
-        m_tree->Branch("hist_cd_only", &m_hist_cd_only_ptr);
-        m_tree->Branch("hist_wp_only", &m_hist_wp_only_ptr);
-        m_tree->Branch("hist_cd_wp", &m_hist_cd_wp_ptr);
+        m_tree->Branch("m_hist_cd_only_edges", &m_hist_cd_only_edges);
+        m_tree->Branch("m_hist_cd_only_counts", &m_hist_cd_only_counts);
+        m_tree->Branch("m_hist_cd_only_errors", &m_hist_cd_only_errors);
+        m_tree->Branch("m_hist_wp_only_edges", &m_hist_wp_only_edges);
+        m_tree->Branch("m_hist_wp_only_counts", &m_hist_wp_only_counts);
+        m_tree->Branch("m_hist_wp_only_errors", &m_hist_wp_only_errors);
+        m_tree->Branch("m_hist_cd_wp_edges", &m_hist_cd_wp_edges);
+        m_tree->Branch("m_hist_cd_wp_counts", &m_hist_cd_wp_counts);
+        m_tree->Branch("m_hist_cd_wp_errors", &m_hist_cd_wp_errors);
     }
 
     ~muon_rate_analysis() override = default;
@@ -56,6 +58,9 @@ public:
             m_run_id = m_nav->run_id;
         }
         else if (m_run_id != m_nav->run_id) {
+            fill_hist(m_hist_cd_only, m_hist_cd_only_edges, m_hist_cd_only_counts, m_hist_cd_only_errors);
+            fill_hist(m_hist_wp_only, m_hist_wp_only_edges, m_hist_wp_only_counts, m_hist_wp_only_errors);
+            fill_hist(m_hist_cd_wp, m_hist_cd_wp_edges, m_hist_cd_wp_counts, m_hist_cd_wp_errors);
             m_tree->Fill();
             reset_run();
             m_run_id = m_nav->run_id;
@@ -101,9 +106,15 @@ protected:
 
     TTree* m_tree;
     int m_run_id = 0;
-    TH1D* m_hist_cd_only_ptr = nullptr;
-    TH1D* m_hist_wp_only_ptr = nullptr;
-    TH1D* m_hist_cd_wp_ptr = nullptr;
+    std::vector<double> m_hist_cd_only_edges;
+    std::vector<double> m_hist_cd_only_counts;
+    std::vector<double> m_hist_cd_only_errors;
+    std::vector<double> m_hist_wp_only_edges;
+    std::vector<double> m_hist_wp_only_counts;
+    std::vector<double> m_hist_wp_only_errors;
+    std::vector<double> m_hist_cd_wp_edges;
+    std::vector<double> m_hist_cd_wp_counts;
+    std::vector<double> m_hist_cd_wp_errors;
 
     void reset_run() {
         m_hist_cd_only->Reset();
@@ -117,10 +128,35 @@ protected:
 
     bool save_content() override {
         if (m_run_id != 0) {
+            fill_hist(m_hist_cd_only, m_hist_cd_only_edges, m_hist_cd_only_counts, m_hist_cd_only_errors);
+            fill_hist(m_hist_wp_only, m_hist_wp_only_edges, m_hist_wp_only_counts, m_hist_wp_only_errors);
+            fill_hist(m_hist_cd_wp, m_hist_cd_wp_edges, m_hist_cd_wp_counts, m_hist_cd_wp_errors);
             m_tree->Fill();
         }
         m_tree->Write();
         return true;
+    }
+
+    void fill_hist(const std::unique_ptr<TH1D>& h, std::vector<double>& edges, std::vector<double>& counts, std::vector<double>& errors) {
+        edges.clear();
+        counts.clear();
+        errors.clear();
+
+        const int nbins = h->GetNbinsX();
+
+        edges.reserve(nbins + 1);
+        counts.reserve(nbins);
+        errors.reserve(nbins);
+
+        for (int i = 1; i <= nbins; ++i) {
+            edges.push_back(h->GetBinLowEdge(i));
+            counts.push_back(h->GetBinContent(i));
+            errors.push_back(h->GetBinError(i));
+        }
+
+        edges.push_back(
+            h->GetBinLowEdge(nbins) + h->GetBinWidth(nbins)
+        );
     }
 
 };

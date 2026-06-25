@@ -41,16 +41,16 @@ public:
         if (!vertex_correlation_cut.is_in(delayed)) return false;
         if (!c_flasher_cut.is_in(prompt)) return false;
 
-        std::size_t nb_multu_veto = 0ul;
-        for (const vertex& multiplicity : m_nav->multiplicities) {
-            if (multiplicity.ts == prompt.ts || multiplicity.ts == delayed.ts) continue; 
-            vertex mult{multiplicity};
-            mult.e /= m_gtc.interpolate(mult.ts);
-            if (!c_multiplicity_energy_cut.is_in(mult)) continue;
-            if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
-            ++nb_multu_veto;
-        }
-        if (nb_multu_veto) return false;
+        // std::size_t nb_multu_veto = 0ul;
+        // for (const vertex& multiplicity : m_nav->multiplicities) {
+        //     if (multiplicity.ts == prompt.ts || multiplicity.ts == delayed.ts) continue; 
+        //     vertex mult{multiplicity};
+        //     mult.e /= m_gtc.interpolate(mult.ts);
+        //     if (!c_multiplicity_energy_cut.is_in(mult)) continue;
+        //     if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
+        //     ++nb_multu_veto;
+        // }
+        // if (nb_multu_veto) return false;
 
         std::size_t nb_neutron_veto = 0ul;
         for (const vertex& neutron : m_nav->neutrons) {
@@ -60,7 +60,7 @@ public:
             if (!c_neutron_energy_cut.is_in(neu)) continue;
             if (neutron.stdt > 275.0) continue; // flasher cut
             vertex_correlation_selection vertex_correlation_neutron_cut{neu, 4000.0, timestamp{0, 20000}, timestamp{0, 1200000000}};
-            if (!vertex_correlation_neutron_cut.is_in(prompt) && !vertex_correlation_neutron_cut.is_in(delayed)) continue;
+            if (!vertex_correlation_neutron_cut.is_in(prompt)) continue;
             ++nb_neutron_veto;
         }
         if (nb_neutron_veto) return false;
@@ -93,14 +93,12 @@ public:
             if (!found_neutron) continue;
 
             bool is_in_ts_veto = (
-                muon.ts + m_ts_low < prompt.ts && prompt.ts < muon.ts + m_ts_high &&
-                muon.ts + m_ts_low < delayed.ts && delayed.ts < muon.ts + m_ts_high
+                muon.ts + m_ts_low < prompt.ts && prompt.ts < muon.ts + m_ts_high
             );
 
             vec3 dir = unit(muon.fpos - muon.ipos);
             bool is_in_pos_veto = (
-                mag(cross(dir, prompt.pos - muon.ipos)) < m_radius &&
-                mag(cross(dir, delayed.pos - muon.ipos)) < m_radius
+                mag(cross(dir, prompt.pos - muon.ipos)) < m_radius
             );
             
             if (!is_in_ts_veto || !is_in_pos_veto) continue;

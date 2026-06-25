@@ -50,7 +50,7 @@ public:
             if (!c_neutron_energy_cut.is_in(neu)) continue;
             if (neutron.stdt > 275.0) continue; // flasher cut
             vertex_correlation_selection vertex_correlation_neutron_cut{neu, 4000.0, timestamp{0, 20000}, timestamp{0, 1200000000}};
-            if (!vertex_correlation_neutron_cut.is_in(prompt) && !vertex_correlation_neutron_cut.is_in(delayed)) continue;
+            if (!vertex_correlation_neutron_cut.is_in(prompt)) continue;
             ++nb_neutron_veto;
         }
         if (nb_neutron_veto) return false;

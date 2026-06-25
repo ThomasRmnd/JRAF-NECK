@@ -32,15 +32,21 @@ public:
             return;
         }
         m_tree->Branch("run_id", &m_run_id);
-        m_tree->Branch("m_hist_cd_only_edges", &m_hist_cd_only_edges);
-        m_tree->Branch("m_hist_cd_only_counts", &m_hist_cd_only_counts);
-        m_tree->Branch("m_hist_cd_only_errors", &m_hist_cd_only_errors);
-        m_tree->Branch("m_hist_wp_only_edges", &m_hist_wp_only_edges);
-        m_tree->Branch("m_hist_wp_only_counts", &m_hist_wp_only_counts);
-        m_tree->Branch("m_hist_wp_only_errors", &m_hist_wp_only_errors);
-        m_tree->Branch("m_hist_cd_wp_edges", &m_hist_cd_wp_edges);
-        m_tree->Branch("m_hist_cd_wp_counts", &m_hist_cd_wp_counts);
-        m_tree->Branch("m_hist_cd_wp_errors", &m_hist_cd_wp_errors);
+        m_tree->Branch("hist_cd_only_edges", &m_hist_cd_only_edges);
+        m_tree->Branch("hist_cd_only_counts", &m_hist_cd_only_counts);
+        m_tree->Branch("hist_cd_only_errors", &m_hist_cd_only_errors);
+        m_tree->Branch("hist_cd_only_underflow", &m_hist_cd_only_underflow);
+        m_tree->Branch("hist_cd_only_overflow", &m_hist_cd_only_overflow);
+        m_tree->Branch("hist_wp_only_edges", &m_hist_wp_only_edges);
+        m_tree->Branch("hist_wp_only_counts", &m_hist_wp_only_counts);
+        m_tree->Branch("hist_wp_only_errors", &m_hist_wp_only_errors);
+        m_tree->Branch("hist_wp_only_underflow", &m_hist_wp_only_underflow);
+        m_tree->Branch("hist_wp_only_overflow", &m_hist_wp_only_overflow);
+        m_tree->Branch("hist_cd_wp_edges", &m_hist_cd_wp_edges);
+        m_tree->Branch("hist_cd_wp_counts", &m_hist_cd_wp_counts);
+        m_tree->Branch("hist_cd_wp_errors", &m_hist_cd_wp_errors);
+        m_tree->Branch("hist_cd_wp_underflow", &m_hist_cd_wp_underflow);
+        m_tree->Branch("hist_cd_wp_overflow", &m_hist_cd_wp_overflow);
     }
 
     ~muon_rate_analysis() override = default;
@@ -58,9 +64,9 @@ public:
             m_run_id = m_nav->run_id;
         }
         else if (m_run_id != m_nav->run_id) {
-            fill_hist(m_hist_cd_only, m_hist_cd_only_edges, m_hist_cd_only_counts, m_hist_cd_only_errors);
-            fill_hist(m_hist_wp_only, m_hist_wp_only_edges, m_hist_wp_only_counts, m_hist_wp_only_errors);
-            fill_hist(m_hist_cd_wp, m_hist_cd_wp_edges, m_hist_cd_wp_counts, m_hist_cd_wp_errors);
+            fill_hist(m_hist_cd_only, m_hist_cd_only_edges, m_hist_cd_only_counts, m_hist_cd_only_errors, m_hist_cd_only_underflow, m_hist_cd_only_overflow);
+            fill_hist(m_hist_wp_only, m_hist_wp_only_edges, m_hist_wp_only_counts, m_hist_wp_only_errors, m_hist_wp_only_underflow, m_hist_wp_only_overflow);
+            fill_hist(m_hist_cd_wp, m_hist_cd_wp_edges, m_hist_cd_wp_counts, m_hist_cd_wp_errors, m_hist_cd_wp_underflow, m_hist_cd_wp_overflow);
             m_tree->Fill();
             reset_run();
             m_run_id = m_nav->run_id;
@@ -109,12 +115,18 @@ protected:
     std::vector<double> m_hist_cd_only_edges;
     std::vector<double> m_hist_cd_only_counts;
     std::vector<double> m_hist_cd_only_errors;
+    double m_hist_cd_only_underflow;
+    double m_hist_cd_only_overflow;
     std::vector<double> m_hist_wp_only_edges;
     std::vector<double> m_hist_wp_only_counts;
     std::vector<double> m_hist_wp_only_errors;
+    double m_hist_wp_only_underflow;
+    double m_hist_wp_only_overflow;
     std::vector<double> m_hist_cd_wp_edges;
     std::vector<double> m_hist_cd_wp_counts;
     std::vector<double> m_hist_cd_wp_errors;
+    double m_hist_cd_wp_underflow;
+    double m_hist_cd_wp_overflow;
 
     void reset_run() {
         m_hist_cd_only->Reset();
@@ -128,16 +140,16 @@ protected:
 
     bool save_content() override {
         if (m_run_id != 0) {
-            fill_hist(m_hist_cd_only, m_hist_cd_only_edges, m_hist_cd_only_counts, m_hist_cd_only_errors);
-            fill_hist(m_hist_wp_only, m_hist_wp_only_edges, m_hist_wp_only_counts, m_hist_wp_only_errors);
-            fill_hist(m_hist_cd_wp, m_hist_cd_wp_edges, m_hist_cd_wp_counts, m_hist_cd_wp_errors);
+            fill_hist(m_hist_cd_only, m_hist_cd_only_edges, m_hist_cd_only_counts, m_hist_cd_only_errors, m_hist_cd_only_underflow, m_hist_cd_only_overflow);
+            fill_hist(m_hist_wp_only, m_hist_wp_only_edges, m_hist_wp_only_counts, m_hist_wp_only_errors, m_hist_wp_only_underflow, m_hist_wp_only_overflow);
+            fill_hist(m_hist_cd_wp, m_hist_cd_wp_edges, m_hist_cd_wp_counts, m_hist_cd_wp_errors, m_hist_cd_wp_underflow, m_hist_cd_wp_overflow);
             m_tree->Fill();
         }
         m_tree->Write();
         return true;
     }
 
-    void fill_hist(const std::unique_ptr<TH1D>& h, std::vector<double>& edges, std::vector<double>& counts, std::vector<double>& errors) {
+    void fill_hist(const std::unique_ptr<TH1D>& h, std::vector<double>& edges, std::vector<double>& counts, std::vector<double>& errors, double& underflow, double& overflow) {
         edges.clear();
         counts.clear();
         errors.clear();
@@ -157,6 +169,9 @@ protected:
         edges.push_back(
             h->GetBinLowEdge(nbins) + h->GetBinWidth(nbins)
         );
+
+        underflow       = h->GetBinContent(0);
+        overflow        = h->GetBinContent(h->GetNbinsX() + 1);
     }
 
 };

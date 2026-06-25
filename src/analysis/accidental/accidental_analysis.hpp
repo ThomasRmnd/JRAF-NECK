@@ -156,8 +156,8 @@ protected:
             // if (has_stopping_in_wp_event[muon.ts]) continue;
 
             bool is_in_sig = (
-                muon.ts + timestamp{0, 5000000} <= m_nav->prompt.ts && m_nav->prompt.ts <= muon.ts + timestamp{0, 1200000000} &&
-                muon.ts + timestamp{0, 5000000} <= m_nav->delayed.ts && m_nav->delayed.ts <= muon.ts + timestamp{0, 1200000000}
+                muon.ts + timestamp{0, 5000000} <= m_nav->prompt.ts && m_nav->prompt.ts <= muon.ts + timestamp{0, 1200000000}
+                // muon.ts + timestamp{0, 5000000} <= m_nav->delayed.ts && m_nav->delayed.ts <= muon.ts + timestamp{0, 1200000000}
             );
             if (!is_in_sig) continue;
 

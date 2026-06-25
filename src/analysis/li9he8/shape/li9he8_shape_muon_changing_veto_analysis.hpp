@@ -2,10 +2,7 @@
 #define JRAFNECK_ANALYSIS_LI9HE8_LI9HE8SHAPEMUONCHANGINGVETOANALYSIS_HPP_
 
 #include "analysis/li9he8/shape/li9he8_shape_muon_analysis.hpp"
-#include "selection/energy.hpp"
-#include "selection/flasher.hpp"
-#include "selection/spatial.hpp"
-#include "selection/vertex.hpp"
+#include "selection/constants.hpp"
 
 class li9he8_shape_muon_changing_veto_analysis : public li9he8_shape_muon_analysis {
 
@@ -23,20 +20,21 @@ public:
 
         vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{0, 5000}, timestamp{0, 1000000}};
 
-        if (!c_prompt_energy_cut.is_in(prompt)) return false;
-        if (!c_delayed_hydrogen_energy_cut.is_in(delayed) && !c_delayed_carbon_energy_cut.is_in(delayed)) return false;
-        if (!c_fiducial_volume_cut.is_in(prompt)) return false;
-        if (!c_acrylic_sphere_cut.is_in(delayed)) return false;
-        if (c_chimney_cut.is_in(prompt)) return false;
+        if (!g_prompt_energy_cut.is_in(prompt)) return false;
+        if (!g_delayed_hydrogen_energy_cut.is_in(delayed) && !g_delayed_carbon_energy_cut.is_in(delayed)) return false;
+        if (!g_fiducial_volume_cut.is_in(prompt)) return false;
+        if (!g_acrylic_sphere_cut.is_in(delayed)) return false;
+        if (g_chimney_cut.is_in(prompt)) return false;
         if (!vertex_correlation_cut.is_in(delayed)) return false;
-        if (!c_flasher_cut.is_in(prompt)) return false;
+        if (!g_flasher_cut.is_in(prompt)) return false;
 
         std::size_t nb_multu_veto = 0ul;
         for (const vertex& multiplicity : m_nav->multiplicities) {
             if (multiplicity.ts == prompt.ts || multiplicity.ts == delayed.ts) continue;
             vertex mult{multiplicity};
             mult.e /= m_gtc.interpolate(mult.ts);
-            if (!c_multiplicity_energy_cut.is_in(mult)) continue;
+            if (!g_multiplicity_energy_cut.is_in(mult)) continue;
+            if (!g_acrylic_sphere_cut.is_in(mult)) continue;
             if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
             ++nb_multu_veto;
         }
@@ -114,18 +112,6 @@ public:
 
         return !m_is_sig.empty();
     }
-
-protected:
-
-    const energy_range_selection c_prompt_energy_cut{0.7, 12.0};
-    const energy_range_selection c_delayed_hydrogen_energy_cut{2.0, 2.5};
-    const energy_range_selection c_delayed_carbon_energy_cut{4.5, 5.5};
-    const fiducial_volume_selection c_fiducial_volume_cut{17200.0};
-    const fiducial_volume_selection c_acrylic_sphere_cut{17700.0};
-    const chimney_selection c_chimney_cut{15500.0, 2000.0};
-    const flasher_selection c_flasher_cut{0.55, 0.45, 170.0, 80.0};
-
-    const energy_range_selection c_multiplicity_energy_cut{2.0, 12.0};
 
 };
 

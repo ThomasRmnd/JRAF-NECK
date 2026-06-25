@@ -170,8 +170,8 @@ protected:
             h->GetBinLowEdge(nbins) + h->GetBinWidth(nbins)
         );
 
-        underflow       = h->GetBinContent(0);
-        overflow        = h->GetBinContent(h->GetNbinsX() + 1);
+        underflow = h->GetBinContent(0);
+        overflow = h->GetBinContent(h->GetNbinsX() + 1);
     }
 
 };

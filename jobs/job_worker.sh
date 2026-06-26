@@ -192,20 +192,30 @@ main() {
         local year="${timestamp:0:4}"
         local month="${timestamp:4:2}"
         local day="${timestamp:6:2}"
-        RECONSTRUCTION_TT_FILEPATH="${XRD_URL}${XRD_BASEPATH}/juno/user/j/jpandre_1/tt_data_auto/${year}/${month}${day}/RUN.${RUN}.*.EDM.user.root"
+        tt_chain_filepath="${XRD_BASEPATH}/juno/user/j/jpandre_1/tt_data_auto/${year}/${month}${day}/RUN.${RUN}.*.EDM.user.root"
 
     elif (( RUN >= 10176 && RUN <= 10479 )); then
-        RECONSTRUCTION_TT_FILEPATH="${XRD_URL}${XRD_BASEPATH}/juno/user/j/jpandre_1/tt_data_auto/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
+        tt_chain_filepath="${XRD_BASEPATH}/juno/user/j/jpandre_1/tt_data_auto/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
 
     elif (( RUN >= 10480 )); then
-        RECONSTRUCTION_TT_FILEPATH="${XRD_URL}${XRD_BASEPATH}/juno/juno-reprod/TT25A/J25.4.3-patched/user_rec/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
+        tt_chain_filepath="${XRD_BASEPATH}/juno/juno-reprod/TT25A/J25.4.3-patched/user_rec/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
 
     else
         log ERROR "No TT reco path rule defined for run ${RUN}"
         exit 1
     fi
 
-    log DEBUG "${RECONSTRUCTION_TT_FILEPATH}"
+    local dir_tt=$(dirname "${tt_chain_filepath}")
+    local pattern_tt=$(basename "${tt_chain_filepath}")
+
+    local nfiles=$(
+        xrdfs "${XRD_URL}" ls "${dir_tt}" \
+        | grep -E "^${pattern_tt//\*/.*}$" \
+        | wc -l
+    )
+    log DEBUG "Found ${nfiles} TT reconstruction files"
+
+    RECONSTRUCTION_TT_FILEPATH="${XRD_URL}${tt_chain_filepath}"
 
     RECONSTRUCTION_EDWIN_FILEPATH=""
     RECONSTRUCTION_AMBER_FILEPATH=""

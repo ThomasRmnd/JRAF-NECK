@@ -55,7 +55,7 @@ public:
 
     ~cylindrical_muon_veto_selection() override = default;
 
-    bool is_in(const vertex& vtx) const {
+    bool is_in(const vertex& vtx) const override {
         return c_cylindrical.is_in(vtx) && c_time.is_in(vtx);
     }
 

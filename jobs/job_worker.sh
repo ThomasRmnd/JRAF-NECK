@@ -221,7 +221,7 @@ main() {
 
     local nfiles=$(
         xrdfs "${XRD_URL}" ls "${dir_tt}" \
-        | grep -E "^${pattern_tt//\*/.*}$" \
+        | grep -E "${pattern_tt}" \
         | wc -l
     )
     log DEBUG "Found ${nfiles} TT reconstruction files"

@@ -30,8 +30,6 @@ public:
         m_chain->branch("Coeff5", m_Coeff5);
         m_chain->branch("Chi2", m_Chi2);
         m_chain->branch("start_TS", &m_start_TS);
-
-        std::cout << "Debug: TT chain has " << m_chain->size() << " entries\n";
     }
 
     virtual ~muon_event_user_tt_navigator() override = default;

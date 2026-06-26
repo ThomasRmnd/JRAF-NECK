@@ -71,12 +71,16 @@ LIST_BASE="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/other/GoodList"
 LOWER_BOUND=""
 UPPER_BOUND=""
 
+DURATION=medium
+DURATION_TIME="0-01:00:00"
+
 usage() {
     cat <<EOF
-Usage: $(basename "$0") [options]
+Usage: $(basename "$0") --campaign <str> --duration <str> [options]
 
 Required:
   --campaign    <str>           Campaign name
+  --duration    <str>           Duration of the jobs (default: medium)
 
 Optional:
   --lower       <int>           Starting run number (inclusive)
@@ -89,10 +93,11 @@ EOF
 parse_args() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            --campaign)     CAMPAIGN="$2"; shift 2 ;;
+            --campaign)     CAMPAIGN="$2";    shift 2 ;;
+            --duration)     DURATION="$2";    shift 2 ;;
             --lower)        LOWER_BOUND="$2"; shift 2 ;;
             --upper)        UPPER_BOUND="$2"; shift 2 ;;
-            --list-base)    LIST_BASE="$2"; shift 2 ;;
+            --list-base)    LIST_BASE="$2";   shift 2 ;;
             --help|-h) usage; exit 0 ;;
             *) log ERROR "Unknown argument: $1"; usage; exit 1 ;;
         esac
@@ -103,6 +108,13 @@ parse_args() {
         usage
         exit 1
     fi
+
+    case "${DURATION}" in
+        short)  DURATION_TIME="0-00:30:00" ;;
+        medium) DURATION_TIME="0-01:00:00" ;;
+        long)   DURATION_TIME="0-01:30:00" ;;
+        *) log ERROR "Unkown argument: ${DURATION}, should be {short|medium|long}" ;;
+    esac
 }
 
 #==============================
@@ -171,7 +183,7 @@ launch_jobs() {
             --ntasks=1 \
             --cpus-per-task=1 \
             --mem="2G" \
-            --time="0-01:30:00" \
+            --time="${DURATION_TIME}" \
             --mail-user="thomas.raymond@iphc.cnrs.fr" \
             --mail-type="FAIL" \
             job_worker.sh \

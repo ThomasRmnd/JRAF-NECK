@@ -118,6 +118,17 @@ parse_args() {
         log ERROR "--run must be an integer"
         exit 1
     fi
+
+    PROXY_PATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/.cert_traymond_juno_user"
+    if [[ ! -f "${PROXY_PATH}" ]]; then
+        log ERROR "X.509 proxy does not exist: ${PROXY_PATH}"
+        exit 1
+    fi
+    if [[ ! -r "${PROXY_PATH}" ]]; then
+        log ERROR "X.509 proxy not readable: ${PROXY_PATH}"
+        exit 1
+    fi
+    export X509_USER_PROXY="${PROXY_PATH}"
 }
 
 #==============================

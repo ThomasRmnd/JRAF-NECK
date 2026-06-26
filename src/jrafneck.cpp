@@ -18,6 +18,7 @@
 #include "analysis/li9he8/shape/li9he8_shape_muon_with_neutron_analysis.hpp"
 #include "analysis/lifetime/daq/daq_total_time_analysis.hpp"
 #include "analysis/lifetime/veto/veto_total_time_analysis.hpp"
+#include "analysis/muon/efficiency/muon_wp_tagging_efficiency_analysis.hpp"
 #include "analysis/muon/performance/muon_performance_single_analysis.hpp"
 #include "analysis/muon/rate/muon_rate_analysis.hpp"
 
@@ -228,6 +229,14 @@ int jrafneck(
     // --------------------------------------------------------------------------------------------
     // Muon
     // --------------------------------------------------------------------------------------------
+
+    std::shared_ptr<analysis_base> muon_efficiency__wp_tagging(
+        new muon_wp_tagging_efficiency_analysis(
+            "muon_efficiency__wp_tagging", 
+            reconstruction_filepath, "muons"
+        )
+    );
+    if (!registry.book(muon_efficiency__wp_tagging)) return 1;
 
     std::shared_ptr<analysis_base> muon_performance__single__analysis(
         new muon_performance_single_analysis(

@@ -110,7 +110,7 @@ protected:
     timestamp m_last_wp_only{0l, 0};
     timestamp m_last_cd_wp{0l, 0};
 
-    TTree* m_tree;
+    TTree* m_tree = nullptr;
     int m_run_id = 0;
     std::vector<double> m_hist_cd_only_edges;
     std::vector<double> m_hist_cd_only_counts;

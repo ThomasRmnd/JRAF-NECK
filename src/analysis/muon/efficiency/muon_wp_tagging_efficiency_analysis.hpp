@@ -51,9 +51,10 @@ public:
 
         timestamp ts = m_nav->muons.front().ts;
 
+        bool is_cd_only = totq_cd > 0.0 && totq_wp == 0.0;
         bool is_cd_wp = totq_cd > 0.0 && totq_wp > 0.0;
 
-        if (is_cd_wp && (ts - m_last > m_veto_window)) {
+        if (is_cd_only && (ts - m_last > m_veto_window)) {
             ++m_nb_cd_only_10ms;
         }
         if (is_cd_wp && totq_cd > 30000.0) {

@@ -99,4 +99,60 @@ protected:
 
 };
 
+class muon_event_jraf_custom_tt_navigator : public navigator_base {
+
+public:
+
+    muon_event_jraf_custom_tt_navigator(const std::string& filepath, const std::string& treename = "TT") :
+        navigator_base{filepath, treename}
+    {
+        if (!is_valid()) return;
+
+        m_chain->branch("runid", m_runid);
+        m_chain->branch("sec", m_sec);
+        m_chain->branch("nsec", m_nsec);
+        m_chain->branch("iposx", m_iposx);
+        m_chain->branch("iposy", m_iposy);
+        m_chain->branch("iposz", m_iposz);
+        m_chain->branch("fposx", m_fposx);
+        m_chain->branch("fposy", m_fposy);
+        m_chain->branch("fposz", m_fposz);
+        m_chain->branch("chi2", m_chi2);
+    }
+
+    virtual ~muon_event_jraf_custom_tt_navigator() override = default;
+
+    virtual bool entry(std::ptrdiff_t n) override {
+        if (!navigator_base::entry(n)) return false;
+
+        muons.clear();
+        muons.emplace_back(
+            "Tt", 0.0, 0.0,
+            vec3{m_iposx, m_iposy, m_iposz}, vec3{m_fposx, m_fposy, m_fposz},
+            timestamp{m_sec, m_nsec},
+            m_chi2, 4
+        );
+
+        return true;
+    }
+
+    virtual timestamp ts() const override { return timestamp{m_sec, m_nsec}; }
+
+    std::vector<track> muons;
+
+protected:
+
+    int m_runid;
+    time_t m_sec;
+    int m_nsec;
+    double m_iposx;
+    double m_iposy;
+    double m_iposz;
+    double m_fposx;
+    double m_fposy;
+    double m_fposz;
+    double m_chi2;
+
+};
+
 #endif // JRAFNECK_READER_NAVIGATOR_MUONEVENTUSERTTNAVIGATOR_HPP_

@@ -56,7 +56,7 @@ elif [[ "${HOSTNAME}" =~ ^lxlogin[0-9]+\.ihep\.ac\.cn$ ]]; then
     CLUSTER="IHEP"
 else
     echo "ERROR: Unknown cluster. Hostname: ${HOSTNAME}" >&2
-    echo "Expected CC-IN2P3 (cc###) or IHEP (lxlogin###.ihep.ac.cn)" >&2
+    echo "Expected CC-IN2P3 (cca###) or IHEP (lxlogin###.ihep.ac.cn)" >&2
     exit 1
 fi
 
@@ -66,47 +66,54 @@ log INFO "Cluster detected: ${CLUSTER}"
 # Configuration defaults
 #==============================
 
-RUN_LIST_REPROD25C="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/other/GoodList/ReProd25C/physics_good.txt"
-RUN_LIST_REPROD25D="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/other/GoodList/ReProd25D/physics_good.txt"
+LIST_BASE="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/other/GoodList"
 
 LOWER_BOUND=""
 UPPER_BOUND=""
 
+DURATION=medium
+DURATION_TIME="0-01:00:00"
+
 usage() {
     cat <<EOF
-Usage: $(basename "$0") --method <str> [options]
+Usage: $(basename "$0") --campaign <str> --duration <str> [options]
 
 Required:
-  --method <str>        Method name {AMBER|EDWIN}
+  --campaign    <str>           Campaign name
+  --duration    <str>           Duration of the jobs (default: medium)
 
 Optional:
-  --lower <num>         Starting run number (inclusive)
-  --upper <num>         Ending run number (inclusive)
-  --help                Show this help message and exit
+  --lower       <int>           Starting run number (inclusive)
+  --upper       <int>           Ending run number (inclusive)
+  --list-base   <str>           Base directory of the run list
+  --help                        Show this help message and exit
 EOF
 }
 
 parse_args() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            --method) METHOD="$2"; shift 2 ;;
-            --lower)    LOWER_BOUND="$2"; shift 2 ;;
-            --upper)    UPPER_BOUND="$2"; shift 2 ;;
+            --campaign)     CAMPAIGN="$2";    shift 2 ;;
+            --duration)     DURATION="$2";    shift 2 ;;
+            --lower)        LOWER_BOUND="$2"; shift 2 ;;
+            --upper)        UPPER_BOUND="$2"; shift 2 ;;
+            --list-base)    LIST_BASE="$2";   shift 2 ;;
             --help|-h) usage; exit 0 ;;
             *) log ERROR "Unknown argument: $1"; usage; exit 1 ;;
         esac
     done
 
-    if [[ -z "${METHOD:-}" ]]; then
-        log ERROR "--method is required {AMBER|EDWIN}"
+    if [[ -z "${CAMPAIGN:-}" ]]; then
+        log ERROR "--campaign is required"
         usage
         exit 1
     fi
 
-    case "${METHOD}" in
-        AMBER|EDWIN) ;;
-        *) log ERROR "Invalid --method: ${METHOD} (expected {AMBER|EDWIN})"
-           exit 1 ;;
+    case "${DURATION}" in
+        short)  DURATION_TIME="0-00:30:00" ;;
+        medium) DURATION_TIME="0-01:00:00" ;;
+        long)   DURATION_TIME="0-03:00:00" ;;
+        *) log ERROR "Unkown argument: ${DURATION}, should be {short|medium|long}" ;;
     esac
 }
 
@@ -115,16 +122,11 @@ parse_args() {
 #==============================
 
 load_run_list() {
-    log INFO "Fetching run lists (ReProd25C + ReProd25D)"
+    log INFO "Fetching run lists"
 
-    mapfile -t RUN_LIST < <(
-        cat "${RUN_LIST_REPROD25C}" "${RUN_LIST_REPROD25D}" \
-        | tr -d '\r' \
-        | sed '/^$/d' \
-        | sort -n -u
-    )
+    mapfile -t RUN_LIST < <(cat "${LIST_BASE}/${CAMPAIGN}/physics_good.txt")
 
-    log INFO "Total runs loaded: ${#RUN_LIST[@]}"
+    log INFO "Total run entries loaded: ${#RUN_LIST[@]}"
 }
 
 #==============================
@@ -134,14 +136,19 @@ load_run_list() {
 filter_runs() {
     local filtered=()
 
-    for run in "${RUN_LIST[@]}"; do
-        (( run < 0 )) && continue
-        if [[ -n "${LOWER_BOUND}" && "${run}" -lt "${LOWER_BOUND}" ]]; then
+    for entry in "${RUN_LIST[@]}"; do
+        run="${entry%%:*}"
+        campaign="${entry##*:}"
+
+        [[ "$run" =~ ^[0-9]+$ ]] || continue
+
+        if [[ -n "${LOWER_BOUND}" && "$run" -lt "$LOWER_BOUND" ]]; then
             continue
         fi
-        if [[ -n "${UPPER_BOUND}" && "${run}" -gt "${UPPER_BOUND}" ]]; then
+        if [[ -n "${UPPER_BOUND}" && "$run" -gt "$UPPER_BOUND" ]]; then
             continue
         fi
+
         filtered+=("${run}")
     done
 
@@ -152,7 +159,10 @@ filter_runs() {
         exit 0
     fi
 
-    log INFO "Runs selected: ${RUN_LIST[*]}"
+    log INFO "Runs selected:"
+    for entry in "${RUN_LIST[@]}"; do
+        log INFO "  ${entry}"
+    done
 }
 
 #==============================
@@ -160,23 +170,24 @@ filter_runs() {
 #==============================
 
 launch_jobs() {
-    for run in "${RUN_LIST[@]}"; do
+    for entry in "${RUN_LIST[@]}"; do
+        run="${entry}"
+
         log INFO ">>> Launching job for run ${run}"
 
         if sbatch \
-            --job-name="ts_sorter_${METHOD}_${run}" \
-            --output="/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/log/ts_sorter_${METHOD}_${run}.log" \
-            --error="/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/err/ts_sorter_${METHOD}_${run}.err" \
+            --job-name="jrafneck_${run}" \
+            --output="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/log/tt_reco_extractor_${run}.log" \
+            --error="/sps/juno/jdeandre/rtraw_ThomasRaymond/analysis/err/tt_reco_extractor_${run}.err" \
             --partition="htc" \
             --ntasks=1 \
             --cpus-per-task=1 \
             --mem="2G" \
-            --time="0-00:10:00" \
+            --time="${DURATION_TIME}" \
             --mail-user="thomas.raymond@iphc.cnrs.fr" \
             --mail-type="FAIL" \
             job_worker.sh \
-                --method "${METHOD}" \
-                --run "${run}"
+            --campaign "${CAMPAIGN}" --run "${run}" --list-base "${LIST_BASE}"
         then
             log INFO "Run ${run} submitted successfully"
         else

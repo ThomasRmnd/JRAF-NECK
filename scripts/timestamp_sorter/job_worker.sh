@@ -4,6 +4,46 @@ set -euo pipefail
 IFS=$'\n\t'
 
 #==============================
+#  Utility logging function
+#==============================
+
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+log() {
+    local level="$1"; shift
+    local msg="$*"
+    local timestamp
+    timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
+
+    local level_num=0 color="$NC"
+    case "$level" in
+        ERROR) level_num=1; color="$RED" ;;
+        WARN)  level_num=2; color="$YELLOW" ;;
+        INFO)  level_num=3; color="$GREEN" ;;
+        DEBUG) level_num=4; color="$CYAN" ;;
+        ALL)   level_num=5; color="$BLUE" ;;
+        *)     level_num=3 ;;
+    esac
+
+    local prefix="${color}[$timestamp][$level]${NC}"
+
+    case "$level" in
+        DEBUG|INFO) echo -e "${prefix} $msg" >&1 ;;
+        WARN|ERROR) echo -e "${prefix} $msg" >&2 ;;
+        ALL)
+            echo -e "${prefix} $msg" >&1
+            echo -e "${prefix} $msg" >&2
+            ;;
+        *) echo -e "${prefix} $msg" >&1 ;;
+    esac
+}
+
+#==============================
 # Utility functions
 #==============================
 
@@ -11,13 +51,11 @@ HOSTNAME=$(hostname -f 2>/dev/null || hostname)
 if [[ "${HOSTNAME}" =~ ^cc.*\.in2p3\.fr$ ]]; then
     # Detect CC-IN2P3 cluster
     CLUSTER="CC-IN2P3"
-    source /pbs/home/t/traymond/share/bash/logging.sh
     TEMPDIR=${TMPDIR}
     SOURCE_JUNOSW_PATH="/pbs/home/t/traymond/J25.7.4/git_junosw_load_J25_7_4.sh"
 elif [[ "${HOSTNAME}" =~ ^lxlogin[0-9]+\.ihep\.ac\.cn$ ]]; then
     # Detect IHEP cluster
     CLUSTER="IHEP"
-    source /junofs/users/traymond/bash/logging.sh
     TEMPDIR=${TEMP}
     SOURCE_JUNOSW_PATH="/afs/ihep.ac.cn/users/t/traymond/J25.3.0/git_junosw_J25_load.sh"
 else

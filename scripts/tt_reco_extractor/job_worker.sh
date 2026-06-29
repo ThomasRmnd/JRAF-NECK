@@ -202,3 +202,5 @@ main() {
 
     root -l -b -q "timestamp_sorter.cpp(\"${RECONSTRUCTION_TT_FILEPATH}\", ${RUN}, \"${OUTPUT_FILEPATH}\")"
 }
+
+main "$@"

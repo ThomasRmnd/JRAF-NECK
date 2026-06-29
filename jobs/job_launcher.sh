@@ -182,7 +182,7 @@ launch_jobs() {
             --partition="htc" \
             --ntasks=1 \
             --cpus-per-task=1 \
-            --mem="2G" \
+            --mem="1G" \
             --time="${DURATION_TIME}" \
             --mail-user="thomas.raymond@iphc.cnrs.fr" \
             --mail-type="FAIL" \

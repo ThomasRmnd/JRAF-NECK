@@ -103,7 +103,7 @@ class muon_event_jraf_custom_tt_navigator : public navigator_base {
 
 public:
 
-    muon_event_jraf_custom_tt_navigator(const std::string& filepath, const std::string& treename = "TT") :
+    muon_event_jraf_custom_tt_navigator(const std::string& filepath, const std::string& treename = "single_muon") :
         navigator_base{filepath, treename}
     {
         if (!is_valid()) return;

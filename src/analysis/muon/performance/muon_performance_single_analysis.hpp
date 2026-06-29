@@ -27,7 +27,7 @@ public:
             filepath, treename, 
             amber_filepath, "MuonReco",
             edwin_filepath, "Edwin_Muon",
-            tt_filepath, "TT"
+            tt_filepath, "single_muon" // "TT"
         );
         if (!m_nav->is_valid()) {
             std::cerr << "Cannot retrieve navigator of filepath " << filepath << " and treename " << treename << '\n';

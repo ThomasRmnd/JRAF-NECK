@@ -74,8 +74,8 @@ log INFO "Cluster detected: ${CLUSTER}"
 # Configuration defaults
 #==============================
 
-XRD_URL="root://xrootd-archive.cr.cnaf.infn.it:1095/"
-XRD_BASEPATH="/production/storm/dirac"
+# XRD_URL="root://xrootd-archive.cr.cnaf.infn.it:1095/"
+# XRD_BASEPATH="/production/storm/dirac"
 
 INPUT_ANALYSIS_SUFFIX="analysis.root"
 INPUT_RECONSTRUCTION_SUFFIX="reconstruction.root"
@@ -119,16 +119,16 @@ parse_args() {
         exit 1
     fi
 
-    PROXY_PATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/.cert_traymond_juno_user"
-    if [[ ! -f "${PROXY_PATH}" ]]; then
-        log ERROR "X.509 proxy does not exist: ${PROXY_PATH}"
-        exit 1
-    fi
-    if [[ ! -r "${PROXY_PATH}" ]]; then
-        log ERROR "X.509 proxy not readable: ${PROXY_PATH}"
-        exit 1
-    fi
-    export X509_USER_PROXY="${PROXY_PATH}"
+    # PROXY_PATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/.cert_traymond_juno_user"
+    # if [[ ! -f "${PROXY_PATH}" ]]; then
+    #     log ERROR "X.509 proxy does not exist: ${PROXY_PATH}"
+    #     exit 1
+    # fi
+    # if [[ ! -r "${PROXY_PATH}" ]]; then
+    #     log ERROR "X.509 proxy not readable: ${PROXY_PATH}"
+    #     exit 1
+    # fi
+    # export X509_USER_PROXY="${PROXY_PATH}"
 }
 
 #==============================
@@ -184,53 +184,53 @@ main() {
     #     exit 1
     # fi
 
-    mapfile -t RUN_LIST < <(cat "${LIST_BASE}/${CAMPAIGN}/esd_list/run_${RUN}.txt")
+    # mapfile -t RUN_LIST < <(cat "${LIST_BASE}/${CAMPAIGN}/esd_list/run_${RUN}.txt")
 
-    if (( ${#RUN_LIST[@]} == 0 )); then
-        log WARN "No runs matched the provided range"
-        exit 0
-    fi
+    # if (( ${#RUN_LIST[@]} == 0 )); then
+    #     log WARN "No runs matched the provided range"
+    #     exit 0
+    # fi
 
-    if [[ "${RUN_LIST[0]}" =~ RUN\.([0-9]+)\.[^/]*([0-9]{14})[^/]* ]]; then
-        local run="${BASH_REMATCH[1]}"
-        local timestamp="${BASH_REMATCH[2]}"
-    else
-        log ERROR "Unrecognized ReProd path format: ${RUN_LIST[0]}"
-        exit 1
-    fi    
+    # if [[ "${RUN_LIST[0]}" =~ RUN\.([0-9]+)\.[^/]*([0-9]{14})[^/]* ]]; then
+    #     local run="${BASH_REMATCH[1]}"
+    #     local timestamp="${BASH_REMATCH[2]}"
+    # else
+    #     log ERROR "Unrecognized ReProd path format: ${RUN_LIST[0]}"
+    #     exit 1
+    # fi    
 
-    if (( RUN >= 9591 && RUN <= 10169 )); then
-        local year="${timestamp:0:4}"
-        local month="${timestamp:4:2}"
-        local day="${timestamp:6:2}"
-        tt_chain_filepath="${XRD_BASEPATH}/juno/user/j/jpandre_1/tt_data_auto/${year}/${month}${day}/RUN.${RUN}.*.EDM.user.root"
+    # if (( RUN >= 9591 && RUN <= 10169 )); then
+    #     local year="${timestamp:0:4}"
+    #     local month="${timestamp:4:2}"
+    #     local day="${timestamp:6:2}"
+    #     tt_chain_filepath="${XRD_BASEPATH}/juno/user/j/jpandre_1/tt_data_auto/${year}/${month}${day}/RUN.${RUN}.*.EDM.user.root"
 
-    elif (( RUN >= 10176 && RUN <= 10479 )); then
-        tt_chain_filepath="${XRD_BASEPATH}/juno/user/j/jpandre_1/tt_data_auto/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
+    # elif (( RUN >= 10176 && RUN <= 10479 )); then
+    #     tt_chain_filepath="${XRD_BASEPATH}/juno/user/j/jpandre_1/tt_data_auto/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
 
-    elif (( RUN >= 10480 )); then
-        tt_chain_filepath="${XRD_BASEPATH}/juno/juno-reprod/TT25A/J25.4.3-patched/user_rec/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
+    # elif (( RUN >= 10480 )); then
+    #     tt_chain_filepath="${XRD_BASEPATH}/juno/juno-reprod/TT25A/J25.4.3-patched/user_rec/${RUN_BUCKET}/${RUN_GROUP}/${RUN}/RUN.${RUN}.*.EDM.user.root"
 
-    else
-        log ERROR "No TT reco path rule defined for run ${RUN}"
-        exit 1
-    fi
+    # else
+    #     log ERROR "No TT reco path rule defined for run ${RUN}"
+    #     exit 1
+    # fi
 
-    local dir_tt=$(dirname "${tt_chain_filepath}")
-    local pattern_tt=$(basename "${tt_chain_filepath}")
+    # local dir_tt=$(dirname "${tt_chain_filepath}")
+    # local pattern_tt=$(basename "${tt_chain_filepath}")
 
-    local nfiles=$(
-        xrdfs "${XRD_URL}" ls "${dir_tt}" \
-        | grep -E "${pattern_tt}" \
-        | wc -l
-    )
-    log DEBUG "Found ${nfiles} TT reconstruction files"
+    # local nfiles=$(
+    #     xrdfs "${XRD_URL}" ls "${dir_tt}" \
+    #     | grep -E "${pattern_tt}" \
+    #     | wc -l
+    # )
+    # log DEBUG "Found ${nfiles} TT reconstruction files"
 
-    RECONSTRUCTION_TT_FILEPATH="${XRD_URL}${tt_chain_filepath}"
+    # RECONSTRUCTION_TT_FILEPATH="${XRD_URL}${tt_chain_filepath}"
 
     RECONSTRUCTION_EDWIN_FILEPATH=""
     RECONSTRUCTION_AMBER_FILEPATH=""
-    # RECONSTRUCTION_TT_FILEPATH=""
+    RECONSTRUCTION_TT_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/TT/RUN.${RUN}.TT.root"
 
     OUTPUT_FILEPATH="${OUTPUT_DIRECTORY}/RUN.${RUN}.${OUTPUT_SUFFIX}"
 

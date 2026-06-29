@@ -33,7 +33,8 @@ public:
         }
         m_edwin_corr = std::make_shared<first_binary_to_linear_correlator>(m_edwin_nav);
     
-        m_tt_nav = navigator_manager::retrieve<muon_event_user_tt_navigator>(tt_filepath, tt_treename);
+        // m_tt_nav = navigator_manager::retrieve<muon_event_user_tt_navigator>(tt_filepath, tt_treename);
+        m_tt_nav = navigator_manager::retrieve<muon_event_jraf_custom_tt_navigator>(tt_filepath, tt_treename);
         if (!m_tt_nav->is_valid()) {
             std::cerr << "TT navigator of filepath " << tt_filepath << " and treename " << tt_treename << " is not valid\n";
             return;
@@ -69,7 +70,8 @@ protected:
     std::shared_ptr<correlator_base> m_amber_corr;
     std::shared_ptr<muon_event_user_edwin_navigator> m_edwin_nav;
     std::shared_ptr<correlator_base> m_edwin_corr;
-    std::shared_ptr<muon_event_user_tt_navigator> m_tt_nav;
+    // std::shared_ptr<muon_event_user_tt_navigator> m_tt_nav;
+    std::shared_ptr<muon_event_jraf_custom_tt_navigator> m_tt_nav;
     std::shared_ptr<correlator_base> m_tt_corr;
 
     template<typename _Nav>

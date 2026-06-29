@@ -78,7 +78,7 @@ int get_tt_layer_id(double z) {
 
 int tt_reco_extractor(const char* input, int run, const char* output) {
     TtUserResoChain tt_user_reco_chain;
-    if (!tt_user_reco_chain.open(input)) return false;
+    if (!tt_user_reco_chain.open(input)) return 1;
 
     TFile* file = TFile::Open(output, "RECREATE");
     if (!file) {
@@ -124,7 +124,7 @@ int tt_reco_extractor(const char* input, int run, const char* output) {
             if (lid < 0) continue;
             layers_hit.insert(lid);
         }
-        if (layers_hit.size() < 3) return true;
+        if (layers_hit.size() < 3) continue;
 
         ipos.SetXYZ(tt_user_reco_chain.Coeff0[0], tt_user_reco_chain.Coeff1[0], tt_user_reco_chain.Coeff2[0]);
         dir = TVector3(tt_user_reco_chain.Coeff3[0], tt_user_reco_chain.Coeff4[0], tt_user_reco_chain.Coeff5[0]).Unit();

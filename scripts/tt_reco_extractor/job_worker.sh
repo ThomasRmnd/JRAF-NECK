@@ -200,7 +200,7 @@ main() {
 
     source /pbs/home/t/traymond/J25.7.4/git_junosw_load_J25_7_4.sh
 
-    root -l -b -q "timestamp_sorter.cpp(\"${RECONSTRUCTION_TT_FILEPATH}\", ${RUN}, \"${OUTPUT_FILEPATH}\")"
+    root -l -b -q "tt_reco_extractor.cpp(\"${RECONSTRUCTION_TT_FILEPATH}\", ${RUN}, \"${OUTPUT_FILEPATH}\")"
 }
 
 main "$@"

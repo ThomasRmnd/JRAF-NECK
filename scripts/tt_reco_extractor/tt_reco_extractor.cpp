@@ -20,21 +20,21 @@ struct TtUserResoChain {
             return false;
         }
         chain->Add(filepath);
-        chain->Branch("evtID", &evtID);
-        chain->Branch("NTotPoints", &NTotPoints);
-        chain->Branch("PointX", &PointX);
-        chain->Branch("PointY", &PointY);
-        chain->Branch("PointZ", &PointZ);
-        chain->Branch("NTracks", &NTracks);
-        chain->Branch("NPoints", &NPoints);
-        chain->Branch("Coeff0", &Coeff0);
-        chain->Branch("Coeff1", &Coeff1);
-        chain->Branch("Coeff2", &Coeff2);
-        chain->Branch("Coeff3", &Coeff3);
-        chain->Branch("Coeff4", &Coeff4);
-        chain->Branch("Coeff5", &Coeff5);
-        chain->Branch("Chi2", &Chi2);
-        chain->Branch("start_TS", &start_TS);
+        chain->SetBranchAddress("evtID", &evtID);
+        chain->SetBranchAddress("NTotPoints", &NTotPoints);
+        chain->SetBranchAddress("PointX", &PointX);
+        chain->SetBranchAddress("PointY", &PointY);
+        chain->SetBranchAddress("PointZ", &PointZ);
+        chain->SetBranchAddress("NTracks", &NTracks);
+        chain->SetBranchAddress("NPoints", &NPoints);
+        chain->SetBranchAddress("Coeff0", &Coeff0);
+        chain->SetBranchAddress("Coeff1", &Coeff1);
+        chain->SetBranchAddress("Coeff2", &Coeff2);
+        chain->SetBranchAddress("Coeff3", &Coeff3);
+        chain->SetBranchAddress("Coeff4", &Coeff4);
+        chain->SetBranchAddress("Coeff5", &Coeff5);
+        chain->SetBranchAddress("Chi2", &Chi2);
+        chain->SetBranchAddress("start_TS", &start_TS);
         return true;
     }
 
@@ -97,16 +97,16 @@ int tt_reco_extractor(const char* input, int run, const char* output) {
     double iposx, iposy, iposz;
     double fposx, fposy, fposz;
     double chi2;
-    tree->SetBranchAddress("runid", &runid);
-    tree->SetBranchAddress("sec", &sec);
-    tree->SetBranchAddress("nsec", &nsec);
-    tree->SetBranchAddress("iposx", &iposx);
-    tree->SetBranchAddress("iposy", &iposy);
-    tree->SetBranchAddress("iposz", &iposz);
-    tree->SetBranchAddress("fposx", &fposx);
-    tree->SetBranchAddress("fposy", &fposy);
-    tree->SetBranchAddress("fposz", &fposz);
-    tree->SetBranchAddress("chi2", &chi2);
+    tree->Branch("runid", &runid);
+    tree->Branch("sec", &sec);
+    tree->Branch("nsec", &nsec);
+    tree->Branch("iposx", &iposx);
+    tree->Branch("iposy", &iposy);
+    tree->Branch("iposz", &iposz);
+    tree->Branch("fposx", &fposx);
+    tree->Branch("fposy", &fposy);
+    tree->Branch("fposz", &fposz);
+    tree->Branch("chi2", &chi2);
 
     std::unordered_set<int> layers_hit;
     TVector3 ipos, dir, fpos;

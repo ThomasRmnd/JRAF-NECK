@@ -126,7 +126,7 @@ int tt_reco_extractor(const char* input, int run, const char* output) {
         }
         if (layers_hit.size() < 3) continue;
 
-        ipos.SetXYZ(tt_user_reco_chain.Coeff0[0], tt_user_reco_chain.Coeff1[0], tt_user_reco_chain.Coeff2[0]);
+        ipos.SetXYZ(tt_user_reco_chain.Coeff0[0], tt_user_reco_chain.Coeff1[0], tt_user_reco_chain.Coeff2[0] + 26452.0);
         dir = TVector3(tt_user_reco_chain.Coeff3[0], tt_user_reco_chain.Coeff4[0], tt_user_reco_chain.Coeff5[0]).Unit();
         fpos = ipos - 2.0 * (ipos * dir) * dir;
 

@@ -18,6 +18,7 @@
 #include "analysis/li9he8/shape/li9he8_shape_muon_with_neutron_analysis.hpp"
 #include "analysis/lifetime/daq/daq_total_time_analysis.hpp"
 #include "analysis/lifetime/veto/veto_total_time_analysis.hpp"
+#include "analysis/multiplicity/multiplicity_standard_analysis.hpp"
 #include "analysis/muon/efficiency/muon_wp_tagging_efficiency_analysis.hpp"
 #include "analysis/muon/performance/muon_performance_single_analysis.hpp"
 #include "analysis/muon/rate/muon_rate_analysis.hpp"
@@ -203,6 +204,18 @@ int jrafneck(
         )
     );
     if (!registry.book(li9he8_shape_muon__changing_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
+
+    // --------------------------------------------------------------------------------------------
+    // Multiplicity
+    // --------------------------------------------------------------------------------------------
+
+    std::shared_ptr<analysis_base> multiplicity__standard__analysis(
+        new multiplicity_standard_analysis(
+            "multiplicity__standard__analysis",
+            analysis_filepath, "MultiplicityAnalysis__OMILREC_JVtx"
+        )
+    );
+    if (!registry.book(multiplicity__standard__analysis)) return 1;
 
     // --------------------------------------------------------------------------------------------
     // Lifetime

@@ -27,13 +27,13 @@ public:
             m_run_id = m_nav->run_id;
         }
 
-        if (m_nav->muons.empty()) return false;
+        if (m_nav->muons.empty()) return true;
         std::vector<track>::const_iterator it = std::find_if(
             m_nav->muons.begin(),
             m_nav->muons.end(),
             [&](const track& trk) { return trk.method == m_target; }
         );
-        if (it == m_nav->muons.end()) return false;
+        if (it == m_nav->muons.end()) return true;
 
         double totq_cd = it->totq_cd;
         double totq_wp = it->totq_wp;

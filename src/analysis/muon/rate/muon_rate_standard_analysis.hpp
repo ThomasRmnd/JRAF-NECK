@@ -24,7 +24,7 @@ public:
             m_run_id = m_nav->run_id;
         }
 
-        if (m_nav->muons.empty()) return false;
+        if (m_nav->muons.empty()) return true;
         double totq_cd = m_nav->muons.front().totq_cd;
         double totq_wp = m_nav->muons.front().totq_wp;
 

@@ -51,11 +51,6 @@ public:
         nb_muons_in_cd_event.fill(m_nav->muons, "CdClassify");
         nb_muons_in_wp_event.fill(m_nav->muons, "WpBasic");
 
-        // stopping_muon_lookup has_stopping_in_cd_event;
-        // stopping_muon_lookup has_stopping_in_wp_event;
-        // has_stopping_in_cd_event.fill(m_nav, "CdClassify");
-        // has_stopping_in_wp_event.fill(m_nav, "WpBasic");
-
         double min_dlat_mu2p = std::numeric_limits<double>::infinity();
         double min_dlat_mu2d = std::numeric_limits<double>::infinity();
         timestamp min_dt_mu2p{0, 0};
@@ -66,13 +61,11 @@ public:
         for (const track& muon : m_nav->muons) {
             if (muon.method != m_recname) continue;
             if (nb_muons_in_cd_event[muon.ts] > 1ul || nb_muons_in_wp_event[muon.ts] > 1ul) continue;
-            // if (has_stopping_in_cd_event[muon.ts]) continue;
-            // if (has_stopping_in_wp_event[muon.ts]) continue;
 
-            bool is_in_bkg = (
-                muon.ts + m_ts_bkg_low <= prompt.ts && prompt.ts <= muon.ts + m_ts_bkg_high &&
-                muon.ts + m_ts_bkg_low <= delayed.ts && delayed.ts <= muon.ts + m_ts_bkg_high
-            );
+            // bool is_in_bkg = (
+            //     muon.ts + m_ts_bkg_low <= prompt.ts && prompt.ts <= muon.ts + m_ts_bkg_high &&
+            //     muon.ts + m_ts_bkg_low <= delayed.ts && delayed.ts <= muon.ts + m_ts_bkg_high
+            // );
             bool is_in_sig = (
                 muon.ts + m_ts_sig_low <= prompt.ts && prompt.ts <= muon.ts + m_ts_sig_high &&
                 muon.ts + m_ts_sig_low <= delayed.ts && delayed.ts <= muon.ts + m_ts_sig_high
@@ -82,16 +75,17 @@ public:
             double d_mu2p = mag(cross(dir, prompt.pos - muon.ipos));
             double d_mu2d = mag(cross(dir, delayed.pos - muon.ipos));
             double radius_sig = 0.0;
-            double radius_bkg = 0.0;
+            // double radius_bkg = 0.0;
 
             if (is_in_sig) {
                 radius_sig = m_radius + m_radius / timestamp_to_double(m_ts_sig_low - m_ts_sig_high) * timestamp_to_double(prompt.ts - muon.ts);
             }
-            if (is_in_bkg) {
-                radius_bkg = m_radius + m_radius / timestamp_to_double(m_ts_bkg_high - m_ts_bkg_low) * timestamp_to_double(prompt.ts - muon.ts);
-            }
+            // if (is_in_bkg) {
+            //     radius_bkg = m_radius + m_radius / timestamp_to_double(m_ts_bkg_high - m_ts_bkg_low) * timestamp_to_double(prompt.ts - muon.ts);
+            // }
 
-            if (radius_sig < d_mu2p && radius_bkg < d_mu2d) continue;
+            if (radius_sig < d_mu2p) continue;
+            // if (radius_sig < d_mu2p && radius_bkg < d_mu2d) continue;
 
             if (min_dlat_mu2p < d_mu2p) continue;
             min_dlat_mu2p = d_mu2p;

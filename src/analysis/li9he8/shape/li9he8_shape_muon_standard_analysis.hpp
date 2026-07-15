@@ -51,11 +51,6 @@ public:
         nb_muons_in_cd_event.fill(m_nav->muons, "CdClassify");
         nb_muons_in_wp_event.fill(m_nav->muons, "WpBasic");
 
-        // stopping_muon_lookup has_stopping_in_cd_event;
-        // stopping_muon_lookup has_stopping_in_wp_event;
-        // has_stopping_in_cd_event.fill(m_nav, "CdClassify");
-        // has_stopping_in_wp_event.fill(m_nav, "WpBasic");
-
         double min_dlat_mu2p = std::numeric_limits<double>::infinity();
         double min_dlat_mu2d = std::numeric_limits<double>::infinity();
         timestamp min_dt_mu2p{0, 0};
@@ -66,8 +61,6 @@ public:
         for (const track& muon : m_nav->muons) {
             if (muon.method != m_recname) continue;
             if (nb_muons_in_cd_event[muon.ts] > 1ul || nb_muons_in_wp_event[muon.ts] > 1ul) continue;
-            // if (has_stopping_in_cd_event[ts_mu]) continue;
-            // if (has_stopping_in_wp_event[ts_mu]) continue;
 
             bool is_in_bkg = (
                 muon.ts + m_ts_bkg_low <= prompt.ts && prompt.ts <= muon.ts + m_ts_bkg_high &&
@@ -80,8 +73,6 @@ public:
             if (!is_in_bkg && !is_in_sig) continue;
 
             vec3 dir = unit(muon.fpos - muon.ipos);
-            // double clippingness = mag(cross(dir, -muon.ipos));
-            // if (clippingness > 16000.0) continue;
 
             double d_mu2p = mag(cross(dir, prompt.pos - muon.ipos));
             double d_mu2d = mag(cross(dir, delayed.pos - muon.ipos));
@@ -103,46 +94,6 @@ public:
             m_dt_mu2d.push_back(timestamp_to_double(min_dt_mu2d));
             m_is_sig.push_back(min_is_in_sig);
         }
-
-        // for (std::size_t k = 0ul; k < m_nav->method_mu.size(); ++k) {
-        //     if (m_nav->method_mu[k] != m_recname) continue;
-        //     timestamp ts_mu{m_nav->sec_mu[k], m_nav->nsec_mu[k]};
-        //     if (nb_muons_in_cd_event[ts_mu] > 1ul || nb_muons_in_wp_event[ts_mu] > 1ul) continue;
-        //     // if (has_stopping_in_cd_event[ts_mu]) continue;
-        //     // if (has_stopping_in_wp_event[ts_mu]) continue;
-            
-        //     bool found_neutron = false;
-        //     for (std::size_t l = 0ul; l < m_nav->e_n.size() && !found_neutron; ++l) {
-        //         timestamp ts_n{m_nav->sec_n[l], m_nav->nsec_n[l]};
-        //         if (ts_n < ts_mu + timestamp{0, 20000} || ts_mu + timestamp{0, 2000000} < ts_n) continue;
-        //         found_neutron = true;
-        //     }
-        //     // if (!found_neutron) continue;
-
-        //     bool is_in_bkg = (
-        //         ts_mu + m_ts_bkg_low <= m_nav->prompt.ts && m_nav->prompt.ts <= ts_mu + m_ts_bkg_high &&
-        //         ts_mu + m_ts_bkg_low <= m_nav->delayed.ts && m_nav->delayed.ts <= ts_mu + m_ts_bkg_high
-        //     );
-        //     bool is_in_sig = (
-        //         ts_mu + m_ts_sig_low <= m_nav->prompt.ts && m_nav->prompt.ts <= ts_mu + m_ts_sig_high &&
-        //         ts_mu + m_ts_sig_low <= m_nav->delayed.ts && m_nav->delayed.ts <= ts_mu + m_ts_sig_high
-        //     );
-        //     if (!is_in_bkg && !is_in_sig) continue;
-        //     vec3 pos_mu{m_nav->posx_mu[k], m_nav->posy_mu[k], m_nav->posz_mu[k]};
-        //     vec3 dir_mu = unit(vec3{m_nav->dirx_mu[k], m_nav->diry_mu[k], m_nav->dirz_mu[k]});
-        //     if (
-        //         std::isnan(pos_mu.x) || std::isnan(pos_mu.y) || std::isnan(pos_mu.z) ||
-        //         std::isnan(dir_mu.x) || std::isnan(dir_mu.y) || std::isnan(dir_mu.z)
-        //     ) continue;
-        //     double d_mu2p = mag(cross(dir_mu, m_nav->prompt.pos - pos_mu));
-        //     double d_mu2d = mag(cross(dir_mu, m_nav->delayed.pos - pos_mu));
-        //     if (m_radius < d_mu2p && m_radius < d_mu2d) continue;
-        //     m_dlat_mu2p.push_back(d_mu2p);
-        //     m_dlat_mu2d.push_back(d_mu2d);
-        //     m_dt_mu2p.push_back(timestamp_to_double(m_nav->prompt.ts - ts_mu));
-        //     m_dt_mu2d.push_back(timestamp_to_double(m_nav->delayed.ts - ts_mu));
-        //     m_is_sig.push_back(is_in_sig);
-        // }
 
         return !m_is_sig.empty();
     }

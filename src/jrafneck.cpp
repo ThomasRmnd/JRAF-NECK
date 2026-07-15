@@ -26,8 +26,8 @@
 #include "analysis/muon/rate/muon_rate_target_single_analysis.hpp"
 
 timestamp seconds_to_timestamp(double t_sec) {
-    long sec  = static_cast<long>(std::floor(t_sec));
-    long nsec = static_cast<long>(std::llround((t_sec - static_cast<double>(sec)) * 1e9));
+    time_t sec  = static_cast<time_t>(std::floor(t_sec));
+    int nsec = static_cast<int>(std::llround((t_sec - static_cast<double>(sec)) * 1e9));
     if (nsec >= 1000000000L) {
         nsec -= 1000000000L;
         ++sec;

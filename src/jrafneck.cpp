@@ -316,14 +316,14 @@ int jrafneck(
     );
     if (!registry.book(muon_rate__standard__analysis)) return 1;
 
-    // std::shared_ptr<analysis_base> muon_rate__target__analysis(
-    //     new muon_rate_target_analysis(
-    //         "muon_rate__target__analysis", 
-    //         reconstruction_filepath, "muons", 
-    //         "CdWpTtChi2"
-    //     )
-    // );
-    // if (!registry.book(muon_rate__target__analysis)) return 1;
+    std::shared_ptr<analysis_base> muon_rate__target__analysis(
+        new muon_rate_target_analysis(
+            "muon_rate__target__analysis", 
+            reconstruction_filepath, "muons", 
+            "CdWpTtChi2"
+        )
+    );
+    if (!registry.book(muon_rate__target__analysis)) return 1;
 
     // std::shared_ptr<analysis_base> muon_rate__target_single__analysis(
     //     new muon_rate_target_single_analysis(

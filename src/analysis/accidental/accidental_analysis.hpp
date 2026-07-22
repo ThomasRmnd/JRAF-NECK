@@ -9,6 +9,7 @@
 #include "event/ibd.hpp"
 #include "reader/navigator/ibd_like_event_correlated_chain_navigator.hpp"
 #include "reader/navigator/navigator_manager.hpp"
+#include "selection/constants.hpp"
 #include "utils/muon_lookup.hpp"
 #include "utils/scale_factor.hpp"
 

@@ -117,8 +117,11 @@ protected:
     void calculate_dt_to_last_muon() {
         m_dt_last_mu = timestamp{0, 0};
         bool is_set_dt_last_mu = false;
+        is_cd_muon_lookup cd_muons_in_event;
+        cd_muons_in_event.fill(m_nav->muons);
         for (const track& muon : m_nav->muons) {
             if (m_nav->prompt.ts < muon.ts) continue;
+            if (!cd_muons_in_event[muon.ts]) continue;
             bool found_neutron = false;
             for (const vertex& neutron : m_nav->neutrons) {
                 if (neutron.ts < muon.ts + timestamp{0, 20000} || muon.ts + timestamp{0, 2000000} < neutron.ts) continue;

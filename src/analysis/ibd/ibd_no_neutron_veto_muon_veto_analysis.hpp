@@ -43,10 +43,10 @@ public:
         std::size_t nb_multu_veto = 0ul;
         for (const vertex& multiplicity : m_nav->multiplicities) {
             if (multiplicity.ts == prompt.ts || multiplicity.ts == delayed.ts) continue; 
+            if (!g_acrylic_sphere_cut.is_in(multiplicity)) continue;
             vertex mult{multiplicity};
             mult.e /= m_gtc.interpolate(mult.ts);
             if (!g_multiplicity_energy_cut.is_in(mult)) continue;
-            if (!g_acrylic_sphere_cut.is_in(mult)) continue;
             if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
             ++nb_multu_veto;
         }
@@ -57,27 +57,10 @@ public:
         nb_muons_in_cd_event.fill(m_nav->muons, "CdClassify");
         nb_muons_in_wp_event.fill(m_nav->muons, "WpBasic");
 
-        // stopping_muon_lookup has_stopping_in_cd_event;
-        // stopping_muon_lookup has_stopping_in_wp_event;
-        // has_stopping_in_cd_event.fill(m_nav->muons, "CdClassify");
-        // has_stopping_in_wp_event.fill(m_nav->muons, "WpBasic");
-
         std::size_t nb_muon_veto = 0ul;
         for (const track& muon : m_nav->muons) {
             if (muon.method != m_recname) continue;
             if (nb_muons_in_cd_event[muon.ts] > 1ul || nb_muons_in_wp_event[muon.ts] > 1ul) continue;
-            // if (has_stopping_in_wp_event[muon.ts]) continue;
-
-            bool found_neutron = false;
-            for (const vertex& neutron : m_nav->neutrons) {
-                vertex neu{neutron};
-                neu.e /= m_gtc.interpolate(neu.ts);
-                time_range_selection time_spallation_neutron_cut{muon.ts, timestamp{0, 20000}, timestamp{0, 2000000}};
-                if (!time_spallation_neutron_cut.is_in(neu)) continue;
-                found_neutron = true;
-                break;
-            }
-            if (!found_neutron) continue;
 
             bool is_in_ts_veto = (
                 muon.ts + m_ts_low < prompt.ts && prompt.ts < muon.ts + m_ts_high &&

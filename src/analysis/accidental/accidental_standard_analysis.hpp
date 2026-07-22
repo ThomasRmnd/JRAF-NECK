@@ -31,6 +31,7 @@ public:
         std::size_t nb_multu_veto = 0ul;
         for (const vertex& multiplicity : m_nav->multiplicities) {
             if (multiplicity.ts == prompt.ts || multiplicity.ts == delayed.ts) continue;
+            if (!g_acrylic_sphere_cut.is_in(multiplicity)) continue;
             vertex mult{multiplicity};
             mult.e /= m_gtc.interpolate(mult.ts);
             if (!g_multiplicity_energy_cut.is_in(mult)) continue;
@@ -45,10 +46,10 @@ public:
         std::size_t nb_neutron_veto = 0ul;
         for (const vertex& neutron : m_nav->neutrons) {
             if (neutron.ts == prompt.ts || neutron.ts == delayed.ts) continue;
+            if (!g_acrylic_sphere_cut.is_in(neutron)) continue;
             vertex neu{neutron};
             neu.e /= m_gtc.interpolate(neu.ts);
             if (!g_neutron_energy_cut.is_in(neu)) continue;
-            if (!g_acrylic_sphere_cut.is_in(neu)) continue;
             if (neutron.stdt > 275.0) continue; // flasher cut
             vertex_correlation_selection vertex_correlation_neutron_cut{neu, 4000.0, timestamp{0, 20000}, timestamp{0, 1200000000}};
             if (!vertex_correlation_neutron_cut.is_in(prompt)) continue;

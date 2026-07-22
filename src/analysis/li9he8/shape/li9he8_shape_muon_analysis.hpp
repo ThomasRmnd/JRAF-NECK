@@ -59,13 +59,11 @@ public:
     bool selection() override = 0;
 
     bool process() override {
-        for (std::size_t k = 0ul; k < m_is_sig.size(); ++k) {
-            if (m_is_sig[k]) {
-                m_cosmos_sig.insert({m_nav->run_id, m_nav->prompt, m_nav->delayed, m_dlat_mu2p[k], m_dt_mu2p[k], m_dlat_mu2d[k], m_dt_mu2d[k]});
-            }
-            else {
-                m_cosmos_bkg.insert({m_nav->run_id, m_nav->prompt, m_nav->delayed, m_dlat_mu2p[k], m_dt_mu2p[k], m_dlat_mu2d[k], m_dt_mu2d[k]});
-            }
+        if (m_is_sig) {
+            m_cosmos_sig.insert({m_nav->run_id, m_nav->prompt, m_nav->delayed, m_dlat_mu2p_sig, m_dt_mu2p_sig, m_dlat_mu2d_sig, m_dt_mu2d_sig});
+        }
+        if (m_is_bkg) {
+            m_cosmos_bkg.insert({m_nav->run_id, m_nav->prompt, m_nav->delayed, m_dlat_mu2p_bkg, m_dt_mu2p_bkg, m_dlat_mu2d_bkg, m_dt_mu2d_bkg});
         }
         return true;
     }
@@ -83,11 +81,17 @@ protected:
     timestamp m_ts_bkg_high;
     double m_radius;
 
-    std::vector<double> m_dlat_mu2p;
-    std::vector<double> m_dlat_mu2d;
-    std::vector<double> m_dt_mu2p;
-    std::vector<double> m_dt_mu2d;
-    std::vector<bool> m_is_sig;
+    double m_dlat_mu2p_sig;
+    double m_dlat_mu2d_sig;
+    double m_dt_mu2p_sig;
+    double m_dt_mu2d_sig;
+    bool m_is_sig;
+
+    double m_dlat_mu2p_bkg;
+    double m_dlat_mu2d_bkg;
+    double m_dt_mu2p_bkg;
+    double m_dt_mu2d_bkg;
+    bool m_is_bkg;
 
     std::set<cosmogenic> m_cosmos_bkg, m_cosmos_sig;
 

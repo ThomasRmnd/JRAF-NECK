@@ -31,47 +31,40 @@ public:
         std::size_t nb_multu_veto = 0ul;
         for (const vertex& multiplicity : m_nav->multiplicities) {
             if (multiplicity.ts == prompt.ts || multiplicity.ts == delayed.ts) continue;
+            if (!g_acrylic_sphere_cut.is_in(multiplicity)) continue;
             vertex mult{multiplicity};
             mult.e /= m_gtc.interpolate(mult.ts);
             if (!g_multiplicity_energy_cut.is_in(mult)) continue;
-            if (!g_acrylic_sphere_cut.is_in(mult)) continue;
             if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
             ++nb_multu_veto;
         }
         if (nb_multu_veto) return false;
-
-        m_dlat_mu2p.clear();
-        m_dlat_mu2d.clear();
-        m_dt_mu2p.clear();
-        m_dt_mu2d.clear();
-        m_is_sig.clear();
 
         multiplicity_muon_lookup nb_muons_in_cd_event;
         multiplicity_muon_lookup nb_muons_in_wp_event;
         nb_muons_in_cd_event.fill(m_nav->muons, "CdClassify");
         nb_muons_in_wp_event.fill(m_nav->muons, "WpBasic");
 
-        // stopping_muon_lookup has_stopping_in_cd_event;
-        // stopping_muon_lookup has_stopping_in_wp_event;
-        // has_stopping_in_cd_event.fill(m_nav, "CdClassify");
-        // has_stopping_in_wp_event.fill(m_nav, "WpBasic");
+        m_dlat_mu2p_sig = std::numeric_limits<double>::infinity();
+        m_dlat_mu2d_sig = std::numeric_limits<double>::infinity();
+        m_dt_mu2p_sig = std::numeric_limits<double>::infinity();
+        m_dt_mu2d_sig = std::numeric_limits<double>::infinity();
+        m_is_sig = false;
 
-        double min_dlat_mu2p = std::numeric_limits<double>::infinity();
-        double min_dlat_mu2d = std::numeric_limits<double>::infinity();
-        timestamp min_dt_mu2p{0, 0};
-        timestamp min_dt_mu2d{0, 0};
-        bool min_is_in_sig = false;
-        bool is_set_min_ts_mu2p = false;
+        m_dlat_mu2p_bkg = std::numeric_limits<double>::infinity();
+        m_dlat_mu2d_bkg = std::numeric_limits<double>::infinity();
+        m_dt_mu2p_bkg = std::numeric_limits<double>::infinity();
+        m_dt_mu2d_bkg = std::numeric_limits<double>::infinity();
+        m_is_bkg = false;
 
         for (const track& muon : m_nav->muons) {
             if (muon.method != m_recname) continue;
             if (nb_muons_in_cd_event[muon.ts] > 1ul || nb_muons_in_wp_event[muon.ts] > 1ul) continue;
-            // if (has_stopping_in_cd_event[muon.ts]) continue;
-            // if (has_stopping_in_wp_event[muon.ts]) continue;
 
             bool found_neutron = false;
             for (const vertex& neutron : m_nav->neutrons) {
                 if (neutron.ts == prompt.ts || neutron.ts == delayed.ts) continue;
+                if (!g_acrylic_sphere_cut.is_in(neutron)) continue;
                 if (neutron.ts < muon.ts + timestamp{0, 20000} || muon.ts + timestamp{0, 2000000} < neutron.ts) continue;
                 found_neutron = true;
             }
@@ -85,31 +78,31 @@ public:
                 muon.ts + m_ts_sig_low <= prompt.ts && prompt.ts <= muon.ts + m_ts_sig_high &&
                 muon.ts + m_ts_sig_low <= delayed.ts && delayed.ts <= muon.ts + m_ts_sig_high
             );
-            if (!is_in_bkg && !is_in_sig) continue;
 
             vec3 dir = unit(muon.fpos - muon.ipos);
             double d_mu2p = mag(cross(dir, prompt.pos - muon.ipos));
             double d_mu2d = mag(cross(dir, delayed.pos - muon.ipos));
-            if (m_radius < d_mu2p && m_radius < d_mu2d) continue;
+            const timestamp dt_mu2p = prompt.ts - muon.ts;
+            const timestamp dt_mu2d = delayed.ts - muon.ts;
 
-            if (min_dlat_mu2p < d_mu2p) continue;
-            min_dlat_mu2p = d_mu2p;
-            min_dlat_mu2d = d_mu2d;
-            min_dt_mu2p = prompt.ts - muon.ts;
-            min_dt_mu2d = delayed.ts - muon.ts;
-            min_is_in_sig = is_in_sig;
-            is_set_min_ts_mu2p = true;
+            if (is_in_sig && d_mu2p < m_radius && d_mu2p < m_dlat_mu2p_sig) {
+                m_dlat_mu2p_sig = d_mu2p;
+                m_dlat_mu2d_sig = d_mu2d;
+                m_dt_mu2p_sig = timestamp_to_double(dt_mu2p);
+                m_dt_mu2d_sig = timestamp_to_double(dt_mu2d);
+                m_is_sig = true;
+            }
+
+            if (is_in_bkg && d_mu2p < m_radius && d_mu2p < m_dlat_mu2p_bkg) {
+                m_dlat_mu2p_bkg = d_mu2p;
+                m_dlat_mu2d_bkg = d_mu2d;
+                m_dt_mu2p_bkg = timestamp_to_double(dt_mu2p);
+                m_dt_mu2d_bkg = timestamp_to_double(dt_mu2d);
+                m_is_bkg = true;
+            }
         }
 
-        if (is_set_min_ts_mu2p) {
-            m_dlat_mu2p.push_back(min_dlat_mu2p);
-            m_dlat_mu2d.push_back(min_dlat_mu2d);
-            m_dt_mu2p.push_back(timestamp_to_double(min_dt_mu2p));
-            m_dt_mu2d.push_back(timestamp_to_double(min_dt_mu2d));
-            m_is_sig.push_back(min_is_in_sig);
-        }
-
-        return !m_is_sig.empty();
+        return m_is_sig || m_is_bkg;
     }
 
 };

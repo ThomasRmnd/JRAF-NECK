@@ -122,6 +122,7 @@ protected:
             bool found_neutron = false;
             for (const vertex& neutron : m_nav->neutrons) {
                 if (neutron.ts < muon.ts + timestamp{0, 20000} || muon.ts + timestamp{0, 2000000} < neutron.ts) continue;
+                if (!g_acrylic_sphere_cut.is_in(neutron)) continue;
                 found_neutron = true;
                 break;
             }
@@ -141,23 +142,15 @@ protected:
         nb_muons_in_cd_event.fill(m_nav->muons, "CdClassify");
         nb_muons_in_wp_event.fill(m_nav->muons, "WpBasic");
 
-        // stopping_muon_lookup has_stopping_in_cd_event;
-        // stopping_muon_lookup has_stopping_in_wp_event;
-        // has_stopping_in_cd_event.fill(m_nav, "CdClassify");
-        // has_stopping_in_wp_event.fill(m_nav, "WpBasic");
-
         m_dlat_mu2p = std::numeric_limits<double>::infinity();
         m_dt_mu2p = timestamp{0, 0};
         bool is_set_dlat_mu2p = false;
         for (const track& muon : m_nav->muons) {
             if (muon.method != "CdWpTtChi2") continue;
             if (nb_muons_in_cd_event[muon.ts] > 1ul || nb_muons_in_wp_event[muon.ts] > 1ul) continue;
-            // if (has_stopping_in_cd_event[muon.ts]) continue;
-            // if (has_stopping_in_wp_event[muon.ts]) continue;
 
             bool is_in_sig = (
                 muon.ts + timestamp{0, 5000000} <= m_nav->prompt.ts && m_nav->prompt.ts <= muon.ts + timestamp{0, 1200000000}
-                // muon.ts + timestamp{0, 5000000} <= m_nav->delayed.ts && m_nav->delayed.ts <= muon.ts + timestamp{0, 1200000000}
             );
             if (!is_in_sig) continue;
 

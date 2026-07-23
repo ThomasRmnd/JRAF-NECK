@@ -10,7 +10,7 @@
 #include "reader/navigator/ibd_like_event_correlated_chain_navigator.hpp"
 #include "reader/navigator/navigator_manager.hpp"
 #include "selection/constants.hpp"
-#include "utils/muon_lookup.hpp"
+#include "utils/muon.hpp"
 #include "utils/scale_factor.hpp"
 
 class ibd_analysis : public analysis_base {
@@ -52,7 +52,7 @@ public:
     bool process() override {
         m_ibds.insert({
             {m_nav->run_id, m_nav->prompt, m_nav->delayed}, 
-            m_dt_last_mu, m_dlat_mu2p, m_dt_mu2p
+            m_dt_last_mu_with_neu, m_dlat_mu2p, m_dt_mu2p
         });
         return true;
     }
@@ -64,7 +64,7 @@ protected:
     global_scale_factor_corrector m_gtc;
 
     std::set<ibd_with_muon> m_ibds;
-    timestamp m_dt_last_mu;
+    timestamp m_dt_last_mu_with_neu;
     double m_dlat_mu2p;
     timestamp m_dt_mu2p;
 
@@ -78,7 +78,7 @@ protected:
         vec3 pos_p, pos_d;
         timestamp ts_p, ts_d;
         double e_p, e_d;
-        double dt_last_mu;
+        double dt_last_mu_with_neu;
         double dlat_mu2p;
         double dt_mu2p;
         t->Branch("run_id", &run_id);
@@ -94,7 +94,7 @@ protected:
         t->Branch("sec_d", &ts_d.sec);
         t->Branch("nsec_d", &ts_d.nsec);
         t->Branch("e_d", &e_d);
-        t->Branch("dt_last_mu", &dt_last_mu);
+        t->Branch("dt_last_mu_with_neu", &dt_last_mu_with_neu);
         t->Branch("dlat_mu2p", &dlat_mu2p);
         t->Branch("dt_mu2p", &dt_mu2p);
 
@@ -106,38 +106,13 @@ protected:
             ts_d = it->i.delayed.ts;
             e_p = it->i.prompt.e / m_gtc.interpolate(it->i.prompt.ts);
             e_d = it->i.delayed.e / m_gtc.interpolate(it->i.delayed.ts);
-            dt_last_mu = timestamp_to_double(it->dt_last_mu);
+            dt_last_mu_with_neu = timestamp_to_double(it->dt_last_mu_with_neu);
             dlat_mu2p = it->dlat_mu2p;
             dt_mu2p = timestamp_to_double(it->dt_mu2p);
             t->Fill();
         }
 
         return true;
-    }
-
-    void calculate_dt_to_last_muon() {
-        m_dt_last_mu = timestamp{0, 0};
-        bool is_set_dt_last_mu = false;
-        is_cd_muon_lookup cd_muons_in_event;
-        cd_muons_in_event.fill(m_nav->muons);
-        for (const track& muon : m_nav->muons) {
-            if (m_nav->prompt.ts < muon.ts) continue;
-            if (!cd_muons_in_event[muon.ts]) continue;
-            bool found_neutron = false;
-            for (const vertex& neutron : m_nav->neutrons) {
-                if (neutron.ts < muon.ts + timestamp{0, 20000} || muon.ts + timestamp{0, 2000000} < neutron.ts) continue;
-                if (!g_acrylic_sphere_cut.is_in(neutron)) continue;
-                found_neutron = true;
-                break;
-            }
-            if (!found_neutron) continue;
-            if (is_set_dt_last_mu && m_nav->prompt.ts - muon.ts > m_dt_last_mu) continue;
-            m_dt_last_mu = m_nav->prompt.ts - muon.ts;
-            is_set_dt_last_mu = true;
-        }
-        if (!is_set_dt_last_mu) {
-            m_dt_last_mu = timestamp{-1, 0};
-        }
     }
 
     void calculate_dlat_dt_muon_to_prompt() {

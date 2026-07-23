@@ -78,7 +78,11 @@ public:
         }
         if (nb_muon_veto) return false;
 
-        calculate_dt_to_last_muon();
+        dt_to_last_muon_result res = calculate_dt_to_last_muon_with_neutron(prompt, m_nav->muons, m_nav->neutrons);
+        m_dt_last_mu_with_neu = res.dt_last_mu;
+        if (!res.is_set) {
+            m_dt_last_mu_with_neu = timestamp{-1, 0};
+        }
         calculate_dlat_dt_muon_to_prompt();
 
         return true;

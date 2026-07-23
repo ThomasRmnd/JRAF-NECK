@@ -47,14 +47,14 @@ public:
 
         m_dlat_mu2p_sig = std::numeric_limits<double>::infinity();
         m_dlat_mu2d_sig = std::numeric_limits<double>::infinity();
-        m_dt_mu2p_sig = std::numeric_limits<double>::infinity();
-        m_dt_mu2d_sig = std::numeric_limits<double>::infinity();
+        m_dt_mu2p_sig = timestamp{-1, 0};
+        m_dt_mu2d_sig = timestamp{-1, 0};
         m_is_sig = false;
 
         m_dlat_mu2p_bkg = std::numeric_limits<double>::infinity();
         m_dlat_mu2d_bkg = std::numeric_limits<double>::infinity();
-        m_dt_mu2p_bkg = std::numeric_limits<double>::infinity();
-        m_dt_mu2d_bkg = std::numeric_limits<double>::infinity();
+        m_dt_mu2p_bkg = timestamp{-1, 0};
+        m_dt_mu2d_bkg = timestamp{-1, 0};
         m_is_bkg = false;
 
         for (const track& muon : m_nav->muons) {
@@ -79,18 +79,29 @@ public:
             if (is_in_sig && d_mu2p < m_radius && d_mu2p < m_dlat_mu2p_sig) {
                 m_dlat_mu2p_sig = d_mu2p;
                 m_dlat_mu2d_sig = d_mu2d;
-                m_dt_mu2p_sig = timestamp_to_double(dt_mu2p);
-                m_dt_mu2d_sig = timestamp_to_double(dt_mu2d);
+                m_dt_mu2p_sig = dt_mu2p;
+                m_dt_mu2d_sig = dt_mu2d;
                 m_is_sig = true;
             }
 
             if (is_in_bkg && d_mu2p < m_radius && d_mu2p < m_dlat_mu2p_bkg) {
                 m_dlat_mu2p_bkg = d_mu2p;
                 m_dlat_mu2d_bkg = d_mu2d;
-                m_dt_mu2p_bkg = timestamp_to_double(dt_mu2p);
-                m_dt_mu2d_bkg = timestamp_to_double(dt_mu2d);
+                m_dt_mu2p_bkg = dt_mu2p;
+                m_dt_mu2d_bkg = dt_mu2d;
                 m_is_bkg = true;
             }
+        }
+
+        dt_to_last_muon_result res = calculate_dt_to_last_muon_with_neutron(prompt, m_nav->muons, m_nav->neutrons);
+        m_dt_last_mu_with_neu = res.dt_last_mu;
+        if (!res.is_set) {
+            m_dt_last_mu_with_neu = timestamp{-1, 0};
+        }
+        res = calculate_dt_to_last_muon(prompt, m_nav->muons);
+        m_dt_last_mu = res.dt_last_mu;
+        if (!res.is_set) {
+            m_dt_last_mu = timestamp{-1, 0};
         }
 
         return m_is_sig || m_is_bkg;

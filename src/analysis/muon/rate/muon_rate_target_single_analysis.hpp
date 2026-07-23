@@ -2,7 +2,7 @@
 #define JRAFNECK_ANALYSIS_MUON_RATE_MUONRATETARGETSINGLEANALYSIS_HPP_
 
 #include "analysis/muon/rate/muon_rate_analysis.hpp"
-#include "utils/muon_lookup.hpp"
+#include "utils/muon.hpp"
 
 class muon_rate_target_single_analysis : public muon_rate_analysis {
 

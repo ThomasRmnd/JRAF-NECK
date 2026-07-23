@@ -1,5 +1,5 @@
-#ifndef JRAFNECK_UTILS_MUONLOOKUP_HPP_
-#define JRAFNECK_UTILS_MUONLOOKUP_HPP_
+#ifndef JRAFNECK_UTILS_MUON_HPP_
+#define JRAFNECK_UTILS_MUON_HPP_
 
 #include "event/track.hpp"
 
@@ -91,4 +91,45 @@ private:
 
 };
 
-#endif // JRAFNECK_UTILS_MUONLOOKUP_HPP_
+struct dt_to_last_muon_result {
+    bool is_set = false;
+    timestamp dt_last_mu{-1, 0};
+};
+
+inline dt_to_last_muon_result calculate_dt_to_last_muon(const vertex& prompt, const std::vector<track>& muons) {
+    dt_to_last_muon_result res;
+    is_cd_muon_lookup cd_muons_in_event;
+    cd_muons_in_event.fill(muons);
+    for (const track& muon : muons) {
+        if (prompt.ts < muon.ts) continue;
+        if (!cd_muons_in_event[muon.ts]) continue;
+        if (res.is_set && prompt.ts - muon.ts > res.dt_last_mu) continue;
+        res.dt_last_mu = prompt.ts - muon.ts;
+        res.is_set = true;
+    }
+    return res;
+}
+
+inline dt_to_last_muon_result calculate_dt_to_last_muon_with_neutron(const vertex& prompt, const std::vector<track>& muons, const std::vector<vertex>& neutrons) {
+    dt_to_last_muon_result res;
+    is_cd_muon_lookup cd_muons_in_event;
+    cd_muons_in_event.fill(muons);
+    for (const track& muon : muons) {
+        if (prompt.ts < muon.ts) continue;
+        if (!cd_muons_in_event[muon.ts]) continue;
+        bool found_neutron = false;
+        for (const vertex& neutron : neutrons) {
+            if (neutron.ts < muon.ts + timestamp{0, 20000} || muon.ts + timestamp{0, 2000000} < neutron.ts) continue;
+            if (!g_acrylic_sphere_cut.is_in(neutron)) continue;
+            found_neutron = true;
+            break;
+        }
+        if (!found_neutron) continue;
+        if (res.is_set && prompt.ts - muon.ts > res.dt_last_mu) continue;
+        res.dt_last_mu = prompt.ts - muon.ts;
+        res.is_set = true;
+    }
+    return res;
+}
+
+#endif // JRAFNECK_UTILS_MUON_HPP_

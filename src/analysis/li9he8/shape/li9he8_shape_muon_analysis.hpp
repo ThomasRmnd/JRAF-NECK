@@ -9,7 +9,7 @@
 #include "event/cosmogenic.hpp"
 #include "reader/navigator/ibd_like_event_correlated_chain_navigator.hpp"
 #include "reader/navigator/navigator_manager.hpp"
-#include "utils/muon_lookup.hpp"
+#include "utils/muon.hpp"
 #include "utils/scale_factor.hpp"
 
 class li9he8_shape_muon_analysis : public analysis_base {
@@ -60,10 +60,10 @@ public:
 
     bool process() override {
         if (m_is_sig) {
-            m_cosmos_sig.insert({m_nav->run_id, m_nav->prompt, m_nav->delayed, m_dlat_mu2p_sig, m_dt_mu2p_sig, m_dlat_mu2d_sig, m_dt_mu2d_sig});
+            m_cosmos_sig.insert({m_nav->run_id, m_nav->prompt, m_nav->delayed, m_dlat_mu2p_sig, m_dt_mu2p_sig, m_dlat_mu2d_sig, m_dt_mu2d_sig, m_dt_last_mu_with_neu, m_dt_last_mu});
         }
         if (m_is_bkg) {
-            m_cosmos_bkg.insert({m_nav->run_id, m_nav->prompt, m_nav->delayed, m_dlat_mu2p_bkg, m_dt_mu2p_bkg, m_dlat_mu2d_bkg, m_dt_mu2d_bkg});
+            m_cosmos_bkg.insert({m_nav->run_id, m_nav->prompt, m_nav->delayed, m_dlat_mu2p_bkg, m_dt_mu2p_bkg, m_dlat_mu2d_bkg, m_dt_mu2d_bkg, m_dt_last_mu_with_neu, m_dt_last_mu});
         }
         return true;
     }
@@ -81,16 +81,19 @@ protected:
     timestamp m_ts_bkg_high;
     double m_radius;
 
+    timestamp m_dt_last_mu_with_neu;
+    timestamp m_dt_last_mu;
+
     double m_dlat_mu2p_sig;
     double m_dlat_mu2d_sig;
-    double m_dt_mu2p_sig;
-    double m_dt_mu2d_sig;
+    timestamp m_dt_mu2p_sig;
+    timestamp m_dt_mu2d_sig;
     bool m_is_sig;
 
     double m_dlat_mu2p_bkg;
     double m_dlat_mu2d_bkg;
-    double m_dt_mu2p_bkg;
-    double m_dt_mu2d_bkg;
+    timestamp m_dt_mu2p_bkg;
+    timestamp m_dt_mu2d_bkg;
     bool m_is_bkg;
 
     std::set<cosmogenic> m_cosmos_bkg, m_cosmos_sig;
@@ -108,6 +111,8 @@ protected:
         double e_p, e_d;
         double dlat_mu2p, dlat_mu2d; 
         double dt_mu2p, dt_mu2d;
+        double dt_last_mu_with_neu;
+        double dt_last_mu;
         
         t_bkg->Branch("run_id", &run_id);
         t_bkg->Branch("posx_p", &pos_p.x);
@@ -126,6 +131,8 @@ protected:
         t_bkg->Branch("e_d", &e_d);
         t_bkg->Branch("dlat_mu2d", &dlat_mu2d);
         t_bkg->Branch("dt_mu2d", &dt_mu2d);
+        t_bkg->Branch("dt_last_mu_with_neu", &dt_last_mu_with_neu);
+        t_bkg->Branch("dt_last_mu", &dt_last_mu);
 
         for (std::set<cosmogenic>::const_iterator it = m_cosmos_bkg.begin(); it != m_cosmos_bkg.end(); ++it) {
             run_id = it->run_id;
@@ -137,8 +144,10 @@ protected:
             e_d = it->delayed.e / m_gtc.interpolate(it->delayed.ts);
             dlat_mu2p = it->dlat_mu2p;
             dlat_mu2d = it->dlat_mu2d;
-            dt_mu2p = it->dt_mu2p;
-            dt_mu2d = it->dt_mu2d;
+            dt_mu2p = timestamp_to_double(it->dt_mu2p);
+            dt_mu2d = timestamp_to_double(it->dt_mu2d);
+            dt_last_mu_with_neu = timestamp_to_double(it->dt_last_mu_with_neu);
+            dt_last_mu = timestamp_to_double(it->dt_last_mu);
             t_bkg->Fill();
         }
 
@@ -159,6 +168,8 @@ protected:
         t_sig->Branch("e_d", &e_d);
         t_sig->Branch("dlat_mu2d", &dlat_mu2d);
         t_sig->Branch("dt_mu2d", &dt_mu2d);
+        t_sig->Branch("dt_last_mu_with_neu", &dt_last_mu_with_neu);
+        t_sig->Branch("dt_last_mu", &dt_last_mu);
 
         for (std::set<cosmogenic>::const_iterator it = m_cosmos_sig.begin(); it != m_cosmos_sig.end(); ++it) {
             run_id = it->run_id;
@@ -170,8 +181,10 @@ protected:
             e_d = it->delayed.e / m_gtc.interpolate(it->delayed.ts);
             dlat_mu2p = it->dlat_mu2p;
             dlat_mu2d = it->dlat_mu2d;
-            dt_mu2p = it->dt_mu2p;
-            dt_mu2d = it->dt_mu2d;
+            dt_mu2p = timestamp_to_double(it->dt_mu2p);
+            dt_mu2d = timestamp_to_double(it->dt_mu2d);
+            dt_last_mu_with_neu = timestamp_to_double(it->dt_last_mu_with_neu);
+            dt_last_mu = timestamp_to_double(it->dt_last_mu);
             t_sig->Fill();
         }
 

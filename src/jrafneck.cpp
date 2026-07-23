@@ -10,8 +10,6 @@
 #include "analysis/ibd/ibd_no_neutron_veto_muon_veto_analysis.hpp"
 #include "analysis/ibd/ibd_standard_analysis.hpp"
 #include "analysis/ibd/ibd_standard_muon_veto_analysis.hpp"
-// #include "analysis/cosmogenic/cosmo_rate_analysis.hpp"
-// #include "analysis/cosmogenic/cosmo_rate_neutron_veto_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_changing_veto_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_standard_analysis.hpp"
@@ -163,22 +161,6 @@ int jrafneck(
     // Li9He8
     // --------------------------------------------------------------------------------------------
 
-    // std::shared_ptr<analysis_base> cosmo_rate_analysis_omilrec_jvertex(
-    //     new cosmo_rate_analysis(
-    //         "cosmo_rate_analysis_omilrec_jvertex", 
-    //         analysis_filepath, suffix
-    //     )
-    // );
-    // if (!registry.book(cosmo_rate_analysis_omilrec_jvertex)) return 1;
-
-    // std::shared_ptr<analysis_base> cosmo_rate_neutron_veto_analysis_omilrec_jvertex(
-    //     new cosmo_rate_neutron_veto_analysis(
-    //         "cosmo_rate_neutron_veto_analysis_omilrec_jvertex", 
-    //         analysis_filepath, suffix
-    //     )
-    // );
-    // if (!registry.book(cosmo_rate_neutron_veto_analysis_omilrec_jvertex)) return 1;
-
     const timestamp sig_start{0, 7000000};
     const timestamp bkg_end{0, -7000000};
     for (int d_m = 1; d_m <= 10; ++d_m) {
@@ -223,6 +205,19 @@ int jrafneck(
         )
     );
     if (!registry.book(li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
+
+    std::shared_ptr<analysis_base> li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_1_5m_1_2s__omilrec_jvertex(
+        new li9he8_shape_muon_with_neutron_analysis(
+            "li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_1_5m_1_2s__omilrec_jvertex", 
+            analysis_filepath, suffix, 
+            reconstruction_filepath, 
+            "CdWpTtChi2", 
+            sig_start, timestamp{0, 1200000000}, 
+            timestamp{0, -1200000000}, bkg_end, 
+            1500.0
+        )
+    );
+    if (!registry.book(li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_1_5m_1_2s__omilrec_jvertex)) return 1;
 
     std::shared_ptr<analysis_base> li9he8_shape_muon__changing_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
         new li9he8_shape_muon_changing_veto_analysis(

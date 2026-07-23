@@ -30,7 +30,7 @@ inline bool operator<(const ibd& lhs, const ibd& rhs) {
 struct ibd_with_muon {
 
     ibd i;
-    timestamp dt_last_mu;
+    timestamp dt_last_mu_with_neu;
     double dlat_mu2p; // to closest muon
     timestamp dt_mu2p; // to closest muon
 

@@ -52,7 +52,7 @@ public:
     bool process() override {
         m_accs.insert({
             {m_nav->run_id, m_nav->prompt, m_nav->delayed}, 
-            m_dt_last_mu_with_neu, m_dlat_mu2p, m_dt_mu2p
+            m_dt_last_mu_with_neu, m_dt_last_mu, m_dlat_mu2p, m_dt_mu2p
         });
         return true;
     }
@@ -65,6 +65,7 @@ protected:
 
     std::set<ibd_with_muon> m_accs;
     timestamp m_dt_last_mu_with_neu;
+    timestamp m_dt_last_mu;
     double m_dlat_mu2p;
     timestamp m_dt_mu2p;
 
@@ -79,6 +80,7 @@ protected:
         timestamp ts_p, ts_d;
         double e_p, e_d;
         double dt_last_mu_with_neu;
+        double dt_last_mu;
         double dlat_mu2p;
         double dt_mu2p;
         t->Branch("run_id", &run_id);
@@ -95,6 +97,7 @@ protected:
         t->Branch("nsec_d", &ts_d.nsec);
         t->Branch("e_d", &e_d);
         t->Branch("dt_last_mu_with_neu", &dt_last_mu_with_neu);
+        t->Branch("dt_last_mu", &dt_last_mu);
         t->Branch("dlat_mu2p", &dlat_mu2p);
         t->Branch("dt_mu2p", &dt_mu2p);
 
@@ -107,6 +110,7 @@ protected:
             e_p = it->i.prompt.e / m_gtc.interpolate(it->i.prompt.ts);
             e_d = it->i.delayed.e / m_gtc.interpolate(it->i.delayed.ts);
             dt_last_mu_with_neu = timestamp_to_double(it->dt_last_mu_with_neu);
+            dt_last_mu = timestamp_to_double(it->dt_last_mu);
             dlat_mu2p = it->dlat_mu2p;
             dt_mu2p = timestamp_to_double(it->dt_mu2p);
             t->Fill();

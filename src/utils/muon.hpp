@@ -110,6 +110,23 @@ inline dt_to_last_muon_result calculate_dt_to_last_muon(const vertex& prompt, co
     return res;
 }
 
+inline dt_to_last_muon_result calculate_dt_to_last_muon_within_cylinder(const vertex& prompt, const std::vector<track>& muons, double radius) {
+    dt_to_last_muon_result res;
+    is_cd_muon_lookup cd_muons_in_event;
+    cd_muons_in_event.fill(muons);
+    for (const track& muon : muons) {
+        if (prompt.ts < muon.ts) continue;
+        if (!cd_muons_in_event[muon.ts]) continue;
+        vec3 dir = unit(muon.fpos - muon.ipos);
+        double d_mu2p = mag(cross(dir, prompt.pos - muon.ipos));
+        if (d_mu2p > radius) continue;
+        if (res.is_set && prompt.ts - muon.ts > res.dt_last_mu) continue;
+        res.dt_last_mu = prompt.ts - muon.ts;
+        res.is_set = true;
+    }
+    return res;
+}
+
 inline dt_to_last_muon_result calculate_dt_to_last_muon_with_neutron(const vertex& prompt, const std::vector<track>& muons, const std::vector<vertex>& neutrons) {
     dt_to_last_muon_result res;
     is_cd_muon_lookup cd_muons_in_event;
@@ -125,6 +142,31 @@ inline dt_to_last_muon_result calculate_dt_to_last_muon_with_neutron(const verte
             break;
         }
         if (!found_neutron) continue;
+        if (res.is_set && prompt.ts - muon.ts > res.dt_last_mu) continue;
+        res.dt_last_mu = prompt.ts - muon.ts;
+        res.is_set = true;
+    }
+    return res;
+}
+
+inline dt_to_last_muon_result calculate_dt_to_last_muon_with_neutron_within_cylinder(const vertex& prompt, const std::vector<track>& muons, const std::vector<vertex>& neutrons, double radius) {
+    dt_to_last_muon_result res;
+    is_cd_muon_lookup cd_muons_in_event;
+    cd_muons_in_event.fill(muons);
+    for (const track& muon : muons) {
+        if (prompt.ts < muon.ts) continue;
+        if (!cd_muons_in_event[muon.ts]) continue;
+        bool found_neutron = false;
+        for (const vertex& neutron : neutrons) {
+            if (neutron.ts < muon.ts + timestamp{0, 20000} || muon.ts + timestamp{0, 2000000} < neutron.ts) continue;
+            if (!g_acrylic_sphere_cut.is_in(neutron)) continue;
+            found_neutron = true;
+            break;
+        }
+        if (!found_neutron) continue;
+        vec3 dir = unit(muon.fpos - muon.ipos);
+        double d_mu2p = mag(cross(dir, prompt.pos - muon.ipos));
+        if (d_mu2p > radius) continue;
         if (res.is_set && prompt.ts - muon.ts > res.dt_last_mu) continue;
         res.dt_last_mu = prompt.ts - muon.ts;
         res.is_set = true;

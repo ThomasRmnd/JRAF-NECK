@@ -93,12 +93,12 @@ public:
             }
         }
 
-        dt_to_last_muon_result res = calculate_dt_to_last_muon_with_neutron(prompt, m_nav->muons, m_nav->neutrons);
+        dt_to_last_muon_result res = calculate_dt_to_last_muon_with_neutron_within_cylinder(prompt, m_nav->muons, m_nav->neutrons, m_radius);
         m_dt_last_mu_with_neu = res.dt_last_mu;
         if (!res.is_set) {
             m_dt_last_mu_with_neu = timestamp{-1, 0};
         }
-        res = calculate_dt_to_last_muon(prompt, m_nav->muons);
+        res = calculate_dt_to_last_muon_within_cylinder(prompt, m_nav->muons, m_radius);
         m_dt_last_mu = res.dt_last_mu;
         if (!res.is_set) {
             m_dt_last_mu = timestamp{-1, 0};

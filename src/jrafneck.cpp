@@ -192,6 +192,32 @@ int jrafneck(
             if (!registry.book(analysis)) return 1;
         }
     }
+    for (int d_m = 1; d_m <= 10; ++d_m) {
+        const double dist_mm = static_cast<double>(d_m) * 1000.0;
+        const double t_sec = 10.0;
+
+        const std::string name =
+            "li9he8_shape_muon__standard__analysis__cdwpttchi2_" +
+            format_dist_label(d_m) + "_" + format_time_label(t_sec) +
+            "__omilrec_jvertex";
+
+        const timestamp sig_end   = seconds_to_timestamp(t_sec);
+        const timestamp bkg_start = seconds_to_timestamp(-t_sec);
+
+        std::shared_ptr<analysis_base> analysis(
+            new li9he8_shape_muon_standard_analysis(
+                name,
+                analysis_filepath, suffix,
+                reconstruction_filepath,
+                "CdWpTtChi2",
+                sig_start, sig_end,
+                bkg_start, bkg_end,
+                dist_mm
+            )
+        );
+
+        if (!registry.book(analysis)) return 1;
+    }
 
     std::shared_ptr<analysis_base> li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
         new li9he8_shape_muon_with_neutron_analysis(

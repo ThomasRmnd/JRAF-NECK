@@ -31,6 +31,7 @@ struct ibd_with_muon {
 
     ibd i;
     timestamp dt_last_mu_with_neu;
+    timestamp dt_last_mu;
     double dlat_mu2p; // to closest muon
     timestamp dt_mu2p; // to closest muon
 

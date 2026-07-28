@@ -2,10 +2,6 @@
 #define JRAFNECK_ANLYSIS_IBD_IBDSTANDARDMUONVETOANALYSIS_HPP_
 
 #include "analysis/ibd/ibd_analysis.hpp"
-#include "selection/energy.hpp"
-#include "selection/flasher.hpp"
-#include "selection/spatial.hpp"
-#include "selection/vertex.hpp"
 
 class ibd_standard_muon_veto_analysis : public ibd_analysis {
 
@@ -31,15 +27,22 @@ public:
         prompt.e /= m_gtc.interpolate(prompt.ts);
         delayed.e /= m_gtc.interpolate(delayed.ts);
 
-        vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{0, 5000}, timestamp{0, 1000000}};
-
         if (!g_prompt_energy_cut.is_in(prompt)) return false;
         if (!g_delayed_hydrogen_energy_cut.is_in(delayed) && !g_delayed_carbon_energy_cut.is_in(delayed)) return false;
         if (!g_fiducial_volume_cut.is_in(prompt)) return false;
         if (!g_acrylic_sphere_cut.is_in(delayed)) return false;
         if (g_chimney_cut.is_in(prompt)) return false;
-        if (!vertex_correlation_cut.is_in(delayed)) return false;
         if (!g_flasher_cut.is_in(prompt)) return false;
+
+        const double r = mag(prompt.pos);
+        if (r <= 16500.0) {
+            vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{0, 5000}, timestamp{0, 1000000}}; // 1.5 m & [5 us, 1 ms]
+            if (!vertex_correlation_cut.is_in(delayed)) return false;
+        }
+        else {
+            vertex_correlation_selection vertex_correlation_cut{prompt, 750.0, timestamp{0, 5000}, timestamp{0, 600000}}; // 0.75 m & [5 us, 0.6 ms]
+            if (!vertex_correlation_cut.is_in(delayed)) return false;
+        }
 
         std::size_t nb_multu_veto = 0ul;
         for (const vertex& multiplicity : m_nav->multiplicities) {
@@ -97,6 +100,11 @@ public:
         m_dt_last_mu_with_neu = res.dt_last_mu;
         if (!res.is_set) {
             m_dt_last_mu_with_neu = timestamp{-1, 0};
+        }
+        res = calculate_dt_to_last_muon(prompt, m_nav->muons);
+        m_dt_last_mu = res.dt_last_mu;
+        if (!res.is_set) {
+            m_dt_last_mu = timestamp{-1, 0};
         }
         calculate_dlat_dt_muon_to_prompt();
 

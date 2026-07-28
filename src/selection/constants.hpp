@@ -33,7 +33,8 @@ const flasher_selection g_flasher_cut{0.55, 0.45, 170.0, 80.0};
 // Spatial
 // ------------------------------------------------------------------------------------------------
 
-inline const fiducial_volume_selection g_fiducial_volume_cut{16500.0}; // 17200.0
+// inline const fiducial_volume_selection g_fiducial_volume_cut{16500.0};
+inline const fiducial_volume_selection g_fiducial_volume_cut{17200.0};
 inline const fiducial_volume_selection g_acrylic_sphere_cut{17700.0};
 inline const chimney_selection g_chimney_cut{15500.0, 2000.0};
 

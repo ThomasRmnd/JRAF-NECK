@@ -59,6 +59,11 @@ public:
         if (!res.is_set) {
             m_dt_last_mu_with_neu = timestamp{-1, 0};
         }
+        res = calculate_dt_to_last_muon(prompt, m_nav->muons);
+        m_dt_last_mu = res.dt_last_mu;
+        if (!res.is_set) {
+            m_dt_last_mu = timestamp{-1, 0};
+        }
         calculate_dlat_dt_muon_to_prompt();
 
         return true;

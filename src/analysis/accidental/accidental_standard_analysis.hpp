@@ -18,15 +18,22 @@ public:
         prompt.e /= m_gtc.interpolate(prompt.ts);
         delayed.e /= m_gtc.interpolate(delayed.ts);
 
-        vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{2, 0}, timestamp{4, 0}};
-
         if (!g_prompt_energy_cut.is_in(prompt)) return false;
         if (!g_delayed_hydrogen_energy_cut.is_in(delayed) && !g_delayed_carbon_energy_cut.is_in(delayed)) return false;
         if (!g_fiducial_volume_cut.is_in(prompt)) return false;
         if (!g_acrylic_sphere_cut.is_in(delayed)) return false;
         if (g_chimney_cut.is_in(prompt)) return false;
-        if (!vertex_correlation_cut.is_in(delayed)) return false;
         if (!g_flasher_cut.is_in(prompt)) return false;
+
+        const double r = mag(prompt.pos);
+        if (r <= 16500.0) {
+            vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{2, 0}, timestamp{4, 0}}; // 1.5 m & [2 s, 4 s]
+            if (!vertex_correlation_cut.is_in(delayed)) return false;
+        }
+        else {
+            vertex_correlation_selection vertex_correlation_cut{prompt, 750.0, timestamp{2, 0}, timestamp{3, 200000000}}; // 0.75 m & [2 s, 3.2 s]
+            if (!vertex_correlation_cut.is_in(delayed)) return false;
+        }
 
         std::size_t nb_multu_veto = 0ul;
         for (const vertex& multiplicity : m_nav->multiplicities) {

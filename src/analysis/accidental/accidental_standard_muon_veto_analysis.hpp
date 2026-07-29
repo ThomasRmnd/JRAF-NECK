@@ -37,11 +37,11 @@ public:
 
         const double r = mag(prompt.pos);
         if (r <= 16500.0) {
-            vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{0, 5000}, timestamp{0, 1000000}}; // 1.5 m & [5 us, 1 ms]
+            vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{2, 0}, timestamp{4, 0}}; // 1.5 m & [2 s, 4 s]
             if (!vertex_correlation_cut.is_in(delayed)) return false;
         }
         else {
-            vertex_correlation_selection vertex_correlation_cut{prompt, 750.0, timestamp{0, 5000}, timestamp{0, 600000}}; // 0.75 m & [5 us, 0.6 ms]
+            vertex_correlation_selection vertex_correlation_cut{prompt, 750.0, timestamp{2, 0}, timestamp{3, 200000000}}; // 0.75 m & [2 s, 3.2 s]
             if (!vertex_correlation_cut.is_in(delayed)) return false;
         }
 

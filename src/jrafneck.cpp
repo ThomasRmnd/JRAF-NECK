@@ -10,6 +10,7 @@
 #include "analysis/ibd/ibd_no_neutron_veto_muon_veto_analysis.hpp"
 #include "analysis/ibd/ibd_standard_analysis.hpp"
 #include "analysis/ibd/ibd_standard_muon_veto_analysis.hpp"
+#include "analysis/li9he8/rate/li9he8_rate_muon_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_changing_veto_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_standard_analysis.hpp"
@@ -163,61 +164,70 @@ int jrafneck(
 
     const timestamp sig_start{0, 7000000};
     const timestamp bkg_end{0, -7000000};
-    for (int d_m = 1; d_m <= 10; ++d_m) {
-        const double dist_mm = static_cast<double>(d_m) * 1000.0;
+    // for (int d_m = 1; d_m <= 10; ++d_m) {
+    //     const double dist_mm = static_cast<double>(d_m) * 1000.0;
 
-        for (int t_tenths = 2; t_tenths <= 20; t_tenths += 2) {   // 0.2, 0.4, ..., 2.0
-            const double t_sec = static_cast<double>(t_tenths) / 10.0;
+    //     for (int t_tenths = 2; t_tenths <= 20; t_tenths += 2) {   // 0.2, 0.4, ..., 2.0
+    //         const double t_sec = static_cast<double>(t_tenths) / 10.0;
 
-            const std::string name =
-                "li9he8_shape_muon__standard__analysis__cdwpttchi2_" +
-                format_dist_label(d_m) + "_" + format_time_label(t_sec) +
-                "__omilrec_jvertex";
+    //         const std::string name =
+    //             "li9he8_shape_muon__standard__analysis__cdwpttchi2_" +
+    //             format_dist_label(d_m) + "_" + format_time_label(t_sec) +
+    //             "__omilrec_jvertex";
 
-            const timestamp sig_end   = seconds_to_timestamp(t_sec);
-            const timestamp bkg_start = seconds_to_timestamp(-t_sec);
+    //         const timestamp sig_end   = seconds_to_timestamp(t_sec);
+    //         const timestamp bkg_start = seconds_to_timestamp(-t_sec);
 
-            std::shared_ptr<analysis_base> analysis(
-                new li9he8_shape_muon_standard_analysis(
-                    name,
-                    analysis_filepath, suffix,
-                    reconstruction_filepath,
-                    "CdWpTtChi2",
-                    sig_start, sig_end,
-                    bkg_start, bkg_end,
-                    dist_mm
-                )
-            );
+    //         std::shared_ptr<analysis_base> analysis(
+    //             new li9he8_shape_muon_standard_analysis(
+    //                 name,
+    //                 analysis_filepath, suffix,
+    //                 reconstruction_filepath,
+    //                 "CdWpTtChi2",
+    //                 sig_start, sig_end,
+    //                 bkg_start, bkg_end,
+    //                 dist_mm
+    //             )
+    //         );
 
-            if (!registry.book(analysis)) return 1;
-        }
-    }
-    for (int d_m = 1; d_m <= 10; ++d_m) {
-        const double dist_mm = static_cast<double>(d_m) * 1000.0;
-        const double t_sec = 10.0;
+    //         if (!registry.book(analysis)) return 1;
+    //     }
+    // }
+    // for (int d_m = 1; d_m <= 10; ++d_m) {
+    //     const double dist_mm = static_cast<double>(d_m) * 1000.0;
+    //     const double t_sec = 10.0;
 
-        const std::string name =
-            "li9he8_shape_muon__standard__analysis__cdwpttchi2_" +
-            format_dist_label(d_m) + "_" + format_time_label(t_sec) +
-            "__omilrec_jvertex";
+    //     const std::string name =
+    //         "li9he8_shape_muon__standard__analysis__cdwpttchi2_" +
+    //         format_dist_label(d_m) + "_" + format_time_label(t_sec) +
+    //         "__omilrec_jvertex";
 
-        const timestamp sig_end   = seconds_to_timestamp(t_sec);
-        const timestamp bkg_start = seconds_to_timestamp(-t_sec);
+    //     const timestamp sig_end   = seconds_to_timestamp(t_sec);
+    //     const timestamp bkg_start = seconds_to_timestamp(-t_sec);
 
-        std::shared_ptr<analysis_base> analysis(
-            new li9he8_shape_muon_standard_analysis(
-                name,
-                analysis_filepath, suffix,
-                reconstruction_filepath,
-                "CdWpTtChi2",
-                sig_start, sig_end,
-                bkg_start, bkg_end,
-                dist_mm
-            )
-        );
+    //     std::shared_ptr<analysis_base> analysis(
+    //         new li9he8_shape_muon_standard_analysis(
+    //             name,
+    //             analysis_filepath, suffix,
+    //             reconstruction_filepath,
+    //             "CdWpTtChi2",
+    //             sig_start, sig_end,
+    //             bkg_start, bkg_end,
+    //             dist_mm
+    //         )
+    //     );
 
-        if (!registry.book(analysis)) return 1;
-    }
+    //     if (!registry.book(analysis)) return 1;
+    // }
+
+    std::shared_ptr<analysis_base> li9he8_rate_muon__analysis__omilrec_jvertex(
+        new li9he8_rate_muon_analysis(
+            "li9he8_rate_muon__analysis__omilrec_jvertex", 
+            analysis_filepath, suffix, 
+            reconstruction_filepath
+        )
+    );
+    if (!registry.book(li9he8_rate_muon__analysis__omilrec_jvertex)) return 1;
 
     std::shared_ptr<analysis_base> li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
         new li9he8_shape_muon_with_neutron_analysis(

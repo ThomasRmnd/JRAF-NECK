@@ -135,7 +135,7 @@ public:
         }
 
         for (std::size_t k = 0ll; k < nb_radius; ++k) {
-            double radius = static_cast<double>(k + 1ll);
+            double radius = static_cast<double>(k + 1ll) * 1000.0;
             res = calculate_dt_to_last_muon_with_neutron_within_cylinder(prompt, m_nav->muons, m_nav->neutrons, radius);
             m_dt_last_mu_with_neu_radius[k] = res.dt_last_mu;
             if (!res.is_set) {
@@ -219,8 +219,8 @@ protected:
         t->Branch("dt_last_mu_with_neu", &dt_last_mu_with_neu);
         t->Branch("dt_last_mu", &dt_last_mu);
         for (std::size_t k = 0ul; k < nb_radius; ++k) {
-            t->Branch(("dt_last_mu_with_neu_" + std::to_string(k) + "m").c_str(), &dt_last_mu_with_neu_radius[k]);
-            t->Branch(("dt_last_mu_" + std::to_string(k) + "m").c_str(), &dt_last_mu_radius[k]);
+            t->Branch(("dt_last_mu_with_neu_" + std::to_string(k + 1ul) + "m").c_str(), &dt_last_mu_with_neu_radius[k]);
+            t->Branch(("dt_last_mu_" + std::to_string(k + 1ul) + "m").c_str(), &dt_last_mu_radius[k]);
         }
 
         for (std::set<cosmogenic_with_rate>::const_iterator it = m_cosmos.begin(); it != m_cosmos.end(); ++it) {

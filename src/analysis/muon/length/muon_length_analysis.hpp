@@ -34,6 +34,8 @@ public:
         m_tree->Branch("hist_length_errors", &m_hist_length_errors);
         m_tree->Branch("hist_length_underflow", &m_hist_length_underflow);
         m_tree->Branch("hist_length_overflow", &m_hist_length_overflow);
+        m_tree->Branch("total_length", &m_total_length);
+        m_tree->Branch("total_muon", &m_total_muon);
     }
 
     virtual ~muon_length_analysis() override = default;
@@ -64,8 +66,13 @@ protected:
     double m_hist_length_underflow;
     double m_hist_length_overflow;
 
+    double m_total_length = 0.0;
+    std::size_t m_total_muon = 0ull;
+
     void reset_run() {
         m_hist_length->Reset();
+        m_total_length = 0.0;
+        m_total_muon = 0ull;
     }
 
     bool save_content() override {

@@ -25,7 +25,10 @@ public:
         std::vector<track>::const_iterator it_target = std::find_if(m_nav->muons.begin(), m_nav->muons.end(), [&](const track& t) { return t.method == m_targetname; });
         if (it_target == m_nav->muons.end()) return true;
 
-        m_hist_length->Fill(mag(it_target->fpos - it_target->ipos) / 1000.0);
+        double length = mag(it_target->fpos - it_target->ipos) / 1000.0;
+        m_hist_length->Fill(length);
+        m_total_length += length;
+        ++m_total_muon;
 
         return true;
     }

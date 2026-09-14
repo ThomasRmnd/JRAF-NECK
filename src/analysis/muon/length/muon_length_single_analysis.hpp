@@ -42,7 +42,10 @@ public:
         );
         if (nb_cdclassify > 1ul || nb_wpclassify > 1ul) return true;
 
-        m_hist_length->Fill(mag(it_target->fpos - it_target->ipos) / 1000.0);
+        double length = mag(it_target->fpos - it_target->ipos) / 1000.0;
+        m_hist_length->Fill(length);
+        m_total_length += length;
+        ++m_total_muon;
 
         return true;
     }

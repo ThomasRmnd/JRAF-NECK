@@ -138,9 +138,15 @@ parse_args() {
 main() {
     SCRIPT_DIR="${SLURM_SUBMIT_DIR:-$(pwd)}"
     SRC_DIR="${SCRIPT_DIR}/../src"
+    BIN_DIR="${SCRIPT_DIR}/../bin"
     JRAFNECK_CPP="${SRC_DIR}/jrafneck.cpp"
+    JRAFNECK_BIN="${BIN_DIR}/jrafneck"
     if [[ ! -f "${JRAFNECK_CPP}" ]]; then
         log ERROR "Cannot find jrafneck.cpp at: ${JRAFNECK_CPP}"
+        exit 1
+    fi
+    if [[ ! -f "${JRAFNECK_BIN}" ]]; then
+        log ERROR "Cannot find jrafneck executable at: ${JRAFNECK_BIN}"
         exit 1
     fi
 
@@ -236,12 +242,21 @@ main() {
 
     source /pbs/home/t/traymond/J25.7.4/git_junosw_load_J25_7_4.sh
 
-    pushd "${SRC_DIR}" > /dev/null || {
-        log ERROR "Failed to enter source directory: ${SRC_DIR}"
+    # pushd "${SRC_DIR}" > /dev/null || {
+    #     log ERROR "Failed to enter source directory: ${SRC_DIR}"
+    #     exit 1
+    # }
+    pushd "${BIN_DIR}" > /dev/null || {
+        log ERROR "Failed to enter executable directory: ${BIN_DIR}"
         exit 1
     }
 
-    if ! root -l -b -q "jrafneck.cpp(\"${ANALYSIS_FILEPATH}\",\"${RECONSTRUCTION_FILEPATH}\",\"${RECONSTRUCTION_EDWIN_FILEPATH}\",\"${RECONSTRUCTION_AMBER_FILEPATH}\",\"${RECONSTRUCTION_TT_FILEPATH}\",\"${OUTPUT_FILEPATH}\")"; then
+    # if ! root -l -b -q "jrafneck.cpp(\"${ANALYSIS_FILEPATH}\",\"${RECONSTRUCTION_FILEPATH}\",\"${RECONSTRUCTION_EDWIN_FILEPATH}\",\"${RECONSTRUCTION_AMBER_FILEPATH}\",\"${RECONSTRUCTION_TT_FILEPATH}\",\"${OUTPUT_FILEPATH}\")"; then
+    #     log ERROR "ROOT execution failed for run ${RUN}"
+    #     popd > /dev/null
+    #     exit 1
+    # fi
+    if ! jrafneck "${ANALYSIS_FILEPATH}" "${RECONSTRUCTION_FILEPATH}" "${RECONSTRUCTION_EDWIN_FILEPATH}" "${RECONSTRUCTION_AMBER_FILEPATH}" "${RECONSTRUCTION_TT_FILEPATH}" "${OUTPUT_FILEPATH}"; then
         log ERROR "ROOT execution failed for run ${RUN}"
         popd > /dev/null
         exit 1

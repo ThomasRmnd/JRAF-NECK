@@ -69,38 +69,38 @@ int jrafneck(
     // Accidental
     // --------------------------------------------------------------------------------------------
 
-    std::shared_ptr<analysis_base> accidental__standard__analysis__omilrec_jvertex(
-        new accidental_standard_analysis(
-            "accidental__standard__analysis__omilrec_jvertex", 
-            analysis_filepath, suffix, 
-            reconstruction_filepath
-        )
-    );
-    if (!registry.book(accidental__standard__analysis__omilrec_jvertex)) return 1;
+    // std::shared_ptr<analysis_base> accidental__standard__analysis__omilrec_jvertex(
+    //     new accidental_standard_analysis(
+    //         "accidental__standard__analysis__omilrec_jvertex", 
+    //         analysis_filepath, suffix, 
+    //         reconstruction_filepath
+    //     )
+    // );
+    // if (!registry.book(accidental__standard__analysis__omilrec_jvertex)) return 1;
 
-    std::shared_ptr<analysis_base> accidental__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
-        new accidental_standard_muon_veto_analysis(
-            "accidental__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", 
-            analysis_filepath, suffix, 
-            reconstruction_filepath, 
-            "CdWpTtChi2", 
-            timestamp{0, 5000000}, timestamp{0, 1200000000}, 
-            3000.0
-        )
-    );
-    if (!registry.book(accidental__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
+    // std::shared_ptr<analysis_base> accidental__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
+    //     new accidental_standard_muon_veto_analysis(
+    //         "accidental__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", 
+    //         analysis_filepath, suffix, 
+    //         reconstruction_filepath, 
+    //         "CdWpTtChi2", 
+    //         timestamp{0, 5000000}, timestamp{0, 1200000000}, 
+    //         3000.0
+    //     )
+    // );
+    // if (!registry.book(accidental__standard_muon_veto__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
 
-    std::shared_ptr<analysis_base> accidental__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex(
-        new accidental_standard_muon_veto_analysis(
-            "accidental__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex", 
-            analysis_filepath, suffix, 
-            reconstruction_filepath, 
-            "CdWpTtChi2", 
-            timestamp{0, 5000000}, timestamp{0, 500000000}, 
-            1000.0
-        )
-    );
-    if (!registry.book(accidental__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex)) return 1;
+    // std::shared_ptr<analysis_base> accidental__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex(
+    //     new accidental_standard_muon_veto_analysis(
+    //         "accidental__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex", 
+    //         analysis_filepath, suffix, 
+    //         reconstruction_filepath, 
+    //         "CdWpTtChi2", 
+    //         timestamp{0, 5000000}, timestamp{0, 500000000}, 
+    //         1000.0
+    //     )
+    // );
+    // if (!registry.book(accidental__standard_muon_veto__analysis__cdwpttchi2_1m_0_5s__omilrec_jvertex)) return 1;
 
     // --------------------------------------------------------------------------------------------
     // IBD

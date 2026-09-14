@@ -138,6 +138,7 @@ inline dt_to_last_muon_result calculate_dt_to_last_muon_with_neutron(const verte
         for (const vertex& neutron : neutrons) {
             if (neutron.ts < muon.ts + timestamp{0, 20000} || muon.ts + timestamp{0, 2000000} < neutron.ts) continue;
             if (!g_acrylic_sphere_cut.is_in(neutron)) continue;
+            if (neutron.stdt > 275.0) continue; // flasher cut
             found_neutron = true;
             break;
         }
@@ -160,6 +161,7 @@ inline dt_to_last_muon_result calculate_dt_to_last_muon_with_neutron_within_cyli
         for (const vertex& neutron : neutrons) {
             if (neutron.ts < muon.ts + timestamp{0, 20000} || muon.ts + timestamp{0, 2000000} < neutron.ts) continue;
             if (!g_acrylic_sphere_cut.is_in(neutron)) continue;
+            if (neutron.stdt > 275.0) continue; // flasher cut
             found_neutron = true;
             break;
         }

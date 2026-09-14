@@ -20,6 +20,8 @@
 #include "analysis/multiplicity/multiplicity_standard_analysis.hpp"
 #include "analysis/muon/efficiency/muon_wp_tagging_efficiency_analysis.hpp"
 #include "analysis/muon/performance/muon_performance_single_analysis.hpp"
+#include "analysis/muon/length/muon_length_single_analysis.hpp"
+#include "analysis/muon/length/muon_length_standard_analysis.hpp"
 #include "analysis/muon/rate/muon_rate_standard_analysis.hpp"
 #include "analysis/muon/rate/muon_rate_target_analysis.hpp"
 #include "analysis/muon/rate/muon_rate_target_single_analysis.hpp"
@@ -229,6 +231,32 @@ int jrafneck(
     );
     if (!registry.book(li9he8_rate_muon__analysis__omilrec_jvertex)) return 1;
 
+    std::shared_ptr<analysis_base> li9he8_shape_muon__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
+        new li9he8_shape_muon_with_neutron_analysis(
+            "li9he8_shape_muon__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", 
+            analysis_filepath, suffix, 
+            reconstruction_filepath, 
+            "CdWpTtChi2", 
+            sig_start, timestamp{0, 1200000000}, 
+            timestamp{0, -1200000000}, bkg_end, 
+            3000.0
+        )
+    );
+    if (!registry.book(li9he8_shape_muon__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
+
+    std::shared_ptr<analysis_base> li9he8_shape_muon__analysis__cdwpttchi2_3m_2s__omilrec_jvertex(
+        new li9he8_shape_muon_with_neutron_analysis(
+            "li9he8_shape_muon__analysis__cdwpttchi2_3m_2s__omilrec_jvertex", 
+            analysis_filepath, suffix, 
+            reconstruction_filepath, 
+            "CdWpTtChi2", 
+            sig_start, timestamp{0, 2000000000}, 
+            timestamp{0, -2000000000}, bkg_end, 
+            3000.0
+        )
+    );
+    if (!registry.book(li9he8_shape_muon__analysis__cdwpttchi2_3m_2s__omilrec_jvertex)) return 1;
+
     std::shared_ptr<analysis_base> li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
         new li9he8_shape_muon_with_neutron_analysis(
             "li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", 
@@ -285,13 +313,13 @@ int jrafneck(
     // Multiplicity
     // --------------------------------------------------------------------------------------------
 
-    std::shared_ptr<analysis_base> multiplicity__standard__analysis(
-        new multiplicity_standard_analysis(
-            "multiplicity__standard__analysis",
-            analysis_filepath, "MultiplicityAnalysis__OMILREC_JVtx"
-        )
-    );
-    if (!registry.book(multiplicity__standard__analysis)) return 1;
+    // std::shared_ptr<analysis_base> multiplicity__standard__analysis(
+    //     new multiplicity_standard_analysis(
+    //         "multiplicity__standard__analysis",
+    //         analysis_filepath, "MultiplicityAnalysis__OMILREC_JVtx"
+    //     )
+    // );
+    // if (!registry.book(multiplicity__standard__analysis)) return 1;
 
     // --------------------------------------------------------------------------------------------
     // Lifetime
@@ -364,6 +392,24 @@ int jrafneck(
         )
     );
     if (!registry.book(muon_rate__target_single__analysis)) return 1;
+
+    std::shared_ptr<analysis_base> muon_length__standard__analysis(
+        new muon_length_standard_analysis(
+            "muon_length__standard__analysis", 
+            reconstruction_filepath, "muons", 
+            "CdWpTtChi2"
+        )
+    );
+    if (!registry.book(muon_length__standard__analysis)) return 1;
+
+    std::shared_ptr<analysis_base> muon_length__single__analysis(
+        new muon_length_single_analysis(
+            "muon_length__single__analysis", 
+            reconstruction_filepath, "muons", 
+            "CdWpTtChi2"
+        )
+    );
+    if (!registry.book(muon_length__single__analysis)) return 1;
 
 
     

@@ -42,7 +42,7 @@ public:
         );
         if (nb_cdclassify > 1ul || nb_wpclassify > 1ul) return true;
 
-        m_hist_length->Fill(mag(it_target->fpos - it_target->ipos));
+        m_hist_length->Fill(mag(it_target->fpos - it_target->ipos) / 1000.0);
 
         return true;
     }

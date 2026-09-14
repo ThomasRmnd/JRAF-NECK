@@ -20,6 +20,8 @@
 #include "analysis/multiplicity/multiplicity_standard_analysis.hpp"
 #include "analysis/muon/efficiency/muon_wp_tagging_efficiency_analysis.hpp"
 #include "analysis/muon/performance/muon_performance_single_analysis.hpp"
+#include "analysis/muon/length/muon_length_ls_analysis.hpp"
+#include "analysis/muon/length/muon_length_ls_single_analysis.hpp"
 #include "analysis/muon/length/muon_length_single_analysis.hpp"
 #include "analysis/muon/length/muon_length_standard_analysis.hpp"
 #include "analysis/muon/rate/muon_rate_standard_analysis.hpp"
@@ -410,6 +412,24 @@ int jrafneck(
         )
     );
     if (!registry.book(muon_length__single__analysis)) return 1;
+
+    std::shared_ptr<analysis_base> muon_length__ls__analysis(
+        new muon_length_ls_analysis(
+            "muon_length__ls__analysis", 
+            reconstruction_filepath, "muons", 
+            "CdWpTtChi2"
+        )
+    );
+    if (!registry.book(muon_length__ls__analysis)) return 1;
+
+    std::shared_ptr<analysis_base> muon_length__ls_single__analysis(
+        new muon_length_ls_single_analysis(
+            "muon_length__ls_single__analysis", 
+            reconstruction_filepath, "muons", 
+            "CdWpTtChi2"
+        )
+    );
+    if (!registry.book(muon_length__ls_single__analysis)) return 1;
 
 
     

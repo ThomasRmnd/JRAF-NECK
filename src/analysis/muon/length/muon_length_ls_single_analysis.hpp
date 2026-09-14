@@ -1,16 +1,16 @@
-#ifndef JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHSINGLEANALYSIS_HPP_
-#define JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHSINGLEANALYSIS_HPP_
+#ifndef JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHLSSINGLEANALYSIS_HPP_
+#define JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHLSSINGLEANALYSIS_HPP_
 
 #include "analysis/muon/length/muon_length_analysis.hpp"
 #include "utils/muon.hpp"
 
-class muon_length_single_analysis : public muon_length_analysis {
+class muon_length_ls_single_analysis : public muon_length_analysis {
 
 public:
 
     using muon_length_analysis::muon_length_analysis;
 
-    ~muon_length_single_analysis() override = default;
+    ~muon_length_ls_single_analysis() override = default;
 
     bool process() override {
         if (m_run_id == 0) {
@@ -30,6 +30,9 @@ public:
             [&](const track& trk) { return trk.method == m_targetname; }
         );
         if (it_target == m_nav->muons.end()) return true;
+
+        if (it_target->totq_cd < 500.0e3) return true; // high probability of water buffer muon
+
         std::size_t nb_cdclassify = std::count_if(
             m_nav->muons.begin(),
             m_nav->muons.end(),
@@ -52,4 +55,4 @@ public:
 
 };
 
-#endif // JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHSINGLEANALYSIS_HPP_
+#endif // JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHLSSINGLEANALYSIS_HPP_

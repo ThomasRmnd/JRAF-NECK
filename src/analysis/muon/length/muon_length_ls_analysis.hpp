@@ -1,15 +1,15 @@
-#ifndef JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHSTANDARDANALYSIS_HPP_
-#define JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHSTANDARDANALYSIS_HPP_
+#ifndef JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHLSANALYSIS_HPP_
+#define JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHLSANALYSIS_HPP_
 
 #include "analysis/muon/length/muon_length_analysis.hpp"
 
-class muon_length_standard_analysis : public muon_length_analysis {
+class muon_length_ls_analysis : public muon_length_analysis {
 
 public:
 
     using muon_length_analysis::muon_length_analysis;
 
-    ~muon_length_standard_analysis() override = default;
+    ~muon_length_ls_analysis() override = default;
 
     bool process() override {
         if (m_run_id == 0) {
@@ -25,6 +25,8 @@ public:
         std::vector<track>::const_iterator it_target = std::find_if(m_nav->muons.begin(), m_nav->muons.end(), [&](const track& t) { return t.method == m_targetname; });
         if (it_target == m_nav->muons.end()) return true;
 
+        if (it_target->totq_cd < 500.0e3) return true; // high probability of water buffer muon
+
         double length = mag(it_target->fpos - it_target->ipos) / 1000.0;
         m_hist_length->Fill(length);
         m_total_length += length;
@@ -35,4 +37,4 @@ public:
 
 };
 
-#endif // JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHSTANDARDANALYSIS_HPP_
+#endif // JRAFNECK_ANALYSIS_MUON_LENGTH_MUONLENGTHLSANALYSIS_HPP_

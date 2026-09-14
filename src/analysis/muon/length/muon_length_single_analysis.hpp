@@ -42,7 +42,19 @@ public:
         );
         if (nb_cdclassify > 1ul || nb_wpclassify > 1ul) return true;
 
-        double length = mag(it_target->fpos - it_target->ipos) / 1000.0;
+        const vec3& ipos = it_target->ipos;
+        const vec3& fpos = it_target->fpos;
+        vec3 dir = unit(fpos - ipos);
+
+        double bhalf = dot(dir, ipos);
+        double c = mag2(ipos) - 17700.0 * 17700.0;
+        double disc = bhalf * bhalf - c;
+        if (disc < 0.0) return true;
+        double t1 = -bhalf - std::sqrt(disc);
+        double t2 = -bhalf + std::sqrt(disc);
+        double length = (t2 - t1) /  1000.0;
+        // double length = mag(it_target->fpos - it_target->ipos) / 1000.0;
+
         m_hist_length->Fill(length);
         m_total_length += length;
         ++m_total_muon;

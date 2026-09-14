@@ -9,8 +9,6 @@
 #include "analysis/analysis.hpp"
 #include "reader/navigator/ibd_like_event_correlated_chain_navigator.hpp"
 #include "reader/navigator/navigator_manager.hpp"
-#include "selection/constants.hpp"
-#include "utils/muon.hpp"
 #include "utils/scale_factor.hpp"
 
 const std::size_t nb_radius = 10ul;
@@ -57,8 +55,7 @@ class li9he8_rate_muon_analysis : public analysis_base {
 
 public:
 
-    li9he8_rate_muon_analysis
-(
+    li9he8_rate_muon_analysis(
         const std::string& name, 
         const std::string& filepath, const std::string& suffix, 
         const std::string& reconstruction_filepath
@@ -88,70 +85,7 @@ public:
         return m_nav;
     }
 
-    bool selection() override {
-        vertex prompt{m_nav->prompt};
-        vertex delayed{m_nav->delayed};
-        prompt.e /= m_gtc.interpolate(prompt.ts);
-        delayed.e /= m_gtc.interpolate(delayed.ts);
-
-        if (!g_prompt_energy_cut.is_in(prompt)) return false;
-        if (!g_delayed_hydrogen_energy_cut.is_in(delayed) && !g_delayed_carbon_energy_cut.is_in(delayed)) return false;
-        if (!g_fiducial_volume_cut.is_in(prompt)) return false;
-        if (!g_acrylic_sphere_cut.is_in(delayed)) return false;
-        if (g_chimney_cut.is_in(prompt)) return false;
-        if (!g_flasher_cut.is_in(prompt)) return false;
-
-        const double r = mag(prompt.pos);
-        if (r <= 16500.0) {
-            vertex_correlation_selection vertex_correlation_cut{prompt, 1500.0, timestamp{0, 5000}, timestamp{0, 1000000}}; // 1.5 m & [5 us, 1 ms]
-            if (!vertex_correlation_cut.is_in(delayed)) return false;
-        }
-        else {
-            vertex_correlation_selection vertex_correlation_cut{prompt, 750.0, timestamp{0, 5000}, timestamp{0, 600000}}; // 0.75 m & [5 us, 0.6 ms]
-            if (!vertex_correlation_cut.is_in(delayed)) return false;
-        }
-
-        std::size_t nb_multu_veto = 0ul;
-        for (const vertex& multiplicity : m_nav->multiplicities) {
-            if (multiplicity.ts == prompt.ts || multiplicity.ts == delayed.ts) continue;
-            if (!g_acrylic_sphere_cut.is_in(multiplicity)) continue; 
-            vertex mult{multiplicity};
-            mult.e /= m_gtc.interpolate(mult.ts);
-            if (!g_multiplicity_energy_cut.is_in(mult)) continue;
-            if (mult.ts < prompt.ts - timestamp{0, 1000000} || delayed.ts + timestamp{0, 1000000} < mult.ts) continue;
-            ++nb_multu_veto;
-        }
-        if (nb_multu_veto) return false;
-
-        dt_to_last_muon_result res = calculate_dt_to_last_muon_with_neutron(prompt, m_nav->muons, m_nav->neutrons);
-        m_dt_last_mu_with_neu = res.dt_last_mu;
-        if (!res.is_set) {
-            m_dt_last_mu_with_neu = timestamp{-1, 0};
-        }
-        res = calculate_dt_to_last_muon(prompt, m_nav->muons);
-        m_dt_last_mu = res.dt_last_mu;
-        if (!res.is_set) {
-            m_dt_last_mu = timestamp{-1, 0};
-        }
-
-        for (std::size_t k = 0ll; k < nb_radius; ++k) {
-            double radius = static_cast<double>(k + 1ll) * 1000.0;
-            res = calculate_dt_to_last_muon_with_neutron_within_cylinder(prompt, m_nav->muons, m_nav->neutrons, radius);
-            m_dt_last_mu_with_neu_radius[k] = res.dt_last_mu;
-            if (!res.is_set) {
-                m_dt_last_mu_with_neu_radius[k] = timestamp{-1, 0};
-            }
-            res = calculate_dt_to_last_muon_within_cylinder(prompt, m_nav->muons, radius);
-            m_dt_last_mu_radius[k] = res.dt_last_mu;
-            if (!res.is_set) {
-                m_dt_last_mu_radius[k] = timestamp{-1, 0};
-            }
-        }
-        
-        calculate_dlat_dt_muon_to_prompt();
-
-        return true;
-    }
+    bool selection() override = 0;
 
     bool process() override {
         cosmogenic_with_rate c{

@@ -10,7 +10,8 @@
 #include "analysis/ibd/ibd_no_neutron_veto_muon_veto_analysis.hpp"
 #include "analysis/ibd/ibd_standard_analysis.hpp"
 #include "analysis/ibd/ibd_standard_muon_veto_analysis.hpp"
-#include "analysis/li9he8/rate/li9he8_rate_muon_analysis.hpp"
+#include "analysis/li9he8/rate/li9he8_rate_muon_no_mult_veto_analysis.hpp"
+#include "analysis/li9he8/rate/li9he8_rate_muon_standard_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_changing_veto_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_standard_analysis.hpp"
@@ -224,18 +225,27 @@ int jrafneck(
     //     if (!registry.book(analysis)) return 1;
     // }
 
-    std::shared_ptr<analysis_base> li9he8_rate_muon__analysis__omilrec_jvertex(
-        new li9he8_rate_muon_analysis(
-            "li9he8_rate_muon__analysis__omilrec_jvertex", 
+    std::shared_ptr<analysis_base> li9he8_rate_muon__standard__analysis__omilrec_jvertex(
+        new li9he8_rate_muon_standard_analysis(
+            "li9he8_rate_muon__standard__analysis__omilrec_jvertex", 
             analysis_filepath, suffix, 
             reconstruction_filepath
         )
     );
-    if (!registry.book(li9he8_rate_muon__analysis__omilrec_jvertex)) return 1;
+    if (!registry.book(li9he8_rate_muon__standard__analysis__omilrec_jvertex)) return 1;
 
-    std::shared_ptr<analysis_base> li9he8_shape_muon__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
-        new li9he8_shape_muon_with_neutron_analysis(
-            "li9he8_shape_muon__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", 
+    std::shared_ptr<analysis_base> li9he8_rate_muon__no_mult_veto__analysis__omilrec_jvertex(
+        new li9he8_rate_muon_no_mult_veto_analysis(
+            "li9he8_rate_muon__no_mult_veto__analysis__omilrec_jvertex", 
+            analysis_filepath, suffix, 
+            reconstruction_filepath
+        )
+    );
+    if (!registry.book(li9he8_rate_muon__no_mult_veto__analysis__omilrec_jvertex)) return 1;
+
+    std::shared_ptr<analysis_base> li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
+        new li9he8_shape_muon_standard_analysis(
+            "li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", 
             analysis_filepath, suffix, 
             reconstruction_filepath, 
             "CdWpTtChi2", 
@@ -244,11 +254,11 @@ int jrafneck(
             3000.0
         )
     );
-    if (!registry.book(li9he8_shape_muon__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
+    if (!registry.book(li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex)) return 1;
 
-    std::shared_ptr<analysis_base> li9he8_shape_muon__analysis__cdwpttchi2_3m_2s__omilrec_jvertex(
-        new li9he8_shape_muon_with_neutron_analysis(
-            "li9he8_shape_muon__analysis__cdwpttchi2_3m_2s__omilrec_jvertex", 
+    std::shared_ptr<analysis_base> li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_2s__omilrec_jvertex(
+        new li9he8_shape_muon_standard_analysis(
+            "li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_2s__omilrec_jvertex", 
             analysis_filepath, suffix, 
             reconstruction_filepath, 
             "CdWpTtChi2", 
@@ -257,7 +267,7 @@ int jrafneck(
             3000.0
         )
     );
-    if (!registry.book(li9he8_shape_muon__analysis__cdwpttchi2_3m_2s__omilrec_jvertex)) return 1;
+    if (!registry.book(li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_2s__omilrec_jvertex)) return 1;
 
     std::shared_ptr<analysis_base> li9he8_shape_muon__with_neutron__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
         new li9he8_shape_muon_with_neutron_analysis(

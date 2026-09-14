@@ -236,7 +236,8 @@ main() {
 
     RECONSTRUCTION_EDWIN_FILEPATH=""
     RECONSTRUCTION_AMBER_FILEPATH=""
-    RECONSTRUCTION_TT_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/TT/RUN.${RUN}.TT.root"
+    RECONSTRUCTION_TT_FILEPATH=""
+    # RECONSTRUCTION_TT_FILEPATH="/sps/juno/jdeandre/rtraw_ThomasRaymond/reconstruction/reprod/TT/RUN.${RUN}.TT.root"
 
     OUTPUT_FILEPATH="${OUTPUT_DIRECTORY}/RUN.${RUN}.${OUTPUT_SUFFIX}"
 

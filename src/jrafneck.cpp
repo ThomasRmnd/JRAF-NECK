@@ -418,3 +418,29 @@ int jrafneck(
 
     return 0;
 }
+
+int main(int argc, char** argv) {
+    if (argc != 7) {
+        std::cerr << "Usage: " << argv[0]
+                  << " <analysis_filepath> <reconstruction_filepath>"
+                  << " <reconstruction_edwin_filepath> <reconstruction_amber_filepath>"
+                  << " <reconstruction_tt_filepath> <output_filepath>\n";
+        return 1;
+    }
+
+    const std::string analysis_filepath = argv[1];
+    const std::string reconstruction_filepath = argv[2];
+    const std::string reconstruction_edwin_filepath = argv[3];
+    const std::string reconstruction_amber_filepath = argv[4];
+    const std::string reconstruction_tt_filepath = argv[5];
+    const std::string output_filepath = argv[6];
+
+    return jrafneck(
+        analysis_filepath,
+        reconstruction_filepath,
+        reconstruction_edwin_filepath,
+        reconstruction_amber_filepath,
+        reconstruction_tt_filepath,
+        output_filepath
+    );
+}

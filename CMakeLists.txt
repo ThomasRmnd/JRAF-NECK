@@ -20,7 +20,7 @@ endif()
 
 # --- Dependencies ------------------------------------------------------------
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
-find_package(ROOT REQUIRED COMPONENTS RIO Net)
+find_package(ROOT REQUIRED COMPONENTS RIO Net Tree Hist)
 
 # --- Sources -----------------------------------------------------------------
 # Prefer an explicit list over GLOB_RECURSE: CMake won't reconfigure
@@ -38,7 +38,7 @@ target_include_directories(jrafneck PRIVATE
 # Use ROOT's imported target instead of manually injecting include dirs +
 # raw library list — this pulls in include dirs, definitions and libs
 # transitively and correctly, no dl needed on modern ROOT builds.
-target_link_libraries(jrafneck PRIVATE ROOT::RIO ROOT::Net)
+target_link_libraries(jrafneck PRIVATE ROOT::RIO ROOT::Net ROOT::Tree ROOT::Hist)
 
 # --- Compiler warnings ---------------------------------------------------
 # Scoped to the target instead of globally via CMAKE_CXX_FLAGS.

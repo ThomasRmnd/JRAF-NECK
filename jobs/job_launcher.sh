@@ -110,10 +110,11 @@ parse_args() {
     fi
 
     case "${DURATION}" in
+        quick)  DURATION_TIME="0-00:05:00" ;;
         short)  DURATION_TIME="0-00:30:00" ;;
         medium) DURATION_TIME="0-01:00:00" ;;
         long)   DURATION_TIME="0-03:00:00" ;;
-        *) log ERROR "Unkown argument: ${DURATION}, should be {short|medium|long}" ;;
+        *) log ERROR "Unkown argument: ${DURATION}, should be {quick|short|medium|long}" ;;
     esac
 }
 

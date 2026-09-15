@@ -451,7 +451,7 @@ int jrafneck(
         new muon_multiplicity_standard_analysis(
             "muon_multiplicity__standard__analysis",
             reconstruction_filepath, "muons",
-            "WpClassify"
+            "WpBasic"
         )
     );
     if (!registry.book(muon_multiplicity__standard__analysis)) return 1;
@@ -460,7 +460,7 @@ int jrafneck(
         new muon_multiplicity_ls_muon_analysis(
             "muon_multiplicity__ls_muon__analysis",
             reconstruction_filepath, "muons",
-            "WpClassify"
+            "WpBasic"
         )
     );
     if (!registry.book(muon_multiplicity__ls_muon__analysis)) return 1;

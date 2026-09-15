@@ -29,11 +29,11 @@ public:
             return;
         }
         m_tree->Branch("run_id", &m_run_id);
-        m_tree->Branch("hist_length_edges", &m_hist_multiplicity_edges);
-        m_tree->Branch("hist_length_counts", &m_hist_multiplicity_counts);
-        m_tree->Branch("hist_length_errors", &m_hist_multiplicity_errors);
-        m_tree->Branch("hist_length_underflow", &m_hist_multiplicity_underflow);
-        m_tree->Branch("hist_length_overflow", &m_hist_multiplicity_overflow);
+        m_tree->Branch("hist_multiplicity_edges", &m_hist_multiplicity_edges);
+        m_tree->Branch("hist_multiplicity_counts", &m_hist_multiplicity_counts);
+        m_tree->Branch("hist_multiplicity_errors", &m_hist_multiplicity_errors);
+        m_tree->Branch("hist_multiplicity_underflow", &m_hist_multiplicity_underflow);
+        m_tree->Branch("hist_multiplicity_overflow", &m_hist_multiplicity_overflow);
     }
 
     virtual ~muon_multiplicity_analysis() override = default;

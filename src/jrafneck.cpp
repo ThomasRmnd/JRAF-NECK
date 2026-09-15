@@ -10,7 +10,9 @@
 #include "analysis/ibd/ibd_no_neutron_veto_muon_veto_analysis.hpp"
 #include "analysis/ibd/ibd_standard_analysis.hpp"
 #include "analysis/ibd/ibd_standard_muon_veto_analysis.hpp"
+#include "analysis/li9he8/rate/li9he8_rate_muon_ls_muon_analysis.hpp"
 #include "analysis/li9he8/rate/li9he8_rate_muon_no_mult_veto_analysis.hpp"
+#include "analysis/li9he8/rate/li9he8_rate_muon_no_mult_veto_ls_muon_analysis.hpp"
 #include "analysis/li9he8/rate/li9he8_rate_muon_standard_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_analysis.hpp"
 #include "analysis/li9he8/shape/li9he8_shape_muon_changing_veto_analysis.hpp"
@@ -25,8 +27,13 @@
 #include "analysis/muon/length/muon_length_ls_single_analysis.hpp"
 #include "analysis/muon/length/muon_length_single_analysis.hpp"
 #include "analysis/muon/length/muon_length_standard_analysis.hpp"
+#include "analysis/muon/multiplicity/muon_multiplicity_ls_muon_analysis.hpp"
+#include "analysis/muon/multiplicity/muon_multiplicity_standard_analysis.hpp"
+#include "analysis/muon/multiplicity/muon_multiplicity_ls_muon_analysis.hpp"
+#include "analysis/muon/rate/muon_rate_ls_muon_analysis.hpp"
 #include "analysis/muon/rate/muon_rate_standard_analysis.hpp"
 #include "analysis/muon/rate/muon_rate_target_analysis.hpp"
+#include "analysis/muon/rate/muon_rate_target_ls_muon_analysis.hpp"
 #include "analysis/muon/rate/muon_rate_target_single_analysis.hpp"
 
 timestamp seconds_to_timestamp(double t_sec) {
@@ -243,6 +250,24 @@ int jrafneck(
     );
     if (!registry.book(li9he8_rate_muon__no_mult_veto__analysis__omilrec_jvertex)) return 1;
 
+    std::shared_ptr<analysis_base> li9he8_rate_muon__ls_muon__analysis__omilrec_jvertex(
+        new li9he8_rate_muon_ls_muon_analysis(
+            "li9he8_rate_muon__ls_muon__analysis__omilrec_jvertex", 
+            analysis_filepath, suffix, 
+            reconstruction_filepath
+        )
+    );
+    if (!registry.book(li9he8_rate_muon__ls_muon__analysis__omilrec_jvertex)) return 1;
+
+    std::shared_ptr<analysis_base> li9he8_rate_muon__no_mult_veto_ls_muon__analysis__omilrec_jvertex(
+        new li9he8_rate_muon_no_mult_veto_ls_muon_analysis(
+            "li9he8_rate_muon__no_mult_veto_ls_muon__analysis__omilrec_jvertex", 
+            analysis_filepath, suffix, 
+            reconstruction_filepath
+        )
+    );
+    if (!registry.book(li9he8_rate_muon__no_mult_veto_ls_muon__analysis__omilrec_jvertex)) return 1;
+
     std::shared_ptr<analysis_base> li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex(
         new li9he8_shape_muon_standard_analysis(
             "li9he8_shape_muon__standard__analysis__cdwpttchi2_3m_1_2s__omilrec_jvertex", 
@@ -396,6 +421,23 @@ int jrafneck(
     );
     if (!registry.book(muon_rate__target__analysis)) return 1;
 
+    std::shared_ptr<analysis_base> muon_rate__target_ls_muon__analysis(
+        new muon_rate_target_ls_muon_analysis(
+            "muon_rate__target_ls_muon__analysis", 
+            reconstruction_filepath, "muons", 
+            "CdWpTtChi2"
+        )
+    );
+    if (!registry.book(muon_rate__target_ls_muon__analysis)) return 1;
+
+    std::shared_ptr<analysis_base> muon_rate__ls_muon__analysis(
+        new muon_rate_ls_muon_analysis(
+            "muon_rate__ls_muon__analysis", 
+            reconstruction_filepath, "muons"
+        )
+    );
+    if (!registry.book(muon_rate__ls_muon__analysis)) return 1;
+
     std::shared_ptr<analysis_base> muon_rate__target_single__analysis(
         new muon_rate_target_single_analysis(
             "muon_rate__target_single__analysis", 
@@ -404,6 +446,24 @@ int jrafneck(
         )
     );
     if (!registry.book(muon_rate__target_single__analysis)) return 1;
+
+    std::shared_ptr<analysis_base> muon_multiplicity__standard__analysis(
+        new muon_multiplicity_standard_analysis(
+            "muon_multiplicity__standard__analysis",
+            reconstruction_filepath, "muons",
+            "WpClassify"
+        )
+    );
+    if (!registry.book(muon_multiplicity__standard__analysis)) return 1;
+
+    std::shared_ptr<analysis_base> muon_multiplicity__ls_muon__analysis(
+        new muon_multiplicity_ls_muon_analysis(
+            "muon_multiplicity__ls_muon__analysis",
+            reconstruction_filepath, "muons",
+            "WpClassify"
+        )
+    );
+    if (!registry.book(muon_multiplicity__ls_muon__analysis)) return 1;
 
     std::shared_ptr<analysis_base> muon_length__standard__analysis(
         new muon_length_standard_analysis(
